@@ -1,0 +1,3 @@
+[submodule "vendor/RubyDirectLineClient"]
+	path = vendor/RubyDirectLineClient
+	url = https://github.com/codemeow5/RubyDirectLineClient.git
