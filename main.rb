@@ -11,6 +11,7 @@ begin
     
     conversation_id = result.conversation_id
     message = SwaggerClient::Message.new({
+        "from" => 'bot.instflow.org',
         "text" => 'Hi'
     })
     result = api_instance.conversations_post_message(conversation_id, message)

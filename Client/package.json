@@ -1,0 +1,20 @@
+{
+  "name": "carnival-client",
+  "version": "1.0.0",
+  "description": "Responsible for send messages to the client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "botframework",
+    "botbuilder",
+    "skype"
+  ],
+  "author": "CodeMeow5",
+  "license": "ISC",
+  "dependencies": {
+    "botbuilder": "^3.2.3",
+    "restify": "^4.1.1"
+  }
+}
