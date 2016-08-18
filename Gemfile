@@ -5,3 +5,4 @@ gem 'debase', '>=0.2.1'
 gem 'pry'
 gem 'pry-byebug'
 gem 'swagger_client', :path => "./vendor/RubyDirectLineClient"
+gem 'rails'
