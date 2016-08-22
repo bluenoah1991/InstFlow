@@ -9,6 +9,15 @@ module Api
       end
     end
 
+    class ParameterTypeNotAllowed < ActionController::ParameterMissing
+      attr_reader :type
+      def initialize(param, type)
+        @param = param
+        @type = type
+        super("param: #{param} type only allowed as: #{type}")
+      end
+    end
+
     class AccessDenied < StandardError; end
     class PageNotFound < StandardError; end
 
@@ -41,6 +50,12 @@ module Api
           raise ParameterValueNotAllowed.new(name, opts[:values])
         end
       end
+
+      if opts[:type] && params[name].present?
+        unless params[name].kind_of? opts[:type]
+          raise ParameterTypeNotAllowed.new(name, opts[:type])
+        end
+      end 
 
       if params[name].blank? && opts[:default].present?
         params[name] = opts[:default]

@@ -37,6 +37,13 @@ ActiveRecord::Schema.define(version: 20160819021816) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "tags_users", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "tag_id"
+    t.index ["tag_id"], name: "index_tags_users_on_tag_id"
+    t.index ["user_id"], name: "index_tags_users_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "channel_id", null: false
     t.string   "user_id",    null: false
@@ -46,13 +53,6 @@ ActiveRecord::Schema.define(version: 20160819021816) do
     t.datetime "updated_at", null: false
     t.index ["channel_id"], name: "index_users_on_channel_id", unique: true
     t.index ["user_id"], name: "index_users_on_user_id", unique: true
-  end
-
-  create_table "users_tags", id: false, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "tag_id"
-    t.index ["tag_id"], name: "index_users_tags_on_tag_id"
-    t.index ["user_id"], name: "index_users_tags_on_user_id"
   end
 
 end

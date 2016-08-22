@@ -13,7 +13,8 @@ module Api
 
                 @tag = Tag.new
                 @tag.tag_id = params[:tag_id]
-                @tag.save
+                @tag.save!
+                
                 render json: @tag
             end
 
