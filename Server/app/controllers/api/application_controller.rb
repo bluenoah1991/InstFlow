@@ -1,5 +1,8 @@
 module Api
   class ApplicationController < ActionController::API
+    include CanCan::ControllerAdditions
+    before_action :own_subdomain
+
     class ParameterValueNotAllowed < ActionController::ParameterMissing
       attr_reader :values
       def initialize(param, values) # :nodoc:
@@ -28,6 +31,9 @@ module Api
       render json: { error: 'RecordInvalid', message: err }, status: 400
     end
     rescue_from(AccessDenied) do |err|
+      render json: { error: 'AccessDenied', message: err }, status: 403
+    end
+    rescue_from(CanCan::AccessDenied) do |err|
       render json: { error: 'AccessDenied', message: err }, status: 403
     end
     rescue_from(ActiveRecord::RecordNotFound) do
@@ -71,6 +77,13 @@ module Api
     end
 
     def current_user
+      current_admin
+    end
+
+    def own_subdomain
+      if !current_user.present? || request.subdomain != current_user.tenant_id
+        raise AccessDenied.new("You are not authorized to access this resource.")
+      end
     end
   end
 end
