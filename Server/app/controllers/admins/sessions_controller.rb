@@ -1,12 +1,14 @@
 class Admins::SessionsController < Devise::SessionsController
 # before_action :configure_sign_in_params, only: [:create]
 
+  layout false
+
   # GET /resource/sign_in
   def new
     self.resource = resource_class.new(sign_in_params)
     clean_up_passwords(resource)
     yield resource if block_given?
-    respond_with(resource, serialize_options(resource), :layout => false)
+    respond_with(resource, serialize_options(resource))
   end
 
   # POST /resource/sign_in
