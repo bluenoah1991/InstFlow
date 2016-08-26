@@ -6,4 +6,8 @@ class HomeController < ApplicationController
             render plain: "Welcome to InstFlow!"
         end
     end
+
+    def dashboard
+        render :layout => false
+    end
 end

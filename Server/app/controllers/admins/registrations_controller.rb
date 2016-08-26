@@ -3,9 +3,11 @@ class Admins::RegistrationsController < Devise::RegistrationsController
 # before_action :configure_account_update_params, only: [:update]
 
   # GET /resource/sign_up
-  # def new
-  #   super
-  # end
+  def new
+    build_resource({})
+    yield resource if block_given?
+    respond_with resource, :layout => false
+  end
 
   # POST /resource
   # def create

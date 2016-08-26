@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   root to: "home#index"
 
+  get "dashboard", to: "home#dashboard", as: :dashboard
+
   class TenantdomainConstraint
     def self.matches?(request)
       subdomains = %w( www )
@@ -18,7 +20,10 @@ Rails.application.routes.draw do
   end
 
   # constraints MaindomainConstraint do
-    devise_for :admins, controllers: { registrations: "admins/registrations" }
+    devise_for :admins, controllers: { 
+      registrations: "admins/registrations",
+      sessions: "admins/sessions" 
+    }
   # end
 
   namespace :api do
