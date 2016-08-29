@@ -22,18 +22,18 @@ Rails.application.routes.draw do
     }
   # end
 
+  get 'index', to: "home#index", as: :index
+
   authenticate :admin do
-    get 'dashboard', to: "home#dashboard", as: :dashboard
+    get 'dashboard', to: "home#dashboard", as: :dashboard, constraints: TenantdomainConstraint
   end
 
   authenticated :admin do
-    root 'home#dashboard', as: :authenticated_root
+    root 'home#dashboard', as: :authenticated_root, constraints: TenantdomainConstraint
   end
 
   unauthenticated :admin do
-    devise_scope :admin do
-      root 'admins/sessions#new', as: :unauthenticated_root
-    end
+    root 'home#index', as: :unauthenticated_root
   end
 
   namespace :api do

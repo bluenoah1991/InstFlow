@@ -13,7 +13,6 @@ class Admins::RegistrationsController < Devise::RegistrationsController
 
   # POST /resource
   def create
-    debugger
     build_resource(sign_up_params)
 
     resource.save
@@ -72,9 +71,10 @@ class Admins::RegistrationsController < Devise::RegistrationsController
   # end
 
   # The path used after sign up.
-  # def after_sign_up_path_for(resource)
-  #   super(resource)
-  # end
+  def after_sign_up_path_for(resource)
+    # super(resource)
+    dashboard_url(subdomain: current_user.tenant_id)
+  end
 
   # The path used after sign up for inactive accounts.
   # def after_inactive_sign_up_path_for(resource)
