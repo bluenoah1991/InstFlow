@@ -52,8 +52,9 @@
                         <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {class: "register-form"}) do |f| %>
                             <div class="alert alert-danger display-hide">
                                 <button class="close" data-close="alert"></button>
-                                <span>Invalid information. </span>
+                                <span>Invalid input. </span>
                             </div>
+                            <%= devise_error_messages! %>
                             <div class="row">
                                 <div class="col-xs-12">
                                     <!--<input class="form-control form-control-solid placeholder-no-fix form-group" type="email" autocomplete="off" placeholder="Email" name="email" required/>-->

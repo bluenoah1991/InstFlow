@@ -1,0 +1,1 @@
+var jquery_ujs = require('jquery-ujs');

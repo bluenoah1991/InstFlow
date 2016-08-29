@@ -9,6 +9,7 @@
     <head>
         <meta charset="utf-8" />
         <title>InstFlow | Quickly build your bot service</title>
+         <%= csrf_meta_tag %>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="" name="description" />
@@ -428,9 +429,14 @@
                                         <a href="page_user_lock_1.html">
                                             <i class="icon-lock"></i> Lock Screen </a>
                                     </li>
-                                    <li>
+                                    <!--<li>
                                         <a href="page_user_login_1.html">
                                             <i class="icon-key"></i> Log Out </a>
+                                    </li>-->
+                                    <li>
+                                        <%= link_to destroy_session_path(:admin), method: :delete do %>
+                                            <i class="icon-key"></i> Log Out 
+                                        <% end %>
                                     </li>
                                 </ul>
                             </li>
@@ -2207,6 +2213,7 @@
         <!-- END CORE PLUGINS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
+        <script src="/assets/global/scripts/main.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script src="/assets/layouts/layout4/scripts/layout.min.js" type="text/javascript"></script>

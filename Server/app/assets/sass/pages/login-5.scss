@@ -164,6 +164,11 @@
 	.alert{
 		margin-top: -60px;
 	}
+	.error_explanation{
+		> p{
+			color: #ed6b75 !important;
+		}
+	}
 
 	.form-group{
 
@@ -262,6 +267,11 @@
 
 		.alert{
 			margin-top:-20px;
+		}
+		.error_explanation{
+			> p{
+				color: #ed6b75 !important;
+			}
 		}
 
 	}

@@ -13,10 +13,13 @@
   "license": "ISC",
   "devDependencies": {
     "gulp": "^3.9.0",
+    "gulp-browserify": "^0.5.1",
     "gulp-connect": "^4.1.0",
     "gulp-minify-css": "^1.2.1",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.0.4",
-    "gulp-uglify": "^2.0.0"
+    "gulp-uglify": "^2.0.0",
+    "jquery-ujs": "^1.2.2",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

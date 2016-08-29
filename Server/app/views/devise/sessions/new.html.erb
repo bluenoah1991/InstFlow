@@ -54,14 +54,15 @@
                                 <button class="close" data-close="alert"></button>
                                 <span>Invalid email or password. </span>
                             </div>
+                            <%= devise_error_messages! %>
                             <div class="row">
                                 <div class="col-xs-6">
                                     <!--<input class="form-control form-control-solid placeholder-no-fix form-group" type="email" autocomplete="off" placeholder="Email" name="email" required/>-->
-                                    <input autofocus="autofocus" class="form-control form-control-solid placeholder-no-fix form-group" placeholder="Email" type="email" autocomplete="off" value="" name="admin[email]" id="admin_email"  required/>
+                                    <%= f.email_field :email, autocomplete: "off", class: "form-control form-control-solid placeholder-no-fix form-group", placeholder: "Email", required: "" %>
                                 </div>
                                 <div class="col-xs-6">
                                     <!--<input class="form-control form-control-solid placeholder-no-fix form-group" type="password" autocomplete="off" placeholder="Password" name="password" required/>-->
-                                    <input autocomplete="off" class="form-control form-control-solid placeholder-no-fix form-group" placeholder="Password" type="password" autocomplete="off" name="admin[password]" id="admin_password"  required/>
+                                    <%= f.password_field :password, autocomplete: "off", id: "register_password", class: "form-control form-control-solid placeholder-no-fix form-group", placeholder: "Password", required: "" %>
                                 </div>
                             </div>
                             <div class="row">

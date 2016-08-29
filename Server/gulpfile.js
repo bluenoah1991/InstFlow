@@ -7,6 +7,8 @@ var minifyCss = require("gulp-minify-css");
 var rename = require("gulp-rename");
 var uglify = require("gulp-uglify");
 var connect = require('gulp-connect');
+var browserify = require('browserify');
+var source = require('vinyl-source-stream');
 
 //*** Localhost server tast
 gulp.task('localhost', function() {
@@ -77,3 +79,7 @@ gulp.task('minify', function () {
     gulp.src(['./public/assets/layouts/**/scripts/*.js','!./public/assets/layouts/**/scripts/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./public/assets/layouts/'));
 });
 
+//*** JS compose task
+gulp.task('compose', function(){
+    browserify('./app/assets/javascripts/main.js', {debug: true}).bundle().pipe(source('bundle.js')).pipe(rename({basename: 'main'})).pipe(gulp.dest('./public/assets/global/scripts/'));
+});
