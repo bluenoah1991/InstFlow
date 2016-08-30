@@ -23,13 +23,11 @@ Rails.application.routes.draw do
   # end
 
   get 'index', to: "home#index", as: :index
-
-  authenticate :admin do
-    get 'dashboard', to: "home#dashboard", as: :dashboard, constraints: TenantdomainConstraint
-  end
+  get 'dashboard', to: "home#dashboard", as: :dashboard
+  get 'dashboard/api_settings', to: "home#api_settings", as: :api_settings
 
   authenticated :admin do
-    root 'home#dashboard', as: :authenticated_root, constraints: TenantdomainConstraint
+    root 'home#dashboard', as: :authenticated_root
   end
 
   unauthenticated :admin do
