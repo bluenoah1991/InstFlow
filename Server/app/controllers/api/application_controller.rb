@@ -1,6 +1,7 @@
 module Api
   class ApplicationController < ActionController::API
     include CanCan::ControllerAdditions
+    before_action :authenticate
     before_action :own_subdomain
 
     class ParameterValueNotAllowed < ActionController::ParameterMissing
@@ -80,10 +81,18 @@ module Api
       current_admin
     end
 
-    def own_subdomain
-      if !current_user.present? || request.subdomain != current_user.tenant_id
+    def authenticate
+      if !current_user.present?
         raise AccessDenied.new("You are not authorized to access this resource.")
       end
     end
+
+    def own_subdomain
+      subdomains = Apartment::Elevators::Subdomain.excluded_subdomains
+      if request.subdomain.present? && !subdomains.include?(request.subdomain)
+        if !current_user.present? || request.subdomains[0] != current_user.tenant_id
+          raise AccessDenied.new("You are not authorized to access this resource.")
+        end
+      end
   end
 end

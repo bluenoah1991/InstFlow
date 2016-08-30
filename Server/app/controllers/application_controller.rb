@@ -4,13 +4,18 @@ class ApplicationController < ActionController::Base
 
   layout false
 
+  class AccessDenied < StandardError; end
+
   def current_user
     current_admin
   end
 
   def own_subdomain
-    if !current_user.present? || request.subdomain != current_user.tenant_id
-      raise AccessDenied.new
+    subdomains = Apartment::Elevators::Subdomain.excluded_subdomains
+    if request.subdomain.present? && !subdomains.include?(request.subdomain)
+      if !current_user.present? || request.subdomains[0] != current_user.tenant_id
+        raise AccessDenied.new
+      end
     end
   end
 end

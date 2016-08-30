@@ -3,14 +3,14 @@ Rails.application.routes.draw do
 
   class TenantdomainConstraint
     def self.matches?(request)
-      subdomains = %w( www )
+      subdomains = Apartment::Elevators::Subdomain.excluded_subdomains
       request.subdomains[0].present? && !subdomains.include?(request.subdomains[0])
     end
   end
 
   class MaindomainConstraint
     def self.matches?(request)
-      subdomains = %w( www )
+      subdomains = Apartment::Elevators::Subdomain.excluded_subdomains
       !request.subdomain.present? || subdomains.include?(request.subdomain)
     end
   end
@@ -22,17 +22,18 @@ Rails.application.routes.draw do
     }
   # end
 
-  get 'index', to: "home#index", as: :index
   get 'dashboard', to: "home#dashboard", as: :dashboard
   get 'dashboard/api_settings', to: "home#api_settings", as: :api_settings
 
-  authenticated :admin do
-    root 'home#dashboard', as: :authenticated_root
-  end
+  # authenticated :admin do
+  #   root 'home#dashboard', as: :authenticated_root
+  # end
 
-  unauthenticated :admin do
-    root 'home#index', as: :unauthenticated_root
-  end
+  # unauthenticated :admin do
+  #   root 'home#index', as: :unauthenticated_root
+  # end
+
+  root 'home#index'
 
   namespace :api do
     namespace :v1 do
