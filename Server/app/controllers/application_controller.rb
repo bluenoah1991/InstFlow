@@ -6,6 +6,10 @@ class ApplicationController < ActionController::Base
 
   class AccessDenied < StandardError; end
 
+  rescue_from(Apartment::TenantNotFound) do |err|
+    render plain: 'Tenant not found'
+  end
+
   def current_user
     current_admin
   end

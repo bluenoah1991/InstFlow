@@ -22,8 +22,8 @@ Rails.application.routes.draw do
     }
   # end
 
-  get 'dashboard', to: "home#dashboard", as: :dashboard
-  get 'dashboard/api_settings', to: "home#api_settings", as: :api_settings
+  get 'dashboard', to: "home#dashboard", as: :dashboard, constraints: TenantdomainConstraint
+  get 'dashboard/api_settings', to: "home#api_settings", as: :api_settings, constraints: TenantdomainConstraint
 
   # authenticated :admin do
   #   root 'home#dashboard', as: :authenticated_root
@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   #   root 'home#index', as: :unauthenticated_root
   # end
 
-  root 'home#index'
+  root 'home#index', constraints: MaindomainConstraint
 
   namespace :api do
     namespace :v1 do
