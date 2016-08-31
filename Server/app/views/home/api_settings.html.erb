@@ -701,80 +701,24 @@
                                     <form role="form" class="form-horizontal">
                                         <div class="form-body">
                                             <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">API Endpoint Url</label>
+                                                <label class="col-md-2 control-label" for="form_control_1">API Base Url</label>
                                                 <div class="col-md-10">
-                                                    <div class="form-control form-control-static"> https://codemeow.instflow.com/api/v1/ </div>
+                                                    <div class="form-control form-control-static"> https://codemeow.instflow.com/ </div>
                                                     <div class="form-control-focus"> </div>
                                                 </div>
                                             </div>
                                             <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Email</label>
-                                                <div class="col-md-10">
-                                                    <div class="form-control form-control-static"> codemeow@yahoo.com </div>
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Full Name</label>
-                                                <div class="col-md-10">
-                                                    <input type="text" class="form-control" id="form_control_1" placeholder="Enter your full name">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Password</label>
-                                                <div class="col-md-10">
-                                                    <input type="password" class="form-control" id="form_control_1" placeholder="Enter your password">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Password confirmation</label>
-                                                <div class="col-md-10">
-                                                    <input type="password" class="form-control" id="form_control_1" placeholder="Enter your password again">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Phone Number</label>
-                                                <div class="col-md-10">
-                                                    <input type="text" class="form-control" id="form_control_1" placeholder="Enter your phone number">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Your Company</label>
-                                                <div class="col-md-10">
-                                                    <input type="text" class="form-control" id="form_control_1" placeholder="Enter your company name">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Your Address</label>
-                                                <div class="col-md-10">
-                                                    <input type="text" class="form-control" id="form_control_1" placeholder="Enter your address">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Last Login</label>
-                                                <div class="col-md-10">
-                                                    <div class="form-control form-control-static"> Thu, Mar 31, 2016 7:57 PM SGT </div>
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-actions">
-                                            <div class="row">
-                                                <div class="col-md-offset-2 col-md-10">
-                                                    <button type="button" class="btn default">Cancel</button>
-                                                    <button type="button" class="btn blue">Save</button>
+                                                <label class="col-md-2 control-label" for="form_control_1">API Token</label>
+                                                <div class="col-md-5">
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-btn btn-left">
+                                                            <button class="btn green-haze" type="button">Regenerate</button>
+                                                        </span>
+                                                        <div class="input-group-control">
+                                                            <input type="text" class="form-control input-sm" readonly value="VPWRXEqQDrrduz42dbJzQTC3" placeholder="">
+                                                            <div class="form-control-focus"> </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -782,6 +726,42 @@
                                 </div>
                             </div>
                             <!-- END SAMPLE FORM PORTLET-->
+                            <!-- BEGIN SAMPLE TABLE PORTLET-->
+                            <div class="portlet light bordered">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <i class="icon-settings font-green-haze"></i>
+                                        <span class="caption-subject font-green-haze sbold uppercase">API List</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="table-scrollable">
+                                        <table class="table table-hover table-light">
+                                            <thead>
+                                                <tr>
+                                                    <th> Features </th>
+                                                    <th> Path </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td> User management </td>
+                                                    <td> /api/v1/users </td>
+                                                </tr>
+                                                <tr>
+                                                    <td> History management </td>
+                                                    <td> /api/v1/histories </td>
+                                                </tr>
+                                                <tr>
+                                                    <td> History management </td>
+                                                    <td> /api/v1/messages </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END SAMPLE TABLE PORTLET-->
                         </div>
                     </div>
                     <!-- END PAGE BASE CONTENT -->

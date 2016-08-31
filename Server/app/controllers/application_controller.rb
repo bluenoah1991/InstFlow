@@ -16,10 +16,8 @@ class ApplicationController < ActionController::Base
 
   def own_subdomain
     subdomains = Apartment::Elevators::Subdomain.excluded_subdomains
-    if request.subdomain.present? && !subdomains.include?(request.subdomain)
-      if !current_user.present? || request.subdomains[0] != current_user.tenant_id
-        raise AccessDenied.new
-      end
+    if !request.subdomain.present? && subdomains.include?(request.subdomain)
+      raise AccessDenied.new
     end
   end
 end
