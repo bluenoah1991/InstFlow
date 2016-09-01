@@ -20,5 +20,9 @@
     "babel-preset-es2015": "^6.14.0",
     "botbuilder": "^3.2.3",
     "restify": "^4.1.1"
+  },
+  "dependencies": {
+    "sequelize": "^3.24.1",
+    "sqlite3": "^3.1.4"
   }
 }

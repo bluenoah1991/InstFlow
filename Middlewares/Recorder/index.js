@@ -1,12 +1,17 @@
 var restify = require('restify');
 var builder = require('botbuilder');
+var fs = require('fs');
 
 //=========================================================
 // Bot Setup
 //=========================================================
 
 // Setup Restify Server
-var server = restify.createServer();
+var server = restify.createServer({
+    certificate: fs.readFileSync('cert/localhost.crt'),
+    key: fs.readFileSync('cert/localhost.key')
+});
+
 server.listen(process.env.port || process.env.PORT || 3978, function () {
    console.log('%s listening to %s', server.name, server.url); 
 });
@@ -26,3 +31,7 @@ server.post('/api/messages', connector.listen());
 bot.dialog('/', function (session) {
     session.send("Hello World");
 });
+
+var RecorderMiddleware = require('./lib/RecorderMiddleware').default;
+
+bot.use(new RecorderMiddleware());

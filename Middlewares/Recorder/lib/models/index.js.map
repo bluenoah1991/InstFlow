@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/models/index.js"],"names":["default"],"mappings":"AAAA;;;;;;;;;;;8CAEQA,O","file":"index.js","sourcesContent":["\"use strict\";\r\n\r\nexport {default as UserModel} from './UserModel';"]}
