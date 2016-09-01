@@ -45,3 +45,6 @@ gem 'apartment'
 
 # Permission library
 gem 'cancan'
+
+# Batch api
+gem 'batch_api', '~> 0.3.0'

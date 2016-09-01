@@ -9,7 +9,6 @@ class CreateUsers < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
-    add_index :users, :channel_id, unique: true
-    add_index :users, :user_id, unique: true
+    add_index :users, [:channel_id, :user_id], unique: true
   end
 end

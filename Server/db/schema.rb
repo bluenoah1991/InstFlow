@@ -52,8 +52,7 @@ ActiveRecord::Schema.define(version: 20160831031008) do
     t.text     "extra"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["channel_id"], name: "index_users_on_channel_id", unique: true
-    t.index ["user_id"], name: "index_users_on_user_id", unique: true
+    t.index ["channel_id", "user_id"], name: "index_users_on_channel_id_and_user_id", unique: true
   end
 
 end
