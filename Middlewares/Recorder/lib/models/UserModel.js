@@ -8,16 +8,18 @@ var _sequelize = require('sequelize');
 
 var _sequelize2 = _interopRequireDefault(_sequelize);
 
-var _Sqlite3Helper = require('../Sqlite3Helper');
-
-var _Sqlite3Helper2 = _interopRequireDefault(_Sqlite3Helper);
+var _DbConnection = require('../DbConnection');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.default = _Sqlite3Helper2.default.define('user', {
+var UserModel = _DbConnection.sequelize_.define('user', (0, _DbConnection._BaseModel)({
     channel_id: _sequelize2.default.STRING,
     user_id: _sequelize2.default.STRING,
     name: _sequelize2.default.STRING,
     extra: _sequelize2.default.TEXT
-});
+}));
+
+UserModel.sync({ force: true });
+
+exports.default = UserModel;
 //# sourceMappingURL=UserModel.js.map
