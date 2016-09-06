@@ -1,5 +1,6 @@
 "use strict";
 
+import clone from 'clone';
 import restify from 'restify';
 
 const tt = {
@@ -10,16 +11,20 @@ const tt = {
 class HttpProxy{
     constructor(){
         this.createNewReq();
+        this.auth_token = `Token token=${process.env.SERVICE_AUTH_TOKEN}`;
         this.httpclient = restify.createJsonClient({
             url: process.env.SERVICE_BASE_URL || 'https://example.instflow.com/',
-            version: '*'
+            version: '*',
+            headers: {
+                'Authorization': this.auth_token
+            }
         });
         this.defaultPath = process.env.SERVICE_DEFAULT_PATH || '/api/v1/batch';
         this.defaultMethod = process.env.SERVICE_DEFAULT_METHOD || 'post';
     }
 
     createNewReq(){
-        this.req = Object.assign({}, tt);
+        this.req = clone(tt);
     }
 
     http(method, url, params={}, headers={}){
@@ -49,6 +54,10 @@ class HttpProxy{
 
     delete(url, params={}, headers={}){
         this.http('delete', url, params, headers);
+    }
+
+    hasCache(){
+        return this.req.ops.length > 0;
     }
 
     flush(callback){

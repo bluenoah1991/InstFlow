@@ -17,6 +17,10 @@ function _BaseModel(define) {
         __sync__: {
             type: _sequelize2.default.BOOLEAN,
             defaultValue: false
+        },
+        __tries__: {
+            type: _sequelize2.default.INTEGER,
+            defaultValue: 0
         }
     };
     return Object.assign(tt, define);

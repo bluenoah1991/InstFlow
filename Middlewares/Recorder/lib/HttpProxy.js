@@ -6,7 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _restify = require("restify");
+var _clone = require('clone');
+
+var _clone2 = _interopRequireDefault(_clone);
+
+var _restify = require('restify');
 
 var _restify2 = _interopRequireDefault(_restify);
 
@@ -24,21 +28,25 @@ var HttpProxy = function () {
         _classCallCheck(this, HttpProxy);
 
         this.createNewReq();
+        this.auth_token = 'Token token=' + process.env.SERVICE_AUTH_TOKEN;
         this.httpclient = _restify2.default.createJsonClient({
             url: process.env.SERVICE_BASE_URL || 'https://example.instflow.com/',
-            version: '*'
+            version: '*',
+            headers: {
+                'Authorization': this.auth_token
+            }
         });
         this.defaultPath = process.env.SERVICE_DEFAULT_PATH || '/api/v1/batch';
         this.defaultMethod = process.env.SERVICE_DEFAULT_METHOD || 'post';
     }
 
     _createClass(HttpProxy, [{
-        key: "createNewReq",
+        key: 'createNewReq',
         value: function createNewReq() {
-            this.req = Object.assign({}, tt);
+            this.req = (0, _clone2.default)(tt);
         }
     }, {
-        key: "http",
+        key: 'http',
         value: function http(method, url) {
             var params = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
             var headers = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
@@ -51,7 +59,7 @@ var HttpProxy = function () {
             });
         }
     }, {
-        key: "get",
+        key: 'get',
         value: function get(url) {
             var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
             var headers = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -59,7 +67,7 @@ var HttpProxy = function () {
             this.http('get', url, params, headers);
         }
     }, {
-        key: "post",
+        key: 'post',
         value: function post(url) {
             var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
             var headers = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -67,7 +75,7 @@ var HttpProxy = function () {
             this.http('post', url, params, headers);
         }
     }, {
-        key: "put",
+        key: 'put',
         value: function put(url) {
             var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
             var headers = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -75,7 +83,7 @@ var HttpProxy = function () {
             this.http('put', url, params, headers);
         }
     }, {
-        key: "patch",
+        key: 'patch',
         value: function patch(url) {
             var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
             var headers = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -83,7 +91,7 @@ var HttpProxy = function () {
             this.http('patch', url, params, headers);
         }
     }, {
-        key: "delete",
+        key: 'delete',
         value: function _delete(url) {
             var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
             var headers = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
@@ -91,7 +99,12 @@ var HttpProxy = function () {
             this.http('delete', url, params, headers);
         }
     }, {
-        key: "flush",
+        key: 'hasCache',
+        value: function hasCache() {
+            return this.req.ops.length > 0;
+        }
+    }, {
+        key: 'flush',
         value: function flush(callback) {
             var req = this.req;
             this.createNewReq();

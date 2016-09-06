@@ -7,6 +7,10 @@ export function _BaseModel(define){
         __sync__: {
             type: Sequelize.BOOLEAN,
             defaultValue: false
+        },
+        __tries__: {
+            type: Sequelize.INTEGER,
+            defaultValue: 0
         }
     };
     return Object.assign(tt, define);

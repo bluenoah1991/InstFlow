@@ -1,5 +1,6 @@
 "use strict";
 
+import async from 'async';
 import Schedule_ from 'node-schedule';
 import {UserModel} from './models';
 import httpProxy from './HttpProxy';
@@ -12,25 +13,33 @@ class Schedule {
     }
 
     sync(){
-        UserModel.findAll({where: {__sync__: false}}).then(function(instances){
-            instances.forEach(function(instance, index){
-                httpProxy.post('/api/v1/users', {
-                    channel_id: instance.channel_id,
-                    user_id: instance.channel_id,
-                    name: instance.name,
-                    extra: instance.extra
-                });
-            });
-            httpProxy.flush(function(err, data, resp){
+        UserModel.findAll({where: {__sync__: false, __tries__: {$lt: 3}}}).then(function(instances){
+            async.each(instances, function(instance, callback){
+                instance.increment('__tries__').then(function(){
+                    httpProxy.post('/api/v1/users', {
+                        channel_id: instance.channel_id,
+                        user_id: instance.channel_id,
+                        name: instance.name,
+                        extra: instance.extra
+                    });
+                    callback();
+                }.bind(this));
+            }, function(err){
                 if(err){
                     console.log(err);
-                } else {
-                    let channel_id = data.channel_id;
-                    let user_id = data.user_id;
-                    UserModel.update({__sync__: true}, { 
-                        where: { 
-                            channel_id: channel_id,
-                            user_id: user_id
+                } else if(httpProxy.hasCache()){
+                    httpProxy.flush(function(err, data, resp){
+                        if(err){
+                            console.log(err);
+                        } else {
+                            let channel_id = data.channel_id;
+                            let user_id = data.user_id;
+                            UserModel.update({__sync__: true}, { 
+                                where: { 
+                                    channel_id: channel_id,
+                                    user_id: user_id
+                                }
+                            });
                         }
                     });
                 }
