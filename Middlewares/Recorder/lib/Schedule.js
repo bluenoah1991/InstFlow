@@ -41,7 +41,7 @@ var Schedule = function () {
                     instance.increment('__tries__').then(function () {
                         _HttpProxy2.default.post('/api/v1/users', {
                             channel_id: instance.channel_id,
-                            user_id: instance.channel_id,
+                            user_id: instance.user_id,
                             name: instance.name,
                             extra: instance.extra
                         });
@@ -81,9 +81,30 @@ var Schedule = function () {
                     name: name,
                     extra: extra
                 }
-            }).spread(function (user, created) {
-                console.log(user.get({ plain: true }));
+            }).spread(function (instance, created) {
+                console.log(instance.get({ plain: true }));
                 return created;
+            });
+        }
+    }, {
+        key: 'saveMessage',
+        value: function saveMessage(text, type, source, agent, user_id, user_name, channel_id, conversation_id, bot_id, bot_name, orientation) {
+            return _models.MessageModel.create({
+                text: text,
+                type: type,
+                source: source,
+                agent: agent,
+                user_id: user_id,
+                user_name: user_name,
+                channel_id: channel_id,
+                conversation_id: conversation_id,
+                bot_id: bot_id,
+                bot_name: bot_name,
+                orientation: orientation
+            }).then(function (instance) {
+                var instance_ = instance.get({ plain: true });
+                console.log(instance_.text);
+                return instance_;
             });
         }
     }]);

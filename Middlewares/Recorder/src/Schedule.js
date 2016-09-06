@@ -2,7 +2,7 @@
 
 import async from 'async';
 import Schedule_ from 'node-schedule';
-import {UserModel} from './models';
+import {UserModel, MessageModel} from './models';
 import httpProxy from './HttpProxy';
 
 class Schedule {
@@ -18,7 +18,7 @@ class Schedule {
                 instance.increment('__tries__').then(function(){
                     httpProxy.post('/api/v1/users', {
                         channel_id: instance.channel_id,
-                        user_id: instance.channel_id,
+                        user_id: instance.user_id,
                         name: instance.name,
                         extra: instance.extra
                     });
@@ -57,9 +57,32 @@ class Schedule {
                 name: name,
                 extra: extra
             }
-        }).spread(function(user, created){
-            console.log(user.get({plain: true}));
+        }).spread(function(instance, created){
+            console.log(instance.get({plain: true}));
             return created;
+        });
+    }
+
+    saveMessage(
+        text, type, source, agent, user_id,
+        user_name, channel_id, conversation_id,
+        bot_id, bot_name, orientation){
+        return MessageModel.create({
+            text: text,
+            type: type,
+            source: source,
+            agent: agent,
+            user_id: user_id,
+            user_name: user_name,
+            channel_id: channel_id,
+            conversation_id: conversation_id,
+            bot_id: bot_id,
+            bot_name: bot_name,
+            orientation: orientation
+        }).then(function(instance){
+            let instance_ = instance.get({plain: true});
+            console.log(instance_.text);
+            return instance_;
         });
     }
 }
