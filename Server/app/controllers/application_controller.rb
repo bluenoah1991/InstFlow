@@ -6,18 +6,20 @@ class ApplicationController < ActionController::Base
 
   class AccessDenied < StandardError; end
 
-  rescue_from(Apartment::TenantNotFound) do |err|
-    render plain: 'Tenant not found'
-  end
-
   def current_user
     current_admin
   end
 
-  def own_subdomain
+  def current_tenant
     subdomains = Apartment::Elevators::Subdomain.excluded_subdomains
-    if !request.subdomain.present? && subdomains.include?(request.subdomain)
-      raise AccessDenied.new
+    if request.subdomain.present? && !subdomains.include?(request.subdomain)
+      request.subdomains[0]
+    end
+  end
+
+  def authenticate_tenant!
+    unless current_user.present? && current_user.tenant_id == current_tenant
+      # TODO Redirect to error page
     end
   end
 end

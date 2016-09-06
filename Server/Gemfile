@@ -48,3 +48,6 @@ gem 'cancan'
 
 # Batch api
 gem 'batch_api', '~> 0.3.0'
+
+# Token authentication with Devise
+gem 'simple_token_authentication', '~> 1.0'

@@ -1,8 +1,9 @@
 module Api
   class ApplicationController < ActionController::API
     include CanCan::ControllerAdditions
-    before_action :authenticate
-    before_action :own_subdomain
+    include ActionController::HttpAuthentication::Token::ControllerMethods
+
+    before_action :authenticate!
 
     class ParameterValueNotAllowed < ActionController::ParameterMissing
       attr_reader :values
@@ -77,21 +78,29 @@ module Api
       error!({ 'error' => 'Page not found' }, 404)
     end
 
-    def current_user
-      current_admin
-    end
-
-    def authenticate
-      if !current_user.present?
-        raise AccessDenied.new("You are not authorized to access this resource.")
+    def authenticate_token
+      authenticate_with_http_token do |token, options|
+          @current_app = Application.find_by(appkey: token)
       end
     end
 
-    def own_subdomain
+    def unauthorized_token
+      raise AccessDenied.new("You are not authorized to access this resource.")
+    end
+
+    def authenticate!
+      (authenticate_token && authenticate_tenant) || unauthorized_token
+    end
+
+    def current_tenant
       subdomains = Apartment::Elevators::Subdomain.excluded_subdomains
-      if !request.subdomain.present? && subdomains.include?(request.subdomain)
-        raise AccessDenied.new("You are not authorized to access this resource.")
+      if request.subdomain.present? && !subdomains.include?(request.subdomain)
+        request.subdomains[0]
       end
+    end
+
+    def authenticate_tenant
+      @current_app.present? && @current_app.admin.tenant_id == current_tenant
     end
   end
 end

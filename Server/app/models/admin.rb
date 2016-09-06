@@ -7,7 +7,8 @@ class Admin < ApplicationRecord
   after_create :create_tenant
 
   validates :tenant_id, uniqueness: true
-  has_secure_token :token
+
+  has_many :applications
 
   private
 
