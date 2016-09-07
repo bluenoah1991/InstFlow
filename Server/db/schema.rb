@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160906021100) do
+ActiveRecord::Schema.define(version: 20160907013701) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -40,6 +40,24 @@ ActiveRecord::Schema.define(version: 20160906021100) do
     t.index ["admin_id"], name: "index_applications_on_admin_id"
     t.index ["appid"], name: "index_applications_on_appid", unique: true
     t.index ["appkey"], name: "index_applications_on_appkey", unique: true
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.string   "msg_id",          null: false
+    t.string   "text"
+    t.string   "msg_type"
+    t.string   "source"
+    t.string   "agent"
+    t.string   "user_id"
+    t.string   "user_name"
+    t.string   "channel_id"
+    t.string   "conversation_id"
+    t.string   "bot_id"
+    t.string   "bot_name"
+    t.integer  "orientation"
+    t.datetime "time"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
   create_table "tags", force: :cascade do |t|

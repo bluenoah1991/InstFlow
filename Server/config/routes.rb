@@ -39,6 +39,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, only: [:index, :create, :show, :update, :destroy], constraints: TenantdomainConstraint
       resources :tags, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
+      resources :messages, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
     end
   end
 end
