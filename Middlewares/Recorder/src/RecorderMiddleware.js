@@ -1,6 +1,7 @@
 "use strict";
 
 import "babel-polyfill";
+import uuid from 'node-uuid';
 
 import schedule from './Schedule';
 
@@ -20,8 +21,9 @@ function RecordUser(event){
 }
 
 function RecordMessage(event, orientation){
+    let msg_id = uuid.v1();
     let text = event.text;
-    let type = event.type;
+    let msg_type = event.type;
     let source = event.source;
     let agent = event.agent;
     let user_id = event.address.user.id;
@@ -30,9 +32,11 @@ function RecordMessage(event, orientation){
     let conversation_id = event.address.conversation.id;
     let bot_id = event.address.bot.id;
     let bot_name = event.address.bot.name;
+    let time = new Date().getTime();
     schedule.saveMessage(
+        msg_id=msg_id,
         text=text,
-        type=type,
+        msg_type=msg_type,
         source=source,
         agent=agent,
         user_id=user_id,
@@ -41,7 +45,8 @@ function RecordMessage(event, orientation){
         conversation_id=conversation_id,
         bot_id=bot_id,
         bot_name=bot_name,
-        orientation=orientation
+        orientation=orientation,
+        time=time
     );
 }
 

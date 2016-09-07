@@ -8,7 +8,7 @@ const tt = {
     "sequential": true
 }
 
-class HttpProxy{
+export default class HttpProxy{
     constructor(){
         this.createNewReq();
         this.auth_token = `Token token=${process.env.SERVICE_AUTH_TOKEN}`;
@@ -85,5 +85,3 @@ class HttpProxy{
         }
     }
 }
-
-export default new HttpProxy();

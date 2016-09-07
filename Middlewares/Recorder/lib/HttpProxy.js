@@ -134,5 +134,5 @@ var HttpProxy = function () {
     return HttpProxy;
 }();
 
-exports.default = new HttpProxy();
+exports.default = HttpProxy;
 //# sourceMappingURL=HttpProxy.js.map

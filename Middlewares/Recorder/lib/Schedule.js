@@ -16,6 +16,8 @@ var _nodeSchedule2 = _interopRequireDefault(_nodeSchedule);
 
 var _models = require('./models');
 
+var _Serializer = require('./Serializer');
+
 var _HttpProxy = require('./HttpProxy');
 
 var _HttpProxy2 = _interopRequireDefault(_HttpProxy);
@@ -30,44 +32,41 @@ var Schedule = function () {
 
         var interval = process.env.RECORDER_SYNC_INTERVAL || 5;
         this.rule = '*/' + interval + ' * * * *';
-        this.syncJob = _nodeSchedule2.default.scheduleJob(this.rule, this.sync);
+        this.syncJob = _nodeSchedule2.default.scheduleJob(this.rule, this.sync.bind(this));
     }
 
     _createClass(Schedule, [{
-        key: 'sync',
-        value: function sync() {
-            _models.UserModel.findAll({ where: { __sync__: false, __tries__: { $lt: 3 } } }).then(function (instances) {
+        key: 'syncModel',
+        value: function syncModel(model, resourcePath, identities) {
+            model.findAll({ where: { __sync__: false, __tries__: { $lt: 3 } } }).then(function (instances) {
+                var httpProxy = new _HttpProxy2.default();
                 _async2.default.each(instances, function (instance, callback) {
                     instance.increment('__tries__').then(function () {
-                        _HttpProxy2.default.post('/api/v1/users', {
-                            channel_id: instance.channel_id,
-                            user_id: instance.user_id,
-                            name: instance.name,
-                            extra: instance.extra
-                        });
+                        httpProxy.post(resourcePath, (0, _Serializer.CommonSerializer)(instance));
                         callback();
                     }.bind(this));
                 }, function (err) {
                     if (err) {
                         console.log(err);
-                    } else if (_HttpProxy2.default.hasCache()) {
-                        _HttpProxy2.default.flush(function (err, data, resp) {
+                    } else if (httpProxy.hasCache()) {
+                        httpProxy.flush(function (err, data, resp) {
                             if (err) {
                                 console.log(err);
                             } else {
-                                var channel_id = data.channel_id;
-                                var user_id = data.user_id;
-                                _models.UserModel.update({ __sync__: true }, {
-                                    where: {
-                                        channel_id: channel_id,
-                                        user_id: user_id
-                                    }
+                                model.update({ __sync__: true }, {
+                                    where: (0, _Serializer.IdentitySerializer)(data, identities)
                                 });
                             }
                         });
                     }
                 });
             });
+        }
+    }, {
+        key: 'sync',
+        value: function sync() {
+            this.syncModel(_models.UserModel, '/api/v1/users', ['channel_id', 'user_id']);
+            this.syncModel(_models.MessageModel, '/api/v1/messages', ['msg_id']);
         }
     }, {
         key: 'saveUser',
@@ -88,10 +87,11 @@ var Schedule = function () {
         }
     }, {
         key: 'saveMessage',
-        value: function saveMessage(text, type, source, agent, user_id, user_name, channel_id, conversation_id, bot_id, bot_name, orientation) {
+        value: function saveMessage(msg_id, text, msg_type, source, agent, user_id, user_name, channel_id, conversation_id, bot_id, bot_name, orientation, time) {
             return _models.MessageModel.create({
+                msg_id: msg_id,
                 text: text,
-                type: type,
+                msg_type: msg_type,
                 source: source,
                 agent: agent,
                 user_id: user_id,
@@ -100,7 +100,8 @@ var Schedule = function () {
                 conversation_id: conversation_id,
                 bot_id: bot_id,
                 bot_name: bot_name,
-                orientation: orientation
+                orientation: orientation,
+                time: time
             }).then(function (instance) {
                 var instance_ = instance.get({ plain: true });
                 console.log(instance_.text);

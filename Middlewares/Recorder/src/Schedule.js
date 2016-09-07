@@ -3,25 +3,22 @@
 import async from 'async';
 import Schedule_ from 'node-schedule';
 import {UserModel, MessageModel} from './models';
-import httpProxy from './HttpProxy';
+import {CommonSerializer, IdentitySerializer} from './Serializer';
+import HttpProxy from './HttpProxy';
 
 class Schedule {
     constructor(){
         let interval = process.env.RECORDER_SYNC_INTERVAL || 5;
         this.rule = `*/${interval} * * * *`;
-        this.syncJob = Schedule_.scheduleJob(this.rule, this.sync);
+        this.syncJob = Schedule_.scheduleJob(this.rule, this.sync.bind(this));
     }
 
-    sync(){
-        UserModel.findAll({where: {__sync__: false, __tries__: {$lt: 3}}}).then(function(instances){
+    syncModel(model, resourcePath, identities){
+        model.findAll({where: {__sync__: false, __tries__: {$lt: 3}}}).then(function(instances){
+            var httpProxy = new HttpProxy();
             async.each(instances, function(instance, callback){
                 instance.increment('__tries__').then(function(){
-                    httpProxy.post('/api/v1/users', {
-                        channel_id: instance.channel_id,
-                        user_id: instance.user_id,
-                        name: instance.name,
-                        extra: instance.extra
-                    });
+                    httpProxy.post(resourcePath, CommonSerializer(instance));
                     callback();
                 }.bind(this));
             }, function(err){
@@ -32,19 +29,19 @@ class Schedule {
                         if(err){
                             console.log(err);
                         } else {
-                            let channel_id = data.channel_id;
-                            let user_id = data.user_id;
-                            UserModel.update({__sync__: true}, { 
-                                where: { 
-                                    channel_id: channel_id,
-                                    user_id: user_id
-                                }
+                            model.update({__sync__: true}, { 
+                                where: IdentitySerializer(data, identities)
                             });
                         }
                     });
                 }
             });
         });
+    }
+
+    sync(){
+        this.syncModel(UserModel, '/api/v1/users', ['channel_id', 'user_id']);
+        this.syncModel(MessageModel, '/api/v1/messages', ['msg_id']);
     }
 
     saveUser(channel_id, user_id, name, extra){
@@ -64,12 +61,13 @@ class Schedule {
     }
 
     saveMessage(
-        text, type, source, agent, user_id,
+        msg_id, text, msg_type, source, agent, user_id,
         user_name, channel_id, conversation_id,
-        bot_id, bot_name, orientation){
+        bot_id, bot_name, orientation, time){
         return MessageModel.create({
+            msg_id: msg_id,
             text: text,
-            type: type,
+            msg_type: msg_type,
             source: source,
             agent: agent,
             user_id: user_id,
@@ -78,7 +76,8 @@ class Schedule {
             conversation_id: conversation_id,
             bot_id: bot_id,
             bot_name: bot_name,
-            orientation: orientation
+            orientation: orientation,
+            time: time
         }).then(function(instance){
             let instance_ = instance.get({plain: true});
             console.log(instance_.text);

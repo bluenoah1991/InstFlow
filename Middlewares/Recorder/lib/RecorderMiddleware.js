@@ -8,6 +8,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 require("babel-polyfill");
 
+var _nodeUuid = require("node-uuid");
+
+var _nodeUuid2 = _interopRequireDefault(_nodeUuid);
+
 var _Schedule = require("./Schedule");
 
 var _Schedule2 = _interopRequireDefault(_Schedule);
@@ -31,8 +35,9 @@ function RecordUser(event) {
 }
 
 function RecordMessage(event, orientation) {
+    var msg_id = _nodeUuid2.default.v1();
     var text = event.text;
-    var type = event.type;
+    var msg_type = event.type;
     var source = event.source;
     var agent = event.agent;
     var user_id = event.address.user.id;
@@ -41,7 +46,8 @@ function RecordMessage(event, orientation) {
     var conversation_id = event.address.conversation.id;
     var bot_id = event.address.bot.id;
     var bot_name = event.address.bot.name;
-    _Schedule2.default.saveMessage(text = text, type = type, source = source, agent = agent, user_id = user_id, user_name = user_name, channel_id = channel_id, conversation_id = conversation_id, bot_id = bot_id, bot_name = bot_name, orientation = orientation);
+    var time = new Date().getTime();
+    _Schedule2.default.saveMessage(msg_id = msg_id, text = text, msg_type = msg_type, source = source, agent = agent, user_id = user_id, user_name = user_name, channel_id = channel_id, conversation_id = conversation_id, bot_id = bot_id, bot_name = bot_name, orientation = orientation, time = time);
 }
 
 var RecorderMiddleware = function () {
