@@ -1,1 +1,1 @@
-var jquery_ujs = require('jquery-ujs');
+import jquery_ujs from 'jquery-ujs';
