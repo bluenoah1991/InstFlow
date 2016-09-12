@@ -57,20 +57,18 @@ export default React.createClass({
         });
 
         return (
-            <div className="portlet-body form">
-                <form role="form" className="form-horizontal">
-                    <div className="form-body">
-                        {items}
-                    </div>
-                    <div className="form-actions">
-                        <div className="row">
-                            <div className="col-md-offset-2 col-md-10">
-                                {actions}
-                            </div>
+            <form role="form" className="form-horizontal">
+                <div className="form-body">
+                    {items}
+                </div>
+                <div className="form-actions">
+                    <div className="row">
+                        <div className="col-md-offset-2 col-md-10">
+                            {actions}
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         );
     }
 });
