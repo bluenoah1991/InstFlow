@@ -1,11 +1,11 @@
 import React from 'react';
 
-import FormComponent from '../components/FormComponent';
 import {RowComponent, ColComponent, PortletComponent} from '../components/LayoutComponent';
-import {NotComponent} from '../components/NoteComponent';
+import {NoteComponent} from '../components/NoteComponent';
 import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
 import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
+import FormComponent from '../components/FormComponent';
 
 export default React.createClass({
     render: function(){
@@ -13,7 +13,7 @@ export default React.createClass({
 
         let breadCrumbPaths = [
             {title: 'Home', href: 'home.html'},
-            {title: 'Profile'}
+            {title: 'My Profile'}
         ];
         let formFields = [{
             name: 'Tenant ID',
@@ -62,7 +62,7 @@ export default React.createClass({
         
         return (
             <PageContentComponent>
-                <PageHeadComponent title="Profile" />
+                <PageHeadComponent title="My Profile" />
                 <PageBreadCrumbComponent paths={breadCrumbPaths} />
                 <RowComponent>
                     <ColComponent size="12">

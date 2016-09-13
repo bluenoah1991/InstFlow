@@ -33,30 +33,33 @@ export var BorderedTableComponent = React.createClass({
                 let name = header.name;
                 let cell = row[name];
                 if(cell == undefined){
-                    cells.push(<td> </td>);
+                    cells.push(<td key={index}> </td>);
                 } else if(typeof cell == 'object') {
                     switch(cell.type){
                         case 'button':
-                            cells.push(<a class="btn blue btn-outline sbold" data-toggle="modal" href="javascript:;"> {cell.value} </a>);
+                            cells.push(
+                                <td key={index}>
+                                    <a className="btn blue btn-outline sbold" data-toggle="modal" href=""> {cell.value} </a>
+                                </td>
+                                );
                         break;
                         case 'label':
                         default:
-                            cells.push(<td> {cell.value} </td>);
+                            cells.push(<td key={index}> {cell.value} </td>);
                         break;
                     }
                 } else {
-                    cells.push(<td> {cell} </td>);
+                    cells.push(<td key={index}> {cell} </td>);
                 }
             });
             rows.push(
-                <tr>{cells}</tr>
+                <tr key={index}>{cells}</tr>
             );
         }.bind(this));
 
-
         return (
-            <div class="table-scrollable">
-                <table class="table table-bordered table-hover">
+            <div className="table-scrollable">
+                <table className="table table-bordered table-hover">
                     <thead>
                         <tr>
                             {heads}
