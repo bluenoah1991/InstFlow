@@ -35,6 +35,10 @@ export var ApplicationPage = React.createClass({
             }
         ];
 
+        rows.forEach(function(row, index){
+            row.application = row.application.toUpperCase();
+        });
+
         return (
             <PageContentComponent>
                 <PageHeadComponent title="My Application" />

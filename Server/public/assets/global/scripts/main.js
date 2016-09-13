@@ -870,6 +870,10 @@ var ApplicationPage = exports.ApplicationPage = _react2.default.createClass({
             action: { type: 'button', value: 'View' }
         }];
 
+        rows.forEach(function (row, index) {
+            row.application = row.application.toUpperCase();
+        });
+
         return _react2.default.createElement(
             _PageContentComponent2.default,
             null,
