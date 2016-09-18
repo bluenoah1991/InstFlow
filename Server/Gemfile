@@ -60,3 +60,6 @@ gem 'simple_token_authentication', '~> 1.0'
 
 # Provide for Heroku
 gem 'rails_12factor', group: :production
+
+# jQuery Datatables Server side plugin
+gem 'ajax-datatables-rails'

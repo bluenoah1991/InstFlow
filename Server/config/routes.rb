@@ -40,6 +40,9 @@ Rails.application.routes.draw do
       resources :users, only: [:index, :create, :show, :update, :destroy], constraints: TenantdomainConstraint
       resources :tags, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
       resources :messages, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
+      namespace :private do
+        post 'users', to: "users#datatable", as: :user_datatable, constraints: TenantdomainConstraint
+      end
     end
   end
 end
