@@ -1,4 +1,5 @@
 import React from 'react';
+import {intersperse} from '../utils';
 
 /**
  * this.props.fields = [{
@@ -64,7 +65,7 @@ export default React.createClass({
                 <div className="form-actions">
                     <div className="row">
                         <div className="col-md-offset-2 col-md-10">
-                            {actions}
+                            {intersperse(actions, ' ')}
                         </div>
                     </div>
                 </div>
