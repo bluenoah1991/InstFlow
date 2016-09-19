@@ -1,6 +1,11 @@
 import React from 'react';
 import _ from 'underscore';
 
+/**
+ * this.props.buttons = [
+ *      // Your Button Components
+ * ];
+ */
 export var TableToolbarComponent = React.createClass({
     render: function(){
         return (
@@ -8,9 +13,7 @@ export var TableToolbarComponent = React.createClass({
                 <div className="row">
                     <div className="col-md-6">
                         <div className="btn-group">
-                            <button id="sample_editable_1_new" className="btn sbold green"> Add New
-                                <i className="fa fa-plus"></i>
-                            </button>
+                            {this.props.buttons}
                         </div>
                     </div>
                     <div className="col-md-6">
@@ -82,6 +85,11 @@ var datatableInit = function (tableId) {
                 }
             },
 
+            "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
+                'orderable': false,
+                'targets': [0, 6]
+            }],
+
             // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
             // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
             // So when dropdowns used the scrollable div should be removed. 
@@ -93,7 +101,8 @@ var datatableInit = function (tableId) {
                 { "name": "channel_id" },
                 { "name": "user_id" },
                 { "name": "created_at" },
-                { "name": "updated_at" }
+                { "name": "updated_at" },
+                { "name": "" }
             ],
 
             "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
@@ -168,6 +177,7 @@ export var DataTableComponent = React.createClass({
                         <th> User ID </th>
                         <th> Created At </th>
                         <th> Updated At </th>
+                        <th> </th>
                     </tr>
                 </thead>
                 <tbody></tbody>

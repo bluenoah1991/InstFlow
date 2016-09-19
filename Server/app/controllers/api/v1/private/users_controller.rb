@@ -1,7 +1,7 @@
 module Api
     module V1
         module Private
-            class UsersController < ::ApplicationController
+            class UsersController < ApplicationController
                 before_action :authenticate_admin!
                 before_action :authenticate_tenant!
 

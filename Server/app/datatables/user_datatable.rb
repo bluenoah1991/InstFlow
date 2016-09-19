@@ -22,7 +22,9 @@ class UserDatatable < AjaxDatatablesRails::Base
         record.channel_id,
         record.user_id,
         record.created_at,
-        record.updated_at
+        record.updated_at,
+        '<a href="#/users/%s" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>' % record.id +
+        '<a href="javascript:;" class="btn btn-sm red btn-outline"><i class="fa fa-times"></i> Disable</a>'
       ]
     end
   end

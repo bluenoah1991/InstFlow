@@ -6,7 +6,7 @@ import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
 import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
 import {BorderedTableComponent} from '../components/TableComponent';
-import FormComponent from '../components/FormComponent';
+import {FormComponent} from '../components/FormComponent';
 
 export var ApplicationPage = React.createClass({
     render: function(){

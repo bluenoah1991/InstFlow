@@ -7,7 +7,7 @@ import {Router, Route, hashHistory} from 'react-router';
 
 import ProfilePage from './pages/ProfilePage';
 import {ApplicationPage, ApplicationCreatePage} from './pages/ApplicationPage';
-import {UserManagementPage} from './pages/UserManagementPage';
+import {UserManagementPage, UserCreatePage, UserProfilePage} from './pages/UserManagementPage';
 
 ReactDOM.render(
     <Router history={hashHistory}>
@@ -15,6 +15,8 @@ ReactDOM.render(
         <Route name='profile' path='/profile' component={ProfilePage} />
         <Route name='apps' path='/apps' component={ApplicationPage} />
         <Route name='newapp' path='/newapp' component={ApplicationCreatePage} />
+        <Route name='new_user' path='/users/new' component={UserCreatePage} />
+        <Route name='user' path='/users/:id' component={UserProfilePage} />
         <Route name='users' path='/users' component={UserManagementPage} />
     </Router>,
     document.getElementsByClassName('page-content-wrapper')[0]

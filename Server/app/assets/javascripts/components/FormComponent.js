@@ -15,7 +15,7 @@ import {intersperse} from '../utils';
  *      color: 'blue'
  * }];
  */
-export default React.createClass({
+export var FormComponent = React.createClass({
     render: function(){
         var items = [];
         this.props.fields.forEach(function(field, index){
@@ -68,6 +68,59 @@ export default React.createClass({
                             {intersperse(actions, ' ')}
                         </div>
                     </div>
+                </div>
+            </form>
+        );
+    }
+});
+
+/**
+ * this.props.fields = [{
+ *      name: 'field name', 
+ *      value: 'field value'
+ * }];
+ */
+export var ReadonlyFormComponent = React.createClass({
+    render: function(){
+
+        var items = [];
+        var lastColumns = [];
+
+        this.props.fields.forEach(function(field, index){
+            if(index % 2 == 0){
+                if(lastColumns != undefined){
+                    items.push(
+                        <div className="row" key={index}>
+                            {lastColumns}
+                        </div>
+                    );
+                }
+                lastColumns = [];
+            }
+            lastColumns.push(
+                <div className="col-md-6" key={index}>
+                    <div className="form-group">
+                        <label className="control-label col-md-3">{field.name}:</label>
+                        <div className="col-md-9">
+                            <p className="form-control-static"> {field.value} </p>
+                        </div>
+                    </div>
+                </div>
+            );
+            if(lastColumns.length > 0 && index == this.props.fields.length - 1){
+                items.push(
+                    <div className="row" key={index}>
+                        {lastColumns}
+                    </div>
+                );
+                lastColumns = [];
+            }
+        }.bind(this));
+
+        return (
+            <form className="form-horizontal" role="form">
+                <div className="form-body">
+                    {items}
                 </div>
             </form>
         );
