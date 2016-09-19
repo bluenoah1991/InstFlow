@@ -1,19 +1,34 @@
 import React from 'react';
 import _ from 'underscore';
 
+import {ButtonComponent, ButtonDropdownsComponent} from '../components/ButtonComponent';
+
 /**
  * this.props.buttons = [
- *      // Your Button Components
+ *      {type: 'refresh', value: {}}
  * ];
  */
 export var TableToolbarComponent = React.createClass({
     render: function(){
+        let buttonComponents = [];
+
+        this.props.buttons.forEach(function(button, index){
+            switch(button.type){
+                case 'refresh':
+                    buttonComponents.push(<ButtonComponent key={index} onClick={this.handleRefresh} />);
+                    break;
+                case 'dropdown':
+                    buttonComponents.push(<ButtonDropdownsComponent key={index} items={button.value} />);
+                    break;
+            }
+        }.bind(this));
+
         return (
             <div className="table-toolbar">
                 <div className="row">
                     <div className="col-md-6">
-                        <div className="btn-group">
-                            {this.props.buttons}
+                        <div className="btn-toolbar">
+                            {buttonComponents}
                         </div>
                     </div>
                     <div className="col-md-6">
@@ -40,6 +55,9 @@ export var TableToolbarComponent = React.createClass({
                 </div>
             </div>
         );
+    },
+    handleRefresh(){
+        this.props.context.emit('refresh');
     }
 });
 
@@ -120,6 +138,7 @@ var datatableInit = function (tableId) {
                 [4, "asc"]
             ]// set first column as a default sort by asc
         }
+
     });
 
     // handle group actionsubmit button click
@@ -154,12 +173,16 @@ var datatableInit = function (tableId) {
     //grid.setAjaxParam("customActionType", "group_action");
     //grid.getDataTable().ajax.reload();
     //grid.clearAjaxParams();
+    return grid;
 }
 
 export var DataTableComponent = React.createClass({
     getInitialState: function(){
         let tableId = _.uniqueId('datatable_');
         return {tableId: tableId};
+    },
+    componentWillMount: function(){
+        // pass
     },
     render: function(){
         return (
@@ -185,6 +208,9 @@ export var DataTableComponent = React.createClass({
         );
     },
     componentDidMount(){
-        datatableInit(this.state.tableId);
+        var grid = datatableInit(this.state.tableId);
+        this.props.context.on('refresh', function(){
+            grid.getDataTable().ajax.reload();
+        });
     }
 });

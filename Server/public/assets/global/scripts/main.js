@@ -4,13 +4,26 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.ButtonDropdownsComponent = undefined;
+exports.ButtonDropdownsComponent = exports.ButtonComponent = undefined;
 
 var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ButtonComponent = exports.ButtonComponent = _react2.default.createClass({
+    displayName: "ButtonComponent",
+
+    render: function render() {
+        return _react2.default.createElement(
+            "a",
+            { href: "javascript:;", className: "btn green", onClick: this.props.onClick },
+            _react2.default.createElement("i", { className: "fa fa-refresh" }),
+            " Refresh"
+        );
+    }
+});
 
 /**
  * this.props.items = [
@@ -93,17 +106,32 @@ var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
+var _ButtonComponent = require('../components/ButtonComponent');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * this.props.buttons = [
- *      // Your Button Components
+ *      {type: 'refresh', value: {}}
  * ];
  */
 var TableToolbarComponent = exports.TableToolbarComponent = _react2.default.createClass({
     displayName: 'TableToolbarComponent',
 
     render: function render() {
+        var buttonComponents = [];
+
+        this.props.buttons.forEach(function (button, index) {
+            switch (button.type) {
+                case 'refresh':
+                    buttonComponents.push(_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: index, onClick: this.handleRefresh }));
+                    break;
+                case 'dropdown':
+                    buttonComponents.push(_react2.default.createElement(_ButtonComponent.ButtonDropdownsComponent, { key: index, items: button.value }));
+                    break;
+            }
+        }.bind(this));
+
         return _react2.default.createElement(
             'div',
             { className: 'table-toolbar' },
@@ -115,8 +143,8 @@ var TableToolbarComponent = exports.TableToolbarComponent = _react2.default.crea
                     { className: 'col-md-6' },
                     _react2.default.createElement(
                         'div',
-                        { className: 'btn-group' },
-                        this.props.buttons
+                        { className: 'btn-toolbar' },
+                        buttonComponents
                     )
                 ),
                 _react2.default.createElement(
@@ -169,6 +197,9 @@ var TableToolbarComponent = exports.TableToolbarComponent = _react2.default.crea
                 )
             )
         );
+    },
+    handleRefresh: function handleRefresh() {
+        this.props.context.emit('refresh');
     }
 });
 
@@ -236,6 +267,7 @@ var datatableInit = function datatableInit(tableId) {
                 "url": "/api/v1/private/users" },
             "order": [[4, "asc"]] // set first column as a default sort by asc
         }
+
     });
 
     // handle group actionsubmit button click
@@ -270,6 +302,7 @@ var datatableInit = function datatableInit(tableId) {
     //grid.setAjaxParam("customActionType", "group_action");
     //grid.getDataTable().ajax.reload();
     //grid.clearAjaxParams();
+    return grid;
 };
 
 var DataTableComponent = exports.DataTableComponent = _react2.default.createClass({
@@ -278,6 +311,9 @@ var DataTableComponent = exports.DataTableComponent = _react2.default.createClas
     getInitialState: function getInitialState() {
         var tableId = _underscore2.default.uniqueId('datatable_');
         return { tableId: tableId };
+    },
+    componentWillMount: function componentWillMount() {
+        // pass
     },
     render: function render() {
         return _react2.default.createElement(
@@ -335,23 +371,24 @@ var DataTableComponent = exports.DataTableComponent = _react2.default.createClas
         );
     },
     componentDidMount: function componentDidMount() {
-        datatableInit(this.state.tableId);
+        var grid = datatableInit(this.state.tableId);
+        this.props.context.on('refresh', function () {
+            grid.getDataTable().ajax.reload();
+        });
     }
 });
 
-},{"react":544,"underscore":547}],3:[function(require,module,exports){
-'use strict';
+},{"../components/ButtonComponent":1,"react":544,"underscore":547}],3:[function(require,module,exports){
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.ReadonlyFormComponent = exports.FormComponent = undefined;
 
-var _react = require('react');
+var _react = require("react");
 
 var _react2 = _interopRequireDefault(_react);
-
-var _utils = require('../utils');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -370,7 +407,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * }];
  */
 var FormComponent = exports.FormComponent = _react2.default.createClass({
-    displayName: 'FormComponent',
+    displayName: "FormComponent",
 
     render: function render() {
         var items = [];
@@ -382,52 +419,52 @@ var FormComponent = exports.FormComponent = _react2.default.createClass({
             var value = field.value;
             if (readonly == undefined || !readonly) {
                 items.push(_react2.default.createElement(
-                    'div',
-                    { key: index, className: 'form-group form-md-line-input' },
+                    "div",
+                    { key: index, className: "form-group form-md-line-input" },
                     _react2.default.createElement(
-                        'label',
-                        { className: 'col-md-2 control-label', htmlFor: 'form_control_1' },
+                        "label",
+                        { className: "col-md-2 control-label", htmlFor: "form_control_1" },
                         name
                     ),
                     _react2.default.createElement(
-                        'div',
-                        { className: 'col-md-10' },
-                        _react2.default.createElement('input', { type: 'text', className: 'form-control', id: 'form_control_1', placeholder: placeholder }),
+                        "div",
+                        { className: "col-md-10" },
+                        _react2.default.createElement("input", { type: "text", className: "form-control", id: "form_control_1", placeholder: placeholder }),
                         _react2.default.createElement(
-                            'div',
-                            { className: 'form-control-focus' },
-                            ' '
+                            "div",
+                            { className: "form-control-focus" },
+                            " "
                         ),
                         _react2.default.createElement(
-                            'span',
-                            { className: 'help-block' },
+                            "span",
+                            { className: "help-block" },
                             help
                         )
                     )
                 ));
             } else {
                 items.push(_react2.default.createElement(
-                    'div',
-                    { key: index, className: 'form-group form-md-line-input' },
+                    "div",
+                    { key: index, className: "form-group form-md-line-input" },
                     _react2.default.createElement(
-                        'label',
-                        { className: 'col-md-2 control-label', htmlFor: 'form_control_1' },
+                        "label",
+                        { className: "col-md-2 control-label", htmlFor: "form_control_1" },
                         name
                     ),
                     _react2.default.createElement(
-                        'div',
-                        { className: 'col-md-10' },
+                        "div",
+                        { className: "col-md-10" },
                         _react2.default.createElement(
-                            'div',
-                            { className: 'form-control form-control-static' },
-                            ' ',
+                            "div",
+                            { className: "form-control form-control-static" },
+                            " ",
                             value,
-                            ' '
+                            " "
                         ),
                         _react2.default.createElement(
-                            'div',
-                            { className: 'form-control-focus' },
-                            ' '
+                            "div",
+                            { className: "form-control-focus" },
+                            " "
                         )
                     )
                 ));
@@ -439,30 +476,34 @@ var FormComponent = exports.FormComponent = _react2.default.createClass({
             var text = action.text;
             var color = action.color;
             actions.push(_react2.default.createElement(
-                'button',
-                { key: index, type: 'button', className: 'btn ' + color },
+                "button",
+                { key: index, type: "button", className: "btn " + color },
                 text
             ));
         });
 
         return _react2.default.createElement(
-            'form',
-            { role: 'form', className: 'form-horizontal' },
+            "form",
+            { role: "form", className: "form-horizontal" },
             _react2.default.createElement(
-                'div',
-                { className: 'form-body' },
+                "div",
+                { className: "form-body" },
                 items
             ),
             _react2.default.createElement(
-                'div',
-                { className: 'form-actions' },
+                "div",
+                { className: "form-actions" },
                 _react2.default.createElement(
-                    'div',
-                    { className: 'row' },
+                    "div",
+                    { className: "row" },
                     _react2.default.createElement(
-                        'div',
-                        { className: 'col-md-offset-2 col-md-10' },
-                        (0, _utils.intersperse)(actions, ' ')
+                        "div",
+                        { className: "col-md-offset-2 col-md-10" },
+                        _react2.default.createElement(
+                            "div",
+                            { className: "btn-toolbar" },
+                            actions
+                        )
                     )
                 )
             )
@@ -477,7 +518,7 @@ var FormComponent = exports.FormComponent = _react2.default.createClass({
  * }];
  */
 var ReadonlyFormComponent = exports.ReadonlyFormComponent = _react2.default.createClass({
-    displayName: 'ReadonlyFormComponent',
+    displayName: "ReadonlyFormComponent",
 
     render: function render() {
 
@@ -488,42 +529,42 @@ var ReadonlyFormComponent = exports.ReadonlyFormComponent = _react2.default.crea
             if (index % 2 == 0) {
                 if (lastColumns != undefined) {
                     items.push(_react2.default.createElement(
-                        'div',
-                        { className: 'row', key: index },
+                        "div",
+                        { className: "row", key: index },
                         lastColumns
                     ));
                 }
                 lastColumns = [];
             }
             lastColumns.push(_react2.default.createElement(
-                'div',
-                { className: 'col-md-6', key: index },
+                "div",
+                { className: "col-md-6", key: index },
                 _react2.default.createElement(
-                    'div',
-                    { className: 'form-group' },
+                    "div",
+                    { className: "form-group" },
                     _react2.default.createElement(
-                        'label',
-                        { className: 'control-label col-md-3' },
+                        "label",
+                        { className: "control-label col-md-3" },
                         field.name,
-                        ':'
+                        ":"
                     ),
                     _react2.default.createElement(
-                        'div',
-                        { className: 'col-md-9' },
+                        "div",
+                        { className: "col-md-9" },
                         _react2.default.createElement(
-                            'p',
-                            { className: 'form-control-static' },
-                            ' ',
+                            "p",
+                            { className: "form-control-static" },
+                            " ",
                             field.value,
-                            ' '
+                            " "
                         )
                     )
                 )
             ));
             if (lastColumns.length > 0 && index == this.props.fields.length - 1) {
                 items.push(_react2.default.createElement(
-                    'div',
-                    { className: 'row', key: index },
+                    "div",
+                    { className: "row", key: index },
                     lastColumns
                 ));
                 lastColumns = [];
@@ -531,18 +572,18 @@ var ReadonlyFormComponent = exports.ReadonlyFormComponent = _react2.default.crea
         }.bind(this));
 
         return _react2.default.createElement(
-            'form',
-            { className: 'form-horizontal', role: 'form' },
+            "form",
+            { className: "form-horizontal", role: "form" },
             _react2.default.createElement(
-                'div',
-                { className: 'form-body' },
+                "div",
+                { className: "form-body" },
                 items
             )
         );
     }
 });
 
-},{"../utils":16,"react":544}],4:[function(require,module,exports){
+},{"react":544}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1387,7 +1428,7 @@ _reactDom2.default.render(_react2.default.createElement(
     _react2.default.createElement(_reactRouter.Route, { name: 'users', path: '/users', component: _UserManagementPage.UserManagementPage })
 ), document.getElementsByClassName('page-content-wrapper')[0]);
 
-},{"./pages/ApplicationPage":13,"./pages/ProfilePage":14,"./pages/UserManagementPage":15,"babel-polyfill":17,"jquery-ujs":359,"react":544,"react-dom":362,"react-router":392}],13:[function(require,module,exports){
+},{"./pages/ApplicationPage":13,"./pages/ProfilePage":14,"./pages/UserManagementPage":15,"babel-polyfill":16,"jquery-ujs":359,"react":544,"react-dom":362,"react-router":392}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1643,6 +1684,8 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _events = require('events');
+
 var _LayoutComponent = require('../components/LayoutComponent');
 
 var _NoteComponent = require('../components/NoteComponent');
@@ -1662,8 +1705,6 @@ var _PageHeadComponent2 = _interopRequireDefault(_PageHeadComponent);
 var _DataTableComponent = require('../components/DataTableComponent');
 
 var _FormComponent = require('../components/FormComponent');
-
-var _ButtonComponent = require('../components/ButtonComponent');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1691,9 +1732,14 @@ var UserManagementPage = exports.UserManagementPage = _react2.default.createClas
             row.application = row.application.toUpperCase();
         });
 
-        var dropdownItems = [{ id: 'enabled', text: 'Enabled', default: true }, { id: 'disabled', text: 'Disabled' }, { id: 'all', text: 'All' }];
+        var buttons = [{
+            type: 'refresh'
+        }, {
+            type: 'dropdown',
+            value: [{ id: 'enabled', text: 'Enabled', default: true }, { id: 'disabled', text: 'Disabled' }, { id: 'all', text: 'All' }]
+        }];
 
-        var buttons = [_react2.default.createElement(_ButtonComponent.ButtonDropdownsComponent, { key: 0, items: dropdownItems })];
+        var ee = new _events.EventEmitter();
 
         return _react2.default.createElement(
             _PageContentComponent2.default,
@@ -1710,8 +1756,8 @@ var UserManagementPage = exports.UserManagementPage = _react2.default.createClas
                     _react2.default.createElement(
                         _LayoutComponent.PortletComponent,
                         { title: 'User List' },
-                        _react2.default.createElement(_DataTableComponent.TableToolbarComponent, { buttons: buttons }),
-                        _react2.default.createElement(_DataTableComponent.DataTableComponent, null)
+                        _react2.default.createElement(_DataTableComponent.TableToolbarComponent, { buttons: buttons, context: ee }),
+                        _react2.default.createElement(_DataTableComponent.DataTableComponent, { context: ee })
                     )
                 )
             )
@@ -1820,23 +1866,7 @@ var UserProfilePage = exports.UserProfilePage = _react2.default.createClass({
     }
 });
 
-},{"../components/ButtonComponent":1,"../components/DataTableComponent":2,"../components/FormComponent":3,"../components/LayoutComponent":4,"../components/NoteComponent":5,"../components/PageBreadCrumbComponent":6,"../components/PageContentComponent":7,"../components/PageHeadComponent":8,"react":544}],16:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.intersperse = intersperse;
-function intersperse(arr, sep) {
-    if (arr.length === 0) {
-        return [];
-    }
-    return arr.slice(1).reduce(function (xs, x, i) {
-        return xs.concat([sep, x]);
-    }, [arr[0]]);
-}
-
-},{}],17:[function(require,module,exports){
+},{"../components/DataTableComponent":2,"../components/FormComponent":3,"../components/LayoutComponent":4,"../components/NoteComponent":5,"../components/PageBreadCrumbComponent":6,"../components/PageContentComponent":7,"../components/PageHeadComponent":8,"events":17,"react":544}],16:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -1871,7 +1901,310 @@ define(String.prototype, "padRight", "".padEnd);
   [][key] && define(Array, key, Function.call.bind([][key]));
 });
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"core-js/fn/regexp/escape":18,"core-js/shim":311,"regenerator-runtime/runtime":545}],18:[function(require,module,exports){
+},{"core-js/fn/regexp/escape":18,"core-js/shim":311,"regenerator-runtime/runtime":545}],17:[function(require,module,exports){
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+function EventEmitter() {
+  this._events = this._events || {};
+  this._maxListeners = this._maxListeners || undefined;
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+EventEmitter.defaultMaxListeners = 10;
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!isNumber(n) || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+  return this;
+};
+
+EventEmitter.prototype.emit = function(type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (isObject(this._events.error) && !this._events.error.length)) {
+      er = arguments[1];
+      if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+      }
+      throw TypeError('Uncaught, unspecified "error" event.');
+    }
+  }
+
+  handler = this._events[type];
+
+  if (isUndefined(handler))
+    return false;
+
+  if (isFunction(handler)) {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        len = arguments.length;
+        args = new Array(len - 1);
+        for (i = 1; i < len; i++)
+          args[i - 1] = arguments[i];
+        handler.apply(this, args);
+    }
+  } else if (isObject(handler)) {
+    len = arguments.length;
+    args = new Array(len - 1);
+    for (i = 1; i < len; i++)
+      args[i - 1] = arguments[i];
+
+    listeners = handler.slice();
+    len = listeners.length;
+    for (i = 0; i < len; i++)
+      listeners[i].apply(this, args);
+  }
+
+  return true;
+};
+
+EventEmitter.prototype.addListener = function(type, listener) {
+  var m;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === "newListener"! Before
+  // adding it to the listeners, first emit "newListener".
+  if (this._events.newListener)
+    this.emit('newListener', type,
+              isFunction(listener.listener) ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (isObject(this._events[type]))
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (isObject(this._events[type]) && !this._events[type].warned) {
+    var m;
+    if (!isUndefined(this._maxListeners)) {
+      m = this._maxListeners;
+    } else {
+      m = EventEmitter.defaultMaxListeners;
+    }
+
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      if (typeof console.trace === 'function') {
+        // not supported in IE 10
+        console.trace();
+      }
+    }
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+};
+
+// emits a 'removeListener' event iff the listener was removed
+EventEmitter.prototype.removeListener = function(type, listener) {
+  var list, position, length, i;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events || !this._events[type])
+    return this;
+
+  list = this._events[type];
+  length = list.length;
+  position = -1;
+
+  if (list === listener ||
+      (isFunction(list.listener) && list.listener === listener)) {
+    delete this._events[type];
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+
+  } else if (isObject(list)) {
+    for (i = length; i-- > 0;) {
+      if (list[i] === listener ||
+          (list[i].listener && list[i].listener === listener)) {
+        position = i;
+        break;
+      }
+    }
+
+    if (position < 0)
+      return this;
+
+    if (list.length === 1) {
+      list.length = 0;
+      delete this._events[type];
+    } else {
+      list.splice(position, 1);
+    }
+
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  var key, listeners;
+
+  if (!this._events)
+    return this;
+
+  // not listening for removeListener, no need to emit
+  if (!this._events.removeListener) {
+    if (arguments.length === 0)
+      this._events = {};
+    else if (this._events[type])
+      delete this._events[type];
+    return this;
+  }
+
+  // emit removeListener for all listeners on all events
+  if (arguments.length === 0) {
+    for (key in this._events) {
+      if (key === 'removeListener') continue;
+      this.removeAllListeners(key);
+    }
+    this.removeAllListeners('removeListener');
+    this._events = {};
+    return this;
+  }
+
+  listeners = this._events[type];
+
+  if (isFunction(listeners)) {
+    this.removeListener(type, listeners);
+  } else {
+    // LIFO order
+    while (listeners.length)
+      this.removeListener(type, listeners[listeners.length - 1]);
+  }
+  delete this._events[type];
+
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  var ret;
+  if (!this._events || !this._events[type])
+    ret = [];
+  else if (isFunction(this._events[type]))
+    ret = [this._events[type]];
+  else
+    ret = this._events[type].slice();
+  return ret;
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  var ret;
+  if (!emitter._events || !emitter._events[type])
+    ret = 0;
+  else if (isFunction(emitter._events[type]))
+    ret = 1;
+  else
+    ret = emitter._events[type].length;
+  return ret;
+};
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+
+},{}],18:[function(require,module,exports){
 require('../../modules/core.regexp.escape');
 module.exports = require('../../modules/_core').RegExp.escape;
 },{"../../modules/_core":39,"../../modules/core.regexp.escape":135}],19:[function(require,module,exports){

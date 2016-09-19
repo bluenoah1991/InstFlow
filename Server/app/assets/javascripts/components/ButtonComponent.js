@@ -1,5 +1,15 @@
 import React from 'react';
 
+export var ButtonComponent = React.createClass({
+    render: function(){
+        return (
+            <a href="javascript:;" className="btn green" onClick={this.props.onClick}>
+                <i className="fa fa-refresh"></i> Refresh
+            </a>
+        );
+    }
+});
+
 /**
  * this.props.items = [
  *      {id: 'enabled', text: 'Enabled', default: true},

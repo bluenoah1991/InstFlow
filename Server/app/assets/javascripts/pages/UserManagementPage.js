@@ -1,5 +1,7 @@
 import React from 'react';
 
+import {EventEmitter} from 'events';
+
 import {RowComponent, ColComponent, PortletComponent} from '../components/LayoutComponent';
 import {NoteComponent} from '../components/NoteComponent';
 import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
@@ -7,7 +9,6 @@ import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
 import {TableToolbarComponent, DataTableComponent} from '../components/DataTableComponent';
 import {FormComponent, ReadonlyFormComponent} from '../components/FormComponent';
-import {ButtonDropdownsComponent} from '../components/ButtonComponent';
 
 export var UserManagementPage = React.createClass({
     render: function(){
@@ -40,15 +41,20 @@ export var UserManagementPage = React.createClass({
             row.application = row.application.toUpperCase();
         });
 
-        let dropdownItems = [
-            {id: 'enabled', text: 'Enabled', default: true},
-            {id: 'disabled', text: 'Disabled'},
-            {id: 'all', text: 'All'}
+        let buttons = [
+            {
+                type: 'refresh'
+            },{
+                type: 'dropdown', 
+                value: [
+                    {id: 'enabled', text: 'Enabled', default: true},
+                    {id: 'disabled', text: 'Disabled'},
+                    {id: 'all', text: 'All'}
+                ]
+            }
         ];
 
-        let buttons = [
-            <ButtonDropdownsComponent key={0} items={dropdownItems} />
-        ];
+        var ee = new EventEmitter();
 
         return (
             <PageContentComponent>
@@ -58,8 +64,8 @@ export var UserManagementPage = React.createClass({
                 <RowComponent>
                     <ColComponent size="12">
                         <PortletComponent title="User List">
-                            <TableToolbarComponent buttons={buttons} />
-                            <DataTableComponent />
+                            <TableToolbarComponent buttons={buttons} context={ee} />
+                            <DataTableComponent context={ee} />
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>
