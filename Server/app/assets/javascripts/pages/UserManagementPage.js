@@ -9,8 +9,15 @@ import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
 import {TableToolbarComponent, DataTableComponent} from '../components/DataTableComponent';
 import {FormComponent, ReadonlyFormComponent} from '../components/FormComponent';
+import {ModalComponent} from '../components/ModalComponent';
 
 export var UserManagementPage = React.createClass({
+    getInitialState: function(){
+        let modalId = _.uniqueId('modal_');
+        return {
+            modalId: modalId
+        };
+    },
     render: function(){
         // init data 
 
@@ -54,6 +61,9 @@ export var UserManagementPage = React.createClass({
             }
         ];
 
+        var modalTitle = 'WARNING!'
+        var modalBody = 'Would you like to continue this operation?';
+
         var ee = new EventEmitter();
 
         return (
@@ -65,7 +75,8 @@ export var UserManagementPage = React.createClass({
                     <ColComponent size="12">
                         <PortletComponent title="User List">
                             <TableToolbarComponent buttons={buttons} context={ee} />
-                            <DataTableComponent context={ee} />
+                            <DataTableComponent context={ee} modalId={this.state.modalId} />
+                            <ModalComponent id={this.state.modalId} title={modalTitle} body={modalBody} context={ee} eventName='disable' />
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>

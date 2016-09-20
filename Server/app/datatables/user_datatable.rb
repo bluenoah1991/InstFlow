@@ -17,14 +17,13 @@ class UserDatatable < AjaxDatatablesRails::Base
       [
         # comma separated list of the values for each cell of a table row
         # example: record.attribute,
-        '<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input name="id[]" type="checkbox" class="checkboxes" value="%s"/><span></span></label>' % record.id,
+        record.id,
         record.name,
         record.channel_id,
         record.user_id,
         record.created_at,
         record.updated_at,
-        '<a href="#/users/%s" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>' % record.id +
-        '<a href="javascript:;" class="btn btn-sm red btn-outline"><i class="fa fa-times"></i> Disable</a>'
+        record.id
       ]
     end
   end

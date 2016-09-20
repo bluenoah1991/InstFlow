@@ -5,8 +5,18 @@ module Api
                 before_action :authenticate_admin!
                 before_action :authenticate_tenant!
 
-                def datatable
+                def show
                     render json: UserDatatable.new(view_context, user_filter_params)
+                end
+
+                def disable
+                    optional! :id, type: Integer
+
+                    @user = User.find(params[:id])
+                    @user.state = -1
+                    @user.save!
+
+                    render json: { ok: 1 }
                 end
 
                 private

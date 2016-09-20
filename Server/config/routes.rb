@@ -41,7 +41,8 @@ Rails.application.routes.draw do
       resources :tags, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
       resources :messages, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
       namespace :private do
-        post 'users', to: "users#datatable", as: :user_datatable, constraints: TenantdomainConstraint
+        post 'users', to: "users#show", as: :user_datatable, constraints: TenantdomainConstraint
+        post 'users/disable', to: "users#disable", as: :disable_user, constraints: TenantdomainConstraint
       end
     end
   end

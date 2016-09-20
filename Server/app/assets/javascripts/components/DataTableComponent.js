@@ -113,6 +113,17 @@ var datatableInit = function (tableId, defaultAjaxParams) {
             "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
                 'orderable': false,
                 'targets': [0, 6]
+            },{
+                'render': function(data, type, row){
+                    return `<a href="#/users/${data}" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>` +
+                    `<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id='${data}'><i class="fa fa-times"></i> Disable</a>`;
+                },
+                'targets': ['column-actions']
+            },{
+                'render': function(data, type, row){
+                    return `<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input name="id[]" type="checkbox" class="checkboxes" value="${data}"/><span></span></label>`;
+                },
+                'targets': ['column-checkbox']
             }],
 
             // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
@@ -186,7 +197,9 @@ var datatableInit = function (tableId, defaultAjaxParams) {
 export var DataTableComponent = React.createClass({
     getInitialState: function(){
         let tableId = _.uniqueId('datatable_');
-        return {tableId: tableId};
+        return {
+            tableId: tableId
+        };
     },
     componentWillMount: function(){
         // pass
@@ -196,7 +209,7 @@ export var DataTableComponent = React.createClass({
             <table className="table table-striped table-bordered table-hover table-checkable order-column" id={this.state.tableId}>
                 <thead>
                     <tr>
-                        <th>
+                        <th className="column-checkbox">
                             <label className="mt-checkbox mt-checkbox-single mt-checkbox-outline">
                                 <input type="checkbox" className="group-checkable" data-set={`#${this.state.tableId} .checkboxes`} />
                                 <span></span>
@@ -207,7 +220,7 @@ export var DataTableComponent = React.createClass({
                         <th> User ID </th>
                         <th> Created At </th>
                         <th> Updated At </th>
-                        <th> </th>
+                        <th className="column-actions"> </th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -218,12 +231,42 @@ export var DataTableComponent = React.createClass({
         var grid = datatableInit(this.state.tableId, [
             {name: 'filter[state]', value: '0'}
         ]);
+        var dataTable = grid.getDataTable();
+
         this.props.context.on('refresh', function(){
-            grid.getDataTable().ajax.reload();
+            dataTable.ajax.reload(null, false);
         });
         this.props.context.on('filter', function(name, value){
             grid.setAjaxParam(`filter[${name}]`, value);
-            grid.getDataTable().ajax.reload();
+            dataTable.ajax.reload();
+        });
+
+        // handle row's button click
+        grid.getTable().on('click', 'tbody > tr > td:last-child a.action-disable,button.action-disable', _.partial(function(e, the) {
+            e.preventDefault();
+            $(`#${the.props.modalId}`).modal('show', $(this));
+        }, _, this));
+        this.props.context.on('disable', function(data){
+            let id = parseInt(data.id);
+
+            var handleSuccess = function(){
+                dataTable.row($(this).parents('tr')).remove();
+                dataTable.draw();
+            }.bind(this);
+
+            var handleError = function(){
+
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/private/users/disable',
+                contentType: 'application/json',
+                data: JSON.stringify({'id': id}),
+                dataType: 'json',
+                error: handleError,
+                success: handleSuccess
+            });
         });
     }
 });
