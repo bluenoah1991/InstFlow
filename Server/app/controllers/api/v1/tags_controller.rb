@@ -1,6 +1,6 @@
 module Api
     module V1
-        class TagsController < ApplicationController
+        class TagsController < Api::V1::ApplicationController
             before_action :set_tag, except: [:index, :create]
 
             def index

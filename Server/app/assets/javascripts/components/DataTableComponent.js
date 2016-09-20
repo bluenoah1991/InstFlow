@@ -18,7 +18,7 @@ export var TableToolbarComponent = React.createClass({
                     buttonComponents.push(<ButtonComponent key={index} onClick={this.handleRefresh} />);
                     break;
                 case 'dropdown':
-                    buttonComponents.push(<ButtonDropdownsComponent key={index} items={button.value} />);
+                    buttonComponents.push(<ButtonDropdownsComponent key={index} onSelect={this.handleFilter} items={button.value} />);
                     break;
             }
         }.bind(this));
@@ -58,12 +58,19 @@ export var TableToolbarComponent = React.createClass({
     },
     handleRefresh(){
         this.props.context.emit('refresh');
+    },
+    handleFilter(name, value){
+        this.props.context.emit('filter', name, value);
     }
 });
 
-var datatableInit = function (tableId) {
+var datatableInit = function (tableId, defaultAjaxParams) {
 
     var grid = new Datatable();
+
+    defaultAjaxParams.forEach(function(param, index){
+        grid.setAjaxParam(param.name, param.value);
+    });
 
     grid.init({
         src: $(`#${tableId}`),
@@ -208,8 +215,14 @@ export var DataTableComponent = React.createClass({
         );
     },
     componentDidMount(){
-        var grid = datatableInit(this.state.tableId);
+        var grid = datatableInit(this.state.tableId, [
+            {name: 'filter[state]', value: '0'}
+        ]);
         this.props.context.on('refresh', function(){
+            grid.getDataTable().ajax.reload();
+        });
+        this.props.context.on('filter', function(name, value){
+            grid.setAjaxParam(`filter[${name}]`, value);
             grid.getDataTable().ajax.reload();
         });
     }

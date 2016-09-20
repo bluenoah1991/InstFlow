@@ -1,6 +1,6 @@
 module Api
     module V1
-        class MessagesController < ApplicationController
+        class MessagesController < Api::V1::ApplicationController
             before_action :set_instance, except: [:index, :create]
 
             def index

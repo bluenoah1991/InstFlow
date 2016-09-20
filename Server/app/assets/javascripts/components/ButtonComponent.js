@@ -12,9 +12,9 @@ export var ButtonComponent = React.createClass({
 
 /**
  * this.props.items = [
- *      {id: 'enabled', text: 'Enabled', default: true},
- *      {id: 'disabled', text: 'Disabled'},
- *      {id: 'all', text: 'All'}
+ *      {name: 'state', value: 'enabled', text: 'Enabled', default: true},
+ *      {name: 'state', value: 'disabled', text: 'Disabled'},
+ *      {name: 'state', value: 'all', text: 'All'}
  * ]
  */
 export var ButtonDropdownsComponent = React.createClass({
@@ -42,8 +42,8 @@ export var ButtonDropdownsComponent = React.createClass({
 
         return (
             <div className="btn-group">
-                <button type="button" className="btn green">{this.state.defaultItem.text}</button>
                 <button type="button" className="btn green dropdown-toggle" data-toggle="dropdown">
+                    {this.state.defaultItem.text} 
                     <i className="fa fa-angle-down"></i>
                 </button>
                 <ul className="dropdown-menu" role="menu">
@@ -56,5 +56,6 @@ export var ButtonDropdownsComponent = React.createClass({
         this.setState({
             defaultItem: item
         });
+        this.props.onSelect(item.name, item.value);
     }
 });

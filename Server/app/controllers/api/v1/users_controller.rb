@@ -1,6 +1,6 @@
 module Api
     module V1
-        class UsersController < ApplicationController
+        class UsersController < Api::V1::ApplicationController
             before_action :set_user, except: [:index, :create]
 
             def index

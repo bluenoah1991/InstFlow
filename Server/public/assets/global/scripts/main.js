@@ -27,9 +27,9 @@ var ButtonComponent = exports.ButtonComponent = _react2.default.createClass({
 
 /**
  * this.props.items = [
- *      {id: 'enabled', text: 'Enabled', default: true},
- *      {id: 'disabled', text: 'Disabled'},
- *      {id: 'all', text: 'All'}
+ *      {name: 'state', value: 'enabled', text: 'Enabled', default: true},
+ *      {name: 'state', value: 'disabled', text: 'Disabled'},
+ *      {name: 'state', value: 'all', text: 'All'}
  * ]
  */
 var ButtonDropdownsComponent = exports.ButtonDropdownsComponent = _react2.default.createClass({
@@ -68,12 +68,8 @@ var ButtonDropdownsComponent = exports.ButtonDropdownsComponent = _react2.defaul
             { className: "btn-group" },
             _react2.default.createElement(
                 "button",
-                { type: "button", className: "btn green" },
-                this.state.defaultItem.text
-            ),
-            _react2.default.createElement(
-                "button",
                 { type: "button", className: "btn green dropdown-toggle", "data-toggle": "dropdown" },
+                this.state.defaultItem.text,
                 _react2.default.createElement("i", { className: "fa fa-angle-down" })
             ),
             _react2.default.createElement(
@@ -87,6 +83,7 @@ var ButtonDropdownsComponent = exports.ButtonDropdownsComponent = _react2.defaul
         this.setState({
             defaultItem: item
         });
+        this.props.onSelect(item.name, item.value);
     }
 });
 
@@ -127,7 +124,7 @@ var TableToolbarComponent = exports.TableToolbarComponent = _react2.default.crea
                     buttonComponents.push(_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: index, onClick: this.handleRefresh }));
                     break;
                 case 'dropdown':
-                    buttonComponents.push(_react2.default.createElement(_ButtonComponent.ButtonDropdownsComponent, { key: index, items: button.value }));
+                    buttonComponents.push(_react2.default.createElement(_ButtonComponent.ButtonDropdownsComponent, { key: index, onSelect: this.handleFilter, items: button.value }));
                     break;
             }
         }.bind(this));
@@ -200,12 +197,19 @@ var TableToolbarComponent = exports.TableToolbarComponent = _react2.default.crea
     },
     handleRefresh: function handleRefresh() {
         this.props.context.emit('refresh');
+    },
+    handleFilter: function handleFilter(name, value) {
+        this.props.context.emit('filter', name, value);
     }
 });
 
-var datatableInit = function datatableInit(tableId) {
+var datatableInit = function datatableInit(tableId, defaultAjaxParams) {
 
     var grid = new Datatable();
+
+    defaultAjaxParams.forEach(function (param, index) {
+        grid.setAjaxParam(param.name, param.value);
+    });
 
     grid.init({
         src: $('#' + tableId),
@@ -371,8 +375,12 @@ var DataTableComponent = exports.DataTableComponent = _react2.default.createClas
         );
     },
     componentDidMount: function componentDidMount() {
-        var grid = datatableInit(this.state.tableId);
+        var grid = datatableInit(this.state.tableId, [{ name: 'filter[state]', value: '0' }]);
         this.props.context.on('refresh', function () {
+            grid.getDataTable().ajax.reload();
+        });
+        this.props.context.on('filter', function (name, value) {
+            grid.setAjaxParam('filter[' + name + ']', value);
             grid.getDataTable().ajax.reload();
         });
     }
@@ -1736,7 +1744,7 @@ var UserManagementPage = exports.UserManagementPage = _react2.default.createClas
             type: 'refresh'
         }, {
             type: 'dropdown',
-            value: [{ id: 'enabled', text: 'Enabled', default: true }, { id: 'disabled', text: 'Disabled' }, { id: 'all', text: 'All' }]
+            value: [{ name: 'state', value: '0', text: 'Enabled', default: true }, { name: 'state', value: '-1', text: 'Disabled' }, { name: 'state', text: 'All' }]
         }];
 
         var ee = new _events.EventEmitter();

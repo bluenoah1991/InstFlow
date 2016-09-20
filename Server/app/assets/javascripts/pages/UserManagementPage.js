@@ -47,9 +47,9 @@ export var UserManagementPage = React.createClass({
             },{
                 type: 'dropdown', 
                 value: [
-                    {id: 'enabled', text: 'Enabled', default: true},
-                    {id: 'disabled', text: 'Disabled'},
-                    {id: 'all', text: 'All'}
+                    {name: 'state', value: '0', text: 'Enabled', default: true},
+                    {name: 'state', value: '-1', text: 'Disabled'},
+                    {name: 'state', text: 'All'}
                 ]
             }
         ];

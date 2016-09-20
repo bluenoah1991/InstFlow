@@ -31,7 +31,7 @@ class UserDatatable < AjaxDatatablesRails::Base
 
   def get_raw_records
     # insert query here
-    User.all
+    User.where(options)
   end
 
   # ==== Insert 'presenter'-like methods below if necessary
