@@ -23,7 +23,7 @@ class UserDatatable < AjaxDatatablesRails::Base
         record.user_id,
         record.created_at,
         record.updated_at,
-        record.id
+        {'id': record.id, 'state': record.state}
       ]
     end
   end

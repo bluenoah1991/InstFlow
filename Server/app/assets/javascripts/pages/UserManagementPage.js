@@ -13,9 +13,11 @@ import {ModalComponent} from '../components/ModalComponent';
 
 export var UserManagementPage = React.createClass({
     getInitialState: function(){
-        let modalId = _.uniqueId('modal_');
+        let disableModalId = _.uniqueId('modal_');
+        let enableModalId = _.uniqueId('modal_');
         return {
-            modalId: modalId
+            disableModalId: disableModalId,
+            enableModalId: enableModalId
         };
     },
     render: function(){
@@ -75,8 +77,9 @@ export var UserManagementPage = React.createClass({
                     <ColComponent size="12">
                         <PortletComponent title="User List">
                             <TableToolbarComponent buttons={buttons} context={ee} />
-                            <DataTableComponent context={ee} modalId={this.state.modalId} />
-                            <ModalComponent id={this.state.modalId} title={modalTitle} body={modalBody} context={ee} eventName='disable' />
+                            <DataTableComponent context={ee} enableModalId={this.state.enableModalId} disableModalId={this.state.disableModalId} />
+                            <ModalComponent id={this.state.disableModalId} title={modalTitle} body={modalBody} context={ee} eventName='disable' />
+                            <ModalComponent id={this.state.enableModalId} title={modalTitle} body={modalBody} context={ee} eventName='enable' />
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>

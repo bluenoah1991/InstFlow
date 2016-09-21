@@ -254,7 +254,13 @@ var datatableInit = function datatableInit(tableId, defaultAjaxParams) {
                 'targets': [0, 6]
             }, {
                 'render': function render(data, type, row) {
-                    return '<a href="#/users/' + data + '" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>' + ('<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id=\'' + data + '\'><i class="fa fa-times"></i> Disable</a>');
+                    var content = '<a href="#/users/' + data + '" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>';
+                    if (data.state == 0) {
+                        content += '<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id=\'' + data.id + '\'><i class="fa fa-times"></i> Disable</a>';
+                    } else if (data.state == -1) {
+                        content += '<a href="javascript:;" class="btn btn-sm green btn-outline action-enable" data-id=\'' + data.id + '\'><i class="fa fa-check"></i> Enable</a>';
+                    }
+                    return content;
                 },
                 'targets': ['column-actions']
             }, {
@@ -399,16 +405,23 @@ var DataTableComponent = exports.DataTableComponent = _react2.default.createClas
         });
 
         // handle row's button click
+        grid.getTable().on('click', 'tbody > tr > td:last-child a.action-enable,button.action-enable', _underscore2.default.partial(function (e, the) {
+            e.preventDefault();
+            $('#' + the.props.enableModalId).modal('show', $(this));
+        }, _underscore2.default, this));
+
         grid.getTable().on('click', 'tbody > tr > td:last-child a.action-disable,button.action-disable', _underscore2.default.partial(function (e, the) {
             e.preventDefault();
-            $('#' + the.props.modalId).modal('show', $(this));
+            $('#' + the.props.disableModalId).modal('show', $(this));
         }, _underscore2.default, this));
+
         this.props.context.on('disable', function (data) {
             var id = parseInt(data.id);
 
             var handleSuccess = function () {
-                dataTable.row($(this).parents('tr')).remove();
-                dataTable.draw();
+                // dataTable.row($(this).parents('tr')).remove();
+                // dataTable.draw();
+                dataTable.ajax.reload(null, false);
             }.bind(this);
 
             var handleError = function handleError() {};
@@ -416,6 +429,28 @@ var DataTableComponent = exports.DataTableComponent = _react2.default.createClas
             $.ajax({
                 type: 'POST',
                 url: '/api/v1/private/users/disable',
+                contentType: 'application/json',
+                data: JSON.stringify({ 'id': id }),
+                dataType: 'json',
+                error: handleError,
+                success: handleSuccess
+            });
+        });
+
+        this.props.context.on('enable', function (data) {
+            var id = parseInt(data.id);
+
+            var handleSuccess = function () {
+                // dataTable.row($(this).parents('tr')).remove();
+                // dataTable.draw();
+                dataTable.ajax.reload(null, false);
+            }.bind(this);
+
+            var handleError = function handleError() {};
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/private/users/enable',
                 contentType: 'application/json',
                 data: JSON.stringify({ 'id': id }),
                 dataType: 'json',
@@ -1837,9 +1872,11 @@ var UserManagementPage = exports.UserManagementPage = _react2.default.createClas
     displayName: 'UserManagementPage',
 
     getInitialState: function getInitialState() {
-        var modalId = _.uniqueId('modal_');
+        var disableModalId = _.uniqueId('modal_');
+        var enableModalId = _.uniqueId('modal_');
         return {
-            modalId: modalId
+            disableModalId: disableModalId,
+            enableModalId: enableModalId
         };
     },
     render: function render() {
@@ -1891,8 +1928,9 @@ var UserManagementPage = exports.UserManagementPage = _react2.default.createClas
                         _LayoutComponent.PortletComponent,
                         { title: 'User List' },
                         _react2.default.createElement(_DataTableComponent.TableToolbarComponent, { buttons: buttons, context: ee }),
-                        _react2.default.createElement(_DataTableComponent.DataTableComponent, { context: ee, modalId: this.state.modalId }),
-                        _react2.default.createElement(_ModalComponent.ModalComponent, { id: this.state.modalId, title: modalTitle, body: modalBody, context: ee, eventName: 'disable' })
+                        _react2.default.createElement(_DataTableComponent.DataTableComponent, { context: ee, enableModalId: this.state.enableModalId, disableModalId: this.state.disableModalId }),
+                        _react2.default.createElement(_ModalComponent.ModalComponent, { id: this.state.disableModalId, title: modalTitle, body: modalBody, context: ee, eventName: 'disable' }),
+                        _react2.default.createElement(_ModalComponent.ModalComponent, { id: this.state.enableModalId, title: modalTitle, body: modalBody, context: ee, eventName: 'enable' })
                     )
                 )
             )

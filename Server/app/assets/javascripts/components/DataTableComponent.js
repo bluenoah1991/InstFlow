@@ -115,8 +115,13 @@ var datatableInit = function (tableId, defaultAjaxParams) {
                 'targets': [0, 6]
             },{
                 'render': function(data, type, row){
-                    return `<a href="#/users/${data}" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>` +
-                    `<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id='${data}'><i class="fa fa-times"></i> Disable</a>`;
+                    let content = `<a href="#/users/${data}" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>`;
+                    if(data.state == 0){
+                        content += `<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id='${data.id}'><i class="fa fa-times"></i> Disable</a>`;
+                    } else if(data.state == -1){
+                        content += `<a href="javascript:;" class="btn btn-sm green btn-outline action-enable" data-id='${data.id}'><i class="fa fa-check"></i> Enable</a>`;
+                    }
+                    return content;
                 },
                 'targets': ['column-actions']
             },{
@@ -242,16 +247,23 @@ export var DataTableComponent = React.createClass({
         });
 
         // handle row's button click
+        grid.getTable().on('click', 'tbody > tr > td:last-child a.action-enable,button.action-enable', _.partial(function(e, the) {
+            e.preventDefault();
+            $(`#${the.props.enableModalId}`).modal('show', $(this));
+        }, _, this));
+
         grid.getTable().on('click', 'tbody > tr > td:last-child a.action-disable,button.action-disable', _.partial(function(e, the) {
             e.preventDefault();
-            $(`#${the.props.modalId}`).modal('show', $(this));
+            $(`#${the.props.disableModalId}`).modal('show', $(this));
         }, _, this));
+
         this.props.context.on('disable', function(data){
             let id = parseInt(data.id);
 
             var handleSuccess = function(){
-                dataTable.row($(this).parents('tr')).remove();
-                dataTable.draw();
+                // dataTable.row($(this).parents('tr')).remove();
+                // dataTable.draw();
+                dataTable.ajax.reload(null, false);
             }.bind(this);
 
             var handleError = function(){
@@ -261,6 +273,30 @@ export var DataTableComponent = React.createClass({
             $.ajax({
                 type: 'POST',
                 url: '/api/v1/private/users/disable',
+                contentType: 'application/json',
+                data: JSON.stringify({'id': id}),
+                dataType: 'json',
+                error: handleError,
+                success: handleSuccess
+            });
+        });
+
+        this.props.context.on('enable', function(data){
+            let id = parseInt(data.id);
+
+            var handleSuccess = function(){
+                // dataTable.row($(this).parents('tr')).remove();
+                // dataTable.draw();
+                dataTable.ajax.reload(null, false);
+            }.bind(this);
+
+            var handleError = function(){
+
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/v1/private/users/enable',
                 contentType: 'application/json',
                 data: JSON.stringify({'id': id}),
                 dataType: 'json',

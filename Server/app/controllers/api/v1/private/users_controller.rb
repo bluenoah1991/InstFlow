@@ -9,6 +9,16 @@ module Api
                     render json: UserDatatable.new(view_context, user_filter_params)
                 end
 
+                def enable
+                    optional! :id, type: Integer
+
+                    @user = User.find(params[:id])
+                    @user.state = 0
+                    @user.save!
+
+                    render json: { ok: 1 }
+                end
+
                 def disable
                     optional! :id, type: Integer
 
