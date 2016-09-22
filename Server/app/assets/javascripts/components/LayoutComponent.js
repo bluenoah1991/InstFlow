@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'underscore';
 
 export var RowComponent = React.createClass({
     render: function(){
@@ -32,6 +33,50 @@ export var PortletComponent = React.createClass({
                 </div>
                 <div className={`portlet-body ${this.props.extclass}`}>
                     {this.props.children}
+                </div>
+            </div>
+        );
+    }
+});
+
+/**
+ * this.props.tabs = [
+ *      {title: 'Personal Info', component: Your Component, active: true}
+ * ];
+ */
+export var PortletTabComponent = React.createClass({
+    render: function(){
+        let tabs = [];
+        let tab_contents = [];
+        this.props.tabs.forEach(function(tab, index){
+            let id = _.uniqueId('tab_');
+            tabs.push(
+                <li key={index} className={tab.active != undefined && tab.active ? 'active' : ''}>
+                    <a href={`#${id}`} data-toggle="tab">{tab.title}</a>
+                </li>
+            );
+            tab_contents.push(
+                <div key={index} className={`tab-pane ${tab.active != undefined && tab.active ? 'active' : ''}`} id={id}>
+                    {tab.component}
+                </div>
+            );
+        });
+
+        return (
+            <div className="portlet light bordered">
+                <div className="portlet-title tabbable-line">
+                    <div className="caption caption-md">
+                        <i className="icon-globe theme-font hide"></i>
+                        <span className="caption-subject font-blue-madison bold uppercase">{this.props.title}</span>
+                    </div>
+                    <ul className="nav nav-tabs">
+                        {tabs}
+                    </ul>
+                </div>
+                <div className="portlet-body">
+                    <div className="tab-content">
+                        {tab_contents}
+                    </div>
                 </div>
             </div>
         );
