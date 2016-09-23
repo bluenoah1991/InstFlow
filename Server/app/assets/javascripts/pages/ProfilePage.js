@@ -8,6 +8,7 @@ import PageHeadComponent from '../components/PageHeadComponent';
 import {ProfileCardComponent, ProfileAboutComponent, ProfileSidebarComponent, ProfileContentComponent} from '../components/ProfileComponent';
 import {ButtonComponent, ButtonCircleComponent} from '../components/ButtonComponent';
 import {FormSimpleComponent} from '../components/FormComponent';
+import {SettingComponent} from '../components/SettingComponent';
 
 export default React.createClass({
     render: function(){
@@ -30,14 +31,6 @@ export default React.createClass({
         ];
 
         let profileFormFields = [{
-            name: 'First Name',
-            placeholder: 'Enter your first name',
-            value: ''
-        },{
-            name: 'Last Name',
-            placeholder: 'Enter your last name',
-            value: ''
-        },{
             name: 'Tenant ID',
             readonly: true,
             value: 'codemeow'
@@ -45,6 +38,14 @@ export default React.createClass({
             name: 'Email',
             readonly: true,
             value: 'codemeow@yahoo.com'
+        },{
+            name: 'First Name',
+            placeholder: 'Enter your first name',
+            value: ''
+        },{
+            name: 'Last Name',
+            placeholder: 'Enter your last name',
+            value: ''
         },{
             name: 'Phone Number',
             placeholder: 'Enter your phone number',
@@ -77,9 +78,56 @@ export default React.createClass({
             <ButtonComponent key={1} color='default' text='Cancel' />
         ];
 
+        let passwordFormFields = [{
+            name: 'Current Password',
+            placeholder: 'Enter your current password',
+            value: '123456!@#',
+            type: 'password'
+        },{
+            name: 'New Password',
+            placeholder: 'Enter your new password',
+            value: '123456!@#',
+            type: 'password'
+        },{
+            name: 'Re-type New Password',
+            placeholder: 'Enter your new password again',
+            value: '123456!@#',
+            type: 'password'
+        }];
+
+        let passwordFormButtons = [
+            <ButtonComponent key={0} color='green' text='Change Password' />,
+            <ButtonComponent key={1} color='default' text='Cancel' />
+        ];
+
+        let options = [{
+            name: 'receive_email',
+            text: 'Receive email notification', 
+            options: [
+                {value: '1', text: 'Yes', checked: true},
+                {value: '0', text: 'No'}
+            ]
+        },{
+            name: 'receive_latest_news',
+            text: 'Recive the latest news', 
+            options: [
+                {value: '1', text: 'Yes'},
+                {value: '0', text: 'No', checked: true}
+            ]
+        },{
+            name: 'receive_balance_warning',
+            text: 'Recive balance warning', 
+            options: [
+                {value: '1', text: 'Yes', checked: true},
+                {value: '0', text: 'No'}
+            ]
+        }];
+
         let profileTabs = [
             {title: 'Personal Info', component: <FormSimpleComponent fields={profileFormFields} buttons={profileFormButtons} />, active: true},
-            {title: 'Change Avatar', component: <p>Blank</p>}
+            {title: 'Change Avatar', component: <p>Blank</p>},
+            {title: 'Change Password', component: <FormSimpleComponent fields={passwordFormFields} buttons={passwordFormButtons} />},
+            {title: 'Global Settings', component: <SettingComponent items={options} />}
         ];
         
         return (

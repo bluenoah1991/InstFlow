@@ -75,96 +75,6 @@ export var FormComponent = React.createClass({
     }
 });
 
-                            // <form action="#">
-                            //     <div className="form-group">
-                            //         <label className="control-label">Current Password</label>
-                            //         <input type="password" className="form-control" /> </div>
-                            //     <div className="form-group">
-                            //         <label className="control-label">New Password</label>
-                            //         <input type="password" className="form-control" /> </div>
-                            //     <div className="form-group">
-                            //         <label className="control-label">Re-type New Password</label>
-                            //         <input type="password" className="form-control" /> </div>
-                            //     <div className="margin-top-10">
-                            //         <a href="javascript:;" className="btn green"> Change Password </a>
-                            //         <a href="javascript:;" className="btn default"> Cancel </a>
-                            //     </div>
-                            // </form>
-
-
-                            // <form action="#">
-                            //     <table className="table table-light table-hover">
-                            //         <tbody>
-                            //             <tr>
-                            //                 <td> Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus.. </td>
-                            //                 <td>
-                            //                     <div className="mt-radio-inline">
-                            //                         <label className="mt-radio">
-                            //                             <input type="radio" name="optionsRadios1" value="option1" /> Yes
-                            //                             <span></span>
-                            //                         </label>
-                            //                         <label className="mt-radio">
-                            //                             <input type="radio" name="optionsRadios1" value="option2" checked/> No
-                            //                             <span></span>
-                            //                         </label>
-                            //                     </div>
-                            //                 </td>
-                            //             </tr>
-                            //             <tr>
-                            //                 <td> Enim eiusmod high life accusamus terry richardson ad squid wolf moon </td>
-                            //                 <td>
-                            //                     <div className="mt-radio-inline">
-                            //                         <label className="mt-radio">
-                            //                             <input type="radio" name="optionsRadios11" value="option1" /> Yes
-                            //                             <span></span>
-                            //                         </label>
-                            //                         <label className="mt-radio">
-                            //                             <input type="radio" name="optionsRadios11" value="option2" checked/> No
-                            //                             <span></span>
-                            //                         </label>
-                            //                     </div>
-                            //                 </td>
-                            //             </tr>
-                            //             <tr>
-                            //                 <td> Enim eiusmod high life accusamus terry richardson ad squid wolf moon </td>
-                            //                 <td>
-                            //                     <div className="mt-radio-inline">
-                            //                         <label className="mt-radio">
-                            //                             <input type="radio" name="optionsRadios21" value="option1" /> Yes
-                            //                             <span></span>
-                            //                         </label>
-                            //                         <label className="mt-radio">
-                            //                             <input type="radio" name="optionsRadios21" value="option2" checked/> No
-                            //                             <span></span>
-                            //                         </label>
-                            //                     </div>
-                            //                 </td>
-                            //             </tr>
-                            //             <tr>
-                            //                 <td> Enim eiusmod high life accusamus terry richardson ad squid wolf moon </td>
-                            //                 <td>
-                            //                     <div className="mt-radio-inline">
-                            //                         <label className="mt-radio">
-                            //                             <input type="radio" name="optionsRadios31" value="option1" /> Yes
-                            //                             <span></span>
-                            //                         </label>
-                            //                         <label className="mt-radio">
-                            //                             <input type="radio" name="optionsRadios31" value="option2" checked/> No
-                            //                             <span></span>
-                            //                         </label>
-                            //                     </div>
-                            //                 </td>
-                            //             </tr>
-                            //         </tbody>
-                            //     </table>
-                            //     <div className="margin-top-10">
-                            //         <a href="javascript:;" className="btn red"> Save Changes </a>
-                            //         <a href="javascript:;" className="btn default"> Cancel </a>
-                            //     </div>
-                            // </form>
-
-
-
 /**
  * this.props.fields = [{
  *      name: 'field name', 
@@ -190,6 +100,12 @@ export var FormSimpleComponent = React.createClass({
                     inputDOM = <textarea className="form-control" rows="3" readOnly="1" defaultValue={field.value}></textarea>
                 } else {
                     inputDOM = <textarea className="form-control" rows="3" placeholder={field.placeholder} defaultValue={field.value}></textarea>
+                }
+            } else if(field.type == 'password'){
+                if(field.readonly != undefined && field.readonly){
+                    inputDOM = <input type="password" className="form-control" readOnly="1"  defaultValue={field.value} />
+                } else {
+                    inputDOM = <input type="password" className="form-control" placeholder={field.placeholder} defaultValue={field.value} />
                 }
             }
             items.push(
