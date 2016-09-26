@@ -1,4 +1,5 @@
 import 'babel-polyfill';
+import 'whatwg-fetch';
 import 'jquery-ujs';
 
 import React from 'react';

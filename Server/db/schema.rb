@@ -26,6 +26,13 @@ ActiveRecord::Schema.define(version: 20160920015436) do
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
     t.string   "tenant_id",              default: "", null: false
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "phone_number"
+    t.string   "company_name"
+    t.string   "occupation"
+    t.string   "about"
+    t.string   "website_url"
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
     t.index ["tenant_id"], name: "index_admins_on_tenant_id", unique: true

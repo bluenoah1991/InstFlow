@@ -15,10 +15,10 @@ export var TableToolbarComponent = React.createClass({
         this.props.buttons.forEach(function(button, index){
             switch(button.type){
                 case 'refresh':
-                    buttonComponents.push(<ButtonComponent key={index} onClick={this.handleRefresh} />);
+                    buttonComponents.push(<ButtonComponent key={index} color='green' text='Refresh' onClick={this.handleRefresh} />);
                     break;
                 case 'dropdown':
-                    buttonComponents.push(<ButtonDropdownsComponent key={index} onSelect={this.handleFilter} items={button.value} />);
+                    buttonComponents.push(<ButtonDropdownsComponent key={index} color='green' onSelect={this.handleFilter} items={button.value} />);
                     break;
             }
         }.bind(this));

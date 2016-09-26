@@ -8,3 +8,11 @@ export function intersperse(arr, sep){
         return xs.concat([sep, x]);
     }, [arr[0]]);
 }
+
+export function safestring(obj){
+    if(obj == undefined){
+        return '';
+    } else {
+        return obj;
+    }
+}

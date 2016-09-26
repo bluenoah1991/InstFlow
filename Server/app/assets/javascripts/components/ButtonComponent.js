@@ -56,7 +56,7 @@ export var ButtonDropdownsComponent = React.createClass({
 
         return (
             <div className="btn-group">
-                <button type="button" className="btn green dropdown-toggle" data-toggle="dropdown">
+                <button type="button" className={`btn ${this.props.color} dropdown-toggle`} data-toggle="dropdown">
                     {this.state.defaultItem.text} 
                     <i className="fa fa-angle-down"></i>
                 </button>

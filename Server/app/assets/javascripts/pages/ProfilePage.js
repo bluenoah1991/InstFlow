@@ -11,6 +11,11 @@ import {FormSimpleComponent} from '../components/FormComponent';
 import {SettingComponent} from '../components/SettingComponent';
 
 export default React.createClass({
+    getInitialState: function(){
+        return {
+            data: {}
+        };
+    },
     render: function(){
         // init data 
 
@@ -31,46 +36,46 @@ export default React.createClass({
         ];
 
         let profileFormFields = [{
-            name: 'Tenant ID',
-            readonly: true,
-            value: 'codemeow'
+            name: 'tenant_id',
+            text: 'Tenant ID',
+            readonly: true
         },{
-            name: 'Email',
-            readonly: true,
-            value: 'codemeow@yahoo.com'
+            name: 'email',
+            text: 'Email',
+            readonly: true
         },{
-            name: 'First Name',
-            placeholder: 'Enter your first name',
-            value: ''
+            name: 'first_name',
+            text: 'First Name',
+            placeholder: 'Enter your first name'
         },{
-            name: 'Last Name',
-            placeholder: 'Enter your last name',
-            value: ''
+            name: 'last_name',
+            text: 'Last Name',
+            placeholder: 'Enter your last name'
         },{
-            name: 'Phone Number',
-            placeholder: 'Enter your phone number',
-            value: ''
+            name: 'phone_number',
+            text: 'Phone Number',
+            placeholder: 'Enter your phone number'
         },{
-            name: 'Your Company',
-            placeholder: 'Enter your company name',
-            value: ''
+            name: 'company_name',
+            text: 'Your Company',
+            placeholder: 'Enter your company name'
         },{
-            name: 'Occupation',
-            placeholder: 'Enter your occupation',
-            value: ''
+            name: 'occupation',
+            text: 'Occupation',
+            placeholder: 'Enter your occupation'
         },{
-            name: 'Website Url',
-            placeholder: 'Enter your website url',
-            value: ''
+            name: 'website_url',
+            text: 'Website Url',
+            placeholder: 'Enter your website url'
         },{
-            name: 'About',
+            name: 'about',
+            text: 'About',
             placeholder: 'Enter your about',
-            value: '',
             type: 'textarea'
         },{
-            name: 'Last Login',
-            readonly: true,
-            value: 'Thu, Mar 31, 2016 7:57 PM SGT'
+            name: 'updated_at',
+            text: 'Last Login',
+            readonly: true
         }];
 
         let profileFormButtons = [
@@ -124,7 +129,7 @@ export default React.createClass({
         }];
 
         let profileTabs = [
-            {title: 'Personal Info', component: <FormSimpleComponent fields={profileFormFields} buttons={profileFormButtons} />, active: true},
+            {title: 'Personal Info', component: <FormSimpleComponent fields={profileFormFields} data={this.state.data} buttons={profileFormButtons} />, active: true},
             {title: 'Change Avatar', component: <p>Blank</p>},
             {title: 'Change Password', component: <FormSimpleComponent fields={passwordFormFields} buttons={passwordFormButtons} />},
             {title: 'Global Settings', component: <SettingComponent items={options} />}
@@ -137,7 +142,7 @@ export default React.createClass({
                 <RowComponent>
                     <ColComponent size="12">
                         <ProfileSidebarComponent>
-                            <ProfileCardComponent title='CodeMeow5' subtitle='Ruby Developer' buttons={profileCardButton} menu={profileCardMenu} />
+                            <ProfileCardComponent title={this.state.display_name} subtitle={this.state.display_occupation} buttons={profileCardButton} menu={profileCardMenu} />
                             <ProfileAboutComponent apps={3} messages={15} tickets={2} />
                         </ProfileSidebarComponent>
                         <ProfileContentComponent>
@@ -151,5 +156,34 @@ export default React.createClass({
                 </RowComponent>
             </PageContentComponent>
         );
+    },
+    componentDidMount: function(){
+        fetch('/api/v1/private/profile', {credentials: 'same-origin'}).then(function(response){
+            return response.json();
+        }).then(function(json){
+            this.populateDisplayName(json);
+            this.setState({data: json});
+        }.bind(this)).catch(function(ex){
+            console.log('parsing failed', ex);
+        });
+    },
+    populateDisplayName: function(json){
+        let display_name = null;
+
+        if((json.first_name == undefined || json.first_name.trim().length === 0) ||
+            json.last_name == undefined || json.last_name.trim().length === 0){
+                display_name = json.email.substring(0, json.email.lastIndexOf('@')).toUpperCase(); 
+        } else {
+            display_name = `${json.first_name.toUpperCase()} ${json.last_name.toUpperCase()}`.trim(); 
+        }
+
+        this.setState({display_name: display_name});
+    },
+    populateDisplayOccupation: function(json){
+        if(json.occupation != undefined && json.occupation.trim().length > 0){
+            this.setState({display_occupation: json.occupation.toUpperCase()});
+        } else {
+            this.setState({display_occupation: ''});
+        }
     }
 });
