@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
+import {ButtonComponent} from '../components/ButtonComponent';
 
 import _ from 'underscore';
 import {safestring} from '../utils';
@@ -78,67 +79,42 @@ export var FormComponent = React.createClass({
     }
 });
 
-/**
- * this.props.fields = [{
- *      name: 'field name',
- *      text: 'display text plain', 
- *      readonly: false, 
- *      placeholder: 'enter your field name', 
- *      type: 'input' // or textarea
- * }];
- * 
- * this.props.data = Your data;
- */
-export var FormSimpleComponent = React.createClass({
-    getInitialState: function(){
-        return {};
-    },
-    componentWillReceiveProps: function(nextProps){
-        this.setState({
-            data: nextProps.data
-        });
-    },
-    render: function(){
+class FormSimpleComponent extends Component{
+    render(){
         let items = [];
-        this.props.fields.forEach(function(field, index){
-            let inputDOM = null;
-            let value = null;
-            if(this.state.data != undefined){
-                value = this.state.data[field.name];
-            }
-            let handleChange = (function(the, field){
-                let innerFunc = function(e){
-                    let newVal = e.target.value;
-                    let obj = {data: the.state.data};
-                    obj.data[field.name] = newVal;
-                    the.setState(obj);
-                };
-                return innerFunc;
-            })(this, field);
+        this.props.controls.forEach(function(control, index){
+            let name = control.name;
+            let text = control.text;
+            let readonly = control.readonly != undefined ? control.readonly : false;
+            let placeholder = control.placeholder != undefined ? control.placeholder : `Enter your ${control.text.toLowerCase()}`;
+            let type = control.type != undefined ? control.type : 'input';
+            let value = safestring(this.props.data != undefined ? this.props.data[name] : null);
+            let handleChange = this.props.onChange != undefined ? _.partial(this.props.onChange, _, control) : function(){};
 
-            if(field.type == undefined || field.type == 'input'){
-                if(field.readonly != undefined && field.readonly){
-                    inputDOM = <input type="text" className="form-control" readOnly="1" value={safestring(value)} />
+            let dom = null;
+            if(type == 'input'){
+                if(readonly){
+                    dom = <input type="text" className="form-control" readOnly="1" value={value} />
                 } else {
-                    inputDOM = <input type="text" className="form-control" placeholder={field.placeholder} value={safestring(value)} onChange={handleChange} />
+                    dom = <input type="text" className="form-control" placeholder={placeholder} value={value} onChange={handleChange} />
                 }
-            } else if(field.type == 'textarea') {
-                if(field.readonly != undefined && field.readonly){
-                    inputDOM = <textarea className="form-control" rows="3" readOnly="1" value={safestring(value)}></textarea>
+            } else if(type == 'textarea') {
+                if(readonly){
+                    dom = <textarea className="form-control" rows="3" readOnly="1" value={value}></textarea>
                 } else {
-                    inputDOM = <textarea className="form-control" rows="3" placeholder={field.placeholder} value={safestring(value)} onChange={handleChange}></textarea>
+                    dom = <textarea className="form-control" rows="3" placeholder={placeholder} value={value} onChange={handleChange}></textarea>
                 }
-            } else if(field.type == 'password'){
-                if(field.readonly != undefined && field.readonly){
-                    inputDOM = <input type="password" className="form-control" readOnly="1" value={safestring(value)} />
+            } else if(type == 'password'){
+                if(readonly){
+                    dom = <input type="password" className="form-control" readOnly="1" value={value} />
                 } else {
-                    inputDOM = <input type="password" className="form-control" placeholder={field.placeholder} value={safestring(value)} onChange={handleChange} />
+                    dom = <input type="password" className="form-control" placeholder={placeholder} value={value} onChange={handleChange} />
                 }
             }
             items.push(
                 <div key={index} className="form-group">
-                    <label className="control-label">{field.text}</label>
-                    {inputDOM}
+                    <label className="control-label">{text}</label>
+                    {dom}
                 </div>
             );
         }.bind(this));
@@ -154,7 +130,20 @@ export var FormSimpleComponent = React.createClass({
             </form>
         );
     }
-});
+}
+
+FormSimpleComponent.propTypes = {
+    controls: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        text: PropTypes.string.isRequired,
+        readonly: PropTypes.bool,
+        placeholder: PropTypes.string,
+        type: PropTypes.string
+    })).isRequired,
+    buttons: PropTypes.arrayOf(PropTypes.element).isRequired,
+    onChange: PropTypes.func,
+    data: PropTypes.object
+};
 
 /**
  * this.props.fields = [{
@@ -208,3 +197,5 @@ export var ReadonlyFormComponent = React.createClass({
         );
     }
 });
+
+export {FormSimpleComponent};
