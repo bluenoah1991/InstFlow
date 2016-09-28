@@ -13,6 +13,7 @@ import {SettingComponent} from '../components/SettingComponent';
 
 import * as Selectors from '../selectors';
 import * as Actions from '../actions';
+import * as Utils from '../utils';
 
 class ProfilePage extends Component {
     render(){
@@ -48,10 +49,10 @@ class ProfilePage extends Component {
                 {name: 'updated_at', text: 'Last Login', readonly: true}
             ],
             buttons: [
-                <ButtonComponent key={0} color='green' text='Save Changes' onClick={this.handleSaveChanges} />,
-                <ButtonComponent key={1} color='default' text='Cancel' />
+                <ButtonComponent key={0} color='green' text='Save Changes' onClick={this.handleSaveChanges.bind(this)} />,
+                <ButtonComponent key={1} color='default' text='Cancel' onClick={this.handleCancelChanges.bind(this)} />
             ],
-            onChange: this.handleProfileChanage,
+            onChange: this.handleProfileChanage.bind(this),
             data: this.props.data
         };
 
@@ -113,7 +114,7 @@ class ProfilePage extends Component {
                         <ProfileContentComponent>
                             <RowComponent>
                                 <ColComponent size="12">
-                                    <PortletTabComponent title='Profile Account'>
+                                    <PortletTabComponent title='Profile Account' id='profile_content_portlet_tab'>
                                         <PortletTabContentComponent title='Personal Info' active={true}>
                                             <FormSimpleComponent {...PersonalInfoProps} />
                                         </PortletTabContentComponent>
@@ -145,17 +146,53 @@ class ProfilePage extends Component {
         }).then(function(data){
             this.props.dispatch(Actions.fetchProfileSuccess(data));
         }.bind(this)).catch(function(err){
-            console.log('parsing failed', err);
             this.props.dispatch(Actions.fetchProfileFailure(err));
-        });
+        }.bind(this));
+    }
+
+    componentDidUpdate(){
+        // Block UI
+        if(this.props.fetching != undefined && this.props.fetching){
+            App.blockUI({
+                target: '#profile_content_portlet_tab',
+                animate: true
+            });
+            window.setTimeout(function() {
+                App.unblockUI('#profile_content_portlet_tab');
+            }, 5000);
+        } else {
+            App.unblockUI('#profile_content_portlet_tab');
+        }
     }
 
     handleSaveChanges(e){
-        // TODO
+        this.props.dispatch(Actions.saveProfileRequest());
+        let dataHasAuthToken = Object.assign({}, this.props.data, {
+            authenticity_token: Utils.csrfToken()
+        });
+        fetch('/api/v1/private/profile', {
+            method: 'POST', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(dataHasAuthToken)
+        }).then(function(response){
+            return response.json();
+        }).then(function(data){
+            this.props.dispatch(Actions.saveProfileSuccess(data));
+        }.bind(this)).catch(function(err){
+            this.props.dispatch(Actions.saveProfileFailure(err));
+        }.bind(this));
+    }
+
+    handleCancelChanges(e){
+        this.props.dispatch(Actions.changeCancelProfile());
     }
 
     handleProfileChanage(e, control){
-        // TODO
+        this.props.dispatch(Actions.changeProfile(control.name, e.target.value));
     }
 
 }

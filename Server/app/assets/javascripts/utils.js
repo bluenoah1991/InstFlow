@@ -16,3 +16,7 @@ export function safestring(obj){
         return obj;
     }
 }
+
+export function csrfToken(){
+    return $('meta[name=csrf-token]').attr('content');
+}

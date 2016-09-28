@@ -73,7 +73,7 @@ class PortletTabComponent extends Component{
         });
 
         return (
-            <div className="portlet light bordered">
+            <div className="portlet light bordered" id={this.props.id}>
                 <div className="portlet-title tabbable-line">
                     <div className="caption caption-md">
                         <i className="icon-globe theme-font hide"></i>
@@ -94,6 +94,7 @@ class PortletTabComponent extends Component{
 };
 
 PortletTabComponent.propTypes = {
+    id: PropTypes.string,
     title: PropTypes.string.isRequired
 };
 

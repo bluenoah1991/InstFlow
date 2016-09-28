@@ -42,6 +42,7 @@ Rails.application.routes.draw do
       resources :messages, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
       namespace :private do
         get 'profile', to: "admins#profile", as: :admin_profile, constraints: TenantdomainConstraint
+        post 'profile', to: "admins#update", as: :update_profile, constraints: TenantdomainConstraint
         post 'users', to: "users#show", as: :users_datatable, constraints: TenantdomainConstraint
         post 'users/enable', to: "users#enable", as: :enable_user, constraints: TenantdomainConstraint
         post 'users/disable', to: "users#disable", as: :disable_user, constraints: TenantdomainConstraint

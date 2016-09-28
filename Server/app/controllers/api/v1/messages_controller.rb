@@ -7,7 +7,6 @@ module Api
                 optional! :channel_id, type: String
                 optional! :user_id, type: String
 
-                debugger
                 if params[:channel_id].present? && params[:user_id].present?
                     @instances = Message.who(params[:channel_id], params[:user_id])
                 else

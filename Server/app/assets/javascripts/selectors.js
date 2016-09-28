@@ -1,15 +1,16 @@
 import {createSelector} from 'reselect';
 
-export const profileFetchingSelector = state => state.profile.fetch.fetching;
-export const profileFetchDataSelector = state => state.profile.fetch.response;
-export const profileFetchErrSelector = state => state.profile.fetch.err;
+export const profileFetchingSelector = state => state.profile.data.fetching;
+export const profileFetchDataSelector = state => state.profile.data.data;
+export const profileFetchRawDataSelector = state => state.profile.data.response;
+export const profileFetchErrSelector = state => state.profile.data.err;
 
 export const profileDisplayNameSelector = createSelector(
-    profileFetchDataSelector,
+    profileFetchRawDataSelector,
     function(data){
         if(data == undefined){
             return '';
-        } else if((data.first_name == undefined || data.first_name.trim().length === 0) ||
+        } else if((data.first_name == undefined || data.first_name.trim().length === 0) &&
             (data.last_name == undefined || data.last_name.trim().length === 0)) {
             return data.email.substring(0, data.email.lastIndexOf('@')).toUpperCase(); 
         } else {
@@ -19,7 +20,7 @@ export const profileDisplayNameSelector = createSelector(
 );
 
 export const profileDisplayOccupationSelector = createSelector(
-    profileFetchDataSelector,
+    profileFetchRawDataSelector,
     function(data){
         if(data == undefined){
             return '';
