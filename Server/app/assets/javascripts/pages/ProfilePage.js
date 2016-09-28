@@ -16,6 +16,11 @@ import * as Actions from '../actions';
 import * as Utils from '../utils';
 
 class ProfilePage extends Component {
+    constructor(){
+        super();
+        this.state = {};
+    }
+
     render(){
         // init data 
 
@@ -24,16 +29,19 @@ class ProfilePage extends Component {
             {title: 'My Profile'}
         ];
 
-        let profileCardMenu = [
-            {title: 'Account Profile', icon: 'user', link: '#/account_profile', active: true},
-            {title: 'Billing', icon: 'credit-card', link: '#/billing'},
-            {title: 'Help', icon: 'info', link: '#/help'}
-        ];
-
-        let profileCardButton = [
-            <ButtonCircleComponent key={0} color='green' text='Free' />,
-            <ButtonCircleComponent key={1} color='red' text='Upgrade' />
-        ];
+        let ProfileCardProps = {
+            title: this.props.displayName,
+            subtitle: this.props.displayOccupation,
+            buttons: [
+                <ButtonCircleComponent key={0} color='green' text='Free' />,
+                <ButtonCircleComponent key={1} color='red' text='Upgrade' />
+            ],
+            menu: [
+                {title: 'Account Profile', icon: 'user', link: '#/account_profile', active: true},
+                {title: 'Billing', icon: 'credit-card', link: '#/billing'},
+                {title: 'Help', icon: 'info', link: '#/help'}
+            ]
+        };
 
         let PersonalInfoProps = {
             controls: [
@@ -52,31 +60,29 @@ class ProfilePage extends Component {
                 <ButtonComponent key={0} color='green' text='Save Changes' onClick={this.handleSaveChanges.bind(this)} />,
                 <ButtonComponent key={1} color='default' text='Cancel' onClick={this.handleCancelChanges.bind(this)} />
             ],
-            onChange: this.handleProfileChanage.bind(this),
-            data: this.props.data
+            onChange: this.handleProfileFormChanage.bind(this),
+            data: this.props.form
         };
 
-        let passwordFormFields = [{
-            name: 'Current Password',
-            placeholder: 'Enter your current password',
-            value: '123456!@#',
-            type: 'password'
-        },{
-            name: 'New Password',
-            placeholder: 'Enter your new password',
-            value: '123456!@#',
-            type: 'password'
-        },{
-            name: 'Re-type New Password',
-            placeholder: 'Enter your new password again',
-            value: '123456!@#',
-            type: 'password'
-        }];
-
-        let passwordFormButtons = [
-            <ButtonComponent key={0} color='green' text='Change Password' />,
-            <ButtonComponent key={1} color='default' text='Cancel' />
-        ];
+        let isPasswordEmpty = this.state.isCheckPasswordFormNull && 
+            (this.props.passwordForm == undefined || this.props.passwordForm.password == undefined || this.props.passwordForm.password.trim().length === 0);
+        let isNewPasswordEmpty = this.state.isCheckPasswordFormNull && 
+            (this.props.passwordForm == undefined || this.props.passwordForm.newpassword == undefined || this.props.passwordForm.newpassword.trim().length === 0);
+        let isNewPassword2Empty = this.state.isCheckPasswordFormNull && 
+            (this.props.passwordForm == undefined || this.props.passwordForm.newpassword2 == undefined || this.props.passwordForm.newpassword2.trim().length === 0);
+        let ChangePasswordProps = {
+            controls: [
+                {name: 'password', text: 'Current Password', placeholder: '', type: 'password', err: isPasswordEmpty},
+                {name: 'newpassword', text: 'New Password', placeholder: '', type: 'password', err: isNewPasswordEmpty},
+                {name: 'newpassword2', text: 'Re-type New Password', placeholder: '', type: 'password', err: isNewPassword2Empty || this.isPasswordNotIdentical()}
+            ],
+            buttons: [
+                <ButtonComponent key={0} color='green' text='Change Password' onClick={this.handleChangePassword.bind(this)} />,
+                <ButtonComponent key={1} color='default' text='Cancel' onClick={this.handleCancelChangePassword.bind(this)} />
+            ],
+            onChange: this.handlePasswordFormChanage.bind(this),
+            data: this.props.passwordForm
+        };
 
         let options = [{
             name: 'receive_email',
@@ -108,7 +114,7 @@ class ProfilePage extends Component {
                 <RowComponent>
                     <ColComponent size="12">
                         <ProfileSidebarComponent>
-                            <ProfileCardComponent title={this.props.displayName} subtitle={this.props.displayOccupation} buttons={profileCardButton} menu={profileCardMenu} />
+                            <ProfileCardComponent {...ProfileCardProps} />
                             <ProfileAboutComponent apps={3} messages={15} tickets={2} />
                         </ProfileSidebarComponent>
                         <ProfileContentComponent>
@@ -122,7 +128,7 @@ class ProfilePage extends Component {
                                             <p>Blank</p>
                                         </PortletTabContentComponent>
                                         <PortletTabContentComponent title='Change Password'>
-                                            <p>Blank</p>
+                                            <FormSimpleComponent {...ChangePasswordProps} />
                                         </PortletTabContentComponent>
                                         <PortletTabContentComponent title='Global Settings'>
                                             <SettingComponent items={options} />
@@ -137,8 +143,6 @@ class ProfilePage extends Component {
         );
     }
 
-//<FormSimpleComponent controls={passwordFormFields} buttons={passwordFormButtons} />
-
     componentDidMount(){
         this.props.dispatch(Actions.fetchProfileRequest());
         fetch('/api/v1/private/profile', {credentials: 'same-origin'}).then(function(response){
@@ -152,7 +156,8 @@ class ProfilePage extends Component {
 
     componentDidUpdate(){
         // Block UI
-        if(this.props.fetching != undefined && this.props.fetching){
+        if((this.props.fetching != undefined && this.props.fetching) ||
+            (this.props.passwordFetching != undefined && this.props.passwordFetching)){
             App.blockUI({
                 target: '#profile_content_portlet_tab',
                 animate: true
@@ -167,7 +172,7 @@ class ProfilePage extends Component {
 
     handleSaveChanges(e){
         this.props.dispatch(Actions.saveProfileRequest());
-        let dataHasAuthToken = Object.assign({}, this.props.data, {
+        let dataHasAuthToken = Object.assign({}, this.props.form, {
             authenticity_token: Utils.csrfToken()
         });
         fetch('/api/v1/private/profile', {
@@ -182,8 +187,11 @@ class ProfilePage extends Component {
             return response.json();
         }).then(function(data){
             this.props.dispatch(Actions.saveProfileSuccess(data));
+            // TODO Show Toast
+            // Redirect to sign in
         }.bind(this)).catch(function(err){
             this.props.dispatch(Actions.saveProfileFailure(err));
+            // TODO Show Toast
         }.bind(this));
     }
 
@@ -191,27 +199,89 @@ class ProfilePage extends Component {
         this.props.dispatch(Actions.changeCancelProfile());
     }
 
-    handleProfileChanage(e, control){
-        this.props.dispatch(Actions.changeProfile(control.name, e.target.value));
+    handleProfileFormChanage(e, control){
+        this.props.dispatch(Actions.changeProfileForm(control.name, e.target.value));
     }
 
+    handleChangePassword(){
+        this.setState({
+            isCheckPasswordFormNull: true
+        });
+        if(this.isPasswordFormComplete()){
+            this.props.dispatch(Actions.changePasswordRequest());
+            let dataHasAuthToken = Object.assign({}, this.props.passwordForm, {
+                authenticity_token: Utils.csrfToken()
+            });
+            fetch('/api/v1/private/profile/password', {
+                method: 'POST', 
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(dataHasAuthToken)
+            }).then(function(response){
+                return response.json();
+            }).then(function(data){
+                this.props.dispatch(Actions.changePasswordSuccess(data));
+                this.setState({
+                    isCheckPasswordFormNull: false
+                });
+                // TODO Show Toast
+            }.bind(this)).catch(function(err){
+                this.props.dispatch(Actions.changePasswordFailure(err));
+                this.setState({
+                    isCheckPasswordFormNull: false
+                });
+                // TODO Show Toast
+            }.bind(this));
+        }
+    }
+
+    handleCancelChangePassword(e){
+        this.props.dispatch(Actions.changeCancelPassword());
+    }
+
+    handlePasswordFormChanage(e, control){
+        this.setState({
+            isCheckPasswordFormNull: false
+        });
+        this.props.dispatch(Actions.changePasswordForm(control.name, e.target.value));
+    }
+
+    isPasswordNotIdentical(){
+        return this.props.passwordForm != undefined && 
+            this.props.passwordForm.newpassword2 != undefined && 
+            this.props.passwordForm.newpassword != this.props.passwordForm.newpassword2;
+    }
+
+    isPasswordFormComplete(){
+        return !this.isPasswordNotIdentical() && this.props.passwordForm != undefined &&
+            this.props.passwordForm.password != undefined && this.props.passwordForm.password.trim().length > 0 &&
+            this.props.passwordForm.newpassword != undefined && this.props.passwordForm.newpassword.trim().length > 0 &&
+            this.props.passwordForm.newpassword2 != undefined && this.props.passwordForm.newpassword2.trim().length > 0;
+    }
 }
 
 ProfilePage.propTypes = {
     fetching: PropTypes.bool,
-    data: PropTypes.object,
+    form: PropTypes.object,
     err: PropTypes.object,
     displayName: PropTypes.string,
-    displayOccupation: PropTypes.string
+    displayOccupation: PropTypes.string,
+    passwordForm: PropTypes.object,
+    passwordFetching: PropTypes.bool
 };
 
 function select(state){
     return {
-        fetching: Selectors.profileFetchingSelector(state),
-        data: Selectors.profileFetchDataSelector(state),
-        err: Selectors.profileFetchErrSelector(state),
-        displayName: Selectors.profileDisplayNameSelector(state),
-        displayOccupation: Selectors.profileDisplayOccupationSelector(state)
+        fetching: Selectors.ProfileFetchingSelector(state),
+        form: Selectors.ProfileFormSelector(state),
+        err: Selectors.ProfileFetchErrSelector(state),
+        displayName: Selectors.ProfileDisplayNameSelector(state),
+        displayOccupation: Selectors.ProfileDisplayOccupationSelector(state),
+        passwordForm: Selectors.ProfilePasswordFormSelector(state),
+        passwordFetching: Selectors.ProfilePasswordFetchingSelector(state)
     };
 }
 

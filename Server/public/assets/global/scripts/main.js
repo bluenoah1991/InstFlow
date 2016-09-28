@@ -7,19 +7,29 @@ Object.defineProperty(exports, "__esModule", {
 exports.fetchProfileRequest = fetchProfileRequest;
 exports.fetchProfileSuccess = fetchProfileSuccess;
 exports.fetchProfileFailure = fetchProfileFailure;
-exports.changeProfile = changeProfile;
+exports.changeProfileForm = changeProfileForm;
 exports.changeCancelProfile = changeCancelProfile;
 exports.saveProfileRequest = saveProfileRequest;
 exports.saveProfileSuccess = saveProfileSuccess;
 exports.saveProfileFailure = saveProfileFailure;
+exports.changePasswordForm = changePasswordForm;
+exports.changeCancelPassword = changeCancelPassword;
+exports.changePasswordRequest = changePasswordRequest;
+exports.changePasswordSuccess = changePasswordSuccess;
+exports.changePasswordFailure = changePasswordFailure;
 var TYPE_FETCH_PROFILE_REQUEST = exports.TYPE_FETCH_PROFILE_REQUEST = 'TYPE_FETCH_PROFILE_REQUEST';
 var TYPE_FETCH_PROFILE_SUCCESS = exports.TYPE_FETCH_PROFILE_SUCCESS = 'TYPE_FETCH_PROFILE_SUCCESS';
 var TYPE_FETCH_PROFILE_FAILURE = exports.TYPE_FETCH_PROFILE_FAILURE = 'TYPE_FETCH_PROFILE_FAILURE';
-var TYPE_CHANGE_PROFILE = exports.TYPE_CHANGE_PROFILE = 'TYPE_CHANGE_PROFILE';
+var TYPE_CHANGE_PROFILE_FORM = exports.TYPE_CHANGE_PROFILE_FORM = 'TYPE_CHANGE_PROFILE_FORM';
 var TYPE_CHANGE_CANCEL_PROFILE = exports.TYPE_CHANGE_CANCEL_PROFILE = 'TYPE_CHANGE_CANCEL_PROFILE';
 var TYPE_SAVE_PROFILE_REQUEST = exports.TYPE_SAVE_PROFILE_REQUEST = 'TYPE_SAVE_PROFILE_REQUEST';
 var TYPE_SAVE_PROFILE_SUCCESS = exports.TYPE_SAVE_PROFILE_SUCCESS = 'TYPE_SAVE_PROFILE_SUCCESS';
 var TYPE_SAVE_PROFILE_FAILURE = exports.TYPE_SAVE_PROFILE_FAILURE = 'TYPE_SAVE_PROFILE_FAILURE';
+var TYPE_CHANGE_PASSWORD_FORM = exports.TYPE_CHANGE_PASSWORD_FORM = 'TYPE_CHANGE_PASSWORD_FORM';
+var TYPE_CHANGE_CANCEL_PASSWORD = exports.TYPE_CHANGE_CANCEL_PASSWORD = 'TYPE_CHANGE_CANCEL_PASSWORD';
+var TYPE_CHANGE_PASSWORD_REQUEST = exports.TYPE_CHANGE_PASSWORD_REQUEST = 'TYPE_CHANGE_PASSWORD_REQUEST';
+var TYPE_CHANGE_PASSWORD_SUCCESS = exports.TYPE_CHANGE_PASSWORD_SUCCESS = 'TYPE_CHANGE_PASSWORD_SUCCESS';
+var TYPE_CHANGE_PASSWORD_FAILURE = exports.TYPE_CHANGE_PASSWORD_FAILURE = 'TYPE_CHANGE_PASSWORD_FAILURE';
 
 function fetchProfileRequest() {
     var action = {
@@ -44,9 +54,9 @@ function fetchProfileFailure(err) {
     return action;
 }
 
-function changeProfile(fieldName, value) {
+function changeProfileForm(fieldName, value) {
     var action = {
-        type: TYPE_CHANGE_PROFILE,
+        type: TYPE_CHANGE_PROFILE_FORM,
         fieldName: fieldName,
         value: value
     };
@@ -78,6 +88,45 @@ function saveProfileSuccess(response) {
 function saveProfileFailure(err) {
     var action = {
         type: TYPE_SAVE_PROFILE_FAILURE,
+        err: err
+    };
+    return action;
+}
+
+function changePasswordForm(fieldName, value) {
+    var action = {
+        type: TYPE_CHANGE_PASSWORD_FORM,
+        fieldName: fieldName,
+        value: value
+    };
+    return action;
+}
+
+function changeCancelPassword() {
+    var action = {
+        type: TYPE_CHANGE_CANCEL_PASSWORD
+    };
+    return action;
+}
+
+function changePasswordRequest() {
+    var action = {
+        type: TYPE_CHANGE_PASSWORD_REQUEST
+    };
+    return action;
+}
+
+function changePasswordSuccess(response) {
+    var action = {
+        type: TYPE_CHANGE_PASSWORD_SUCCESS,
+        response: response
+    };
+    return action;
+}
+
+function changePasswordFailure(err) {
+    var action = {
+        type: TYPE_CHANGE_PASSWORD_FAILURE,
         err: err
     };
     return action;
@@ -731,6 +780,7 @@ var FormSimpleComponent = function (_Component) {
                 var readonly = control.readonly != undefined ? control.readonly : false;
                 var placeholder = control.placeholder != undefined ? control.placeholder : 'Enter your ' + control.text.toLowerCase();
                 var type = control.type != undefined ? control.type : 'input';
+                var err = control.err != undefined ? control.err : false;
                 var value = (0, _utils.safestring)(this.props.data != undefined ? this.props.data[name] : null);
                 var handleChange = this.props.onChange != undefined ? _underscore2.default.partial(this.props.onChange, _underscore2.default, control) : function () {};
 
@@ -756,7 +806,7 @@ var FormSimpleComponent = function (_Component) {
                 }
                 items.push(_react2.default.createElement(
                     'div',
-                    { key: index, className: 'form-group' },
+                    { key: index, className: 'form-group ' + (err ? 'has-error' : '') },
                     _react2.default.createElement(
                         'label',
                         { className: 'control-label' },
@@ -792,7 +842,8 @@ FormSimpleComponent.propTypes = {
         text: _react.PropTypes.string.isRequired,
         readonly: _react.PropTypes.bool,
         placeholder: _react.PropTypes.string,
-        type: _react.PropTypes.string
+        type: _react.PropTypes.string,
+        err: _react.PropTypes.bool
     })).isRequired,
     buttons: _react.PropTypes.arrayOf(_react.PropTypes.element).isRequired,
     onChange: _react.PropTypes.func,
@@ -2298,7 +2349,10 @@ var ProfilePage = function (_Component) {
     function ProfilePage() {
         _classCallCheck(this, ProfilePage);
 
-        return _possibleConstructorReturn(this, (ProfilePage.__proto__ || Object.getPrototypeOf(ProfilePage)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (ProfilePage.__proto__ || Object.getPrototypeOf(ProfilePage)).call(this));
+
+        _this.state = {};
+        return _this;
     }
 
     _createClass(ProfilePage, [{
@@ -2308,35 +2362,29 @@ var ProfilePage = function (_Component) {
 
             var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'My Profile' }];
 
-            var profileCardMenu = [{ title: 'Account Profile', icon: 'user', link: '#/account_profile', active: true }, { title: 'Billing', icon: 'credit-card', link: '#/billing' }, { title: 'Help', icon: 'info', link: '#/help' }];
-
-            var profileCardButton = [_react2.default.createElement(_ButtonComponent.ButtonCircleComponent, { key: 0, color: 'green', text: 'Free' }), _react2.default.createElement(_ButtonComponent.ButtonCircleComponent, { key: 1, color: 'red', text: 'Upgrade' })];
+            var ProfileCardProps = {
+                title: this.props.displayName,
+                subtitle: this.props.displayOccupation,
+                buttons: [_react2.default.createElement(_ButtonComponent.ButtonCircleComponent, { key: 0, color: 'green', text: 'Free' }), _react2.default.createElement(_ButtonComponent.ButtonCircleComponent, { key: 1, color: 'red', text: 'Upgrade' })],
+                menu: [{ title: 'Account Profile', icon: 'user', link: '#/account_profile', active: true }, { title: 'Billing', icon: 'credit-card', link: '#/billing' }, { title: 'Help', icon: 'info', link: '#/help' }]
+            };
 
             var PersonalInfoProps = {
                 controls: [{ name: 'tenant_id', text: 'Tenant ID', readonly: true }, { name: 'email', text: 'Email', readonly: true }, { name: 'first_name', text: 'First Name' }, { name: 'last_name', text: 'Last Name' }, { name: 'phone_number', text: 'Phone Number' }, { name: 'company_name', text: 'Your Company', placeholder: 'Enter your company name' }, { name: 'occupation', text: 'Occupation' }, { name: 'website_url', text: 'Website Url' }, { name: 'about', text: 'About', type: 'textarea' }, { name: 'updated_at', text: 'Last Login', readonly: true }],
                 buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'green', text: 'Save Changes', onClick: this.handleSaveChanges.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'default', text: 'Cancel', onClick: this.handleCancelChanges.bind(this) })],
-                onChange: this.handleProfileChanage.bind(this),
-                data: this.props.data
+                onChange: this.handleProfileFormChanage.bind(this),
+                data: this.props.form
             };
 
-            var passwordFormFields = [{
-                name: 'Current Password',
-                placeholder: 'Enter your current password',
-                value: '123456!@#',
-                type: 'password'
-            }, {
-                name: 'New Password',
-                placeholder: 'Enter your new password',
-                value: '123456!@#',
-                type: 'password'
-            }, {
-                name: 'Re-type New Password',
-                placeholder: 'Enter your new password again',
-                value: '123456!@#',
-                type: 'password'
-            }];
-
-            var passwordFormButtons = [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'green', text: 'Change Password' }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'default', text: 'Cancel' })];
+            var isPasswordEmpty = this.state.isCheckPasswordFormNull && (this.props.passwordForm == undefined || this.props.passwordForm.password == undefined || this.props.passwordForm.password.trim().length === 0);
+            var isNewPasswordEmpty = this.state.isCheckPasswordFormNull && (this.props.passwordForm == undefined || this.props.passwordForm.newpassword == undefined || this.props.passwordForm.newpassword.trim().length === 0);
+            var isNewPassword2Empty = this.state.isCheckPasswordFormNull && (this.props.passwordForm == undefined || this.props.passwordForm.newpassword2 == undefined || this.props.passwordForm.newpassword2.trim().length === 0);
+            var ChangePasswordProps = {
+                controls: [{ name: 'password', text: 'Current Password', placeholder: '', type: 'password', err: isPasswordEmpty }, { name: 'newpassword', text: 'New Password', placeholder: '', type: 'password', err: isNewPasswordEmpty }, { name: 'newpassword2', text: 'Re-type New Password', placeholder: '', type: 'password', err: isNewPassword2Empty || this.isPasswordNotIdentical() }],
+                buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'green', text: 'Change Password', onClick: this.handleChangePassword.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'default', text: 'Cancel', onClick: this.handleCancelChangePassword.bind(this) })],
+                onChange: this.handlePasswordFormChanage.bind(this),
+                data: this.props.passwordForm
+            };
 
             var options = [{
                 name: 'receive_email',
@@ -2366,7 +2414,7 @@ var ProfilePage = function (_Component) {
                         _react2.default.createElement(
                             _ProfileComponent.ProfileSidebarComponent,
                             null,
-                            _react2.default.createElement(_ProfileComponent.ProfileCardComponent, { title: this.props.displayName, subtitle: this.props.displayOccupation, buttons: profileCardButton, menu: profileCardMenu }),
+                            _react2.default.createElement(_ProfileComponent.ProfileCardComponent, ProfileCardProps),
                             _react2.default.createElement(_ProfileComponent.ProfileAboutComponent, { apps: 3, messages: 15, tickets: 2 })
                         ),
                         _react2.default.createElement(
@@ -2398,11 +2446,7 @@ var ProfilePage = function (_Component) {
                                         _react2.default.createElement(
                                             _LayoutComponent.PortletTabContentComponent,
                                             { title: 'Change Password' },
-                                            _react2.default.createElement(
-                                                'p',
-                                                null,
-                                                'Blank'
-                                            )
+                                            _react2.default.createElement(_FormComponent.FormSimpleComponent, ChangePasswordProps)
                                         ),
                                         _react2.default.createElement(
                                             _LayoutComponent.PortletTabContentComponent,
@@ -2417,9 +2461,6 @@ var ProfilePage = function (_Component) {
                 )
             );
         }
-
-        //<FormSimpleComponent controls={passwordFormFields} buttons={passwordFormButtons} />
-
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
@@ -2436,7 +2477,7 @@ var ProfilePage = function (_Component) {
         key: 'componentDidUpdate',
         value: function componentDidUpdate() {
             // Block UI
-            if (this.props.fetching != undefined && this.props.fetching) {
+            if (this.props.fetching != undefined && this.props.fetching || this.props.passwordFetching != undefined && this.props.passwordFetching) {
                 App.blockUI({
                     target: '#profile_content_portlet_tab',
                     animate: true
@@ -2452,7 +2493,7 @@ var ProfilePage = function (_Component) {
         key: 'handleSaveChanges',
         value: function handleSaveChanges(e) {
             this.props.dispatch(Actions.saveProfileRequest());
-            var dataHasAuthToken = Object.assign({}, this.props.data, {
+            var dataHasAuthToken = Object.assign({}, this.props.form, {
                 authenticity_token: Utils.csrfToken()
             });
             fetch('/api/v1/private/profile', {
@@ -2477,9 +2518,66 @@ var ProfilePage = function (_Component) {
             this.props.dispatch(Actions.changeCancelProfile());
         }
     }, {
-        key: 'handleProfileChanage',
-        value: function handleProfileChanage(e, control) {
-            this.props.dispatch(Actions.changeProfile(control.name, e.target.value));
+        key: 'handleProfileFormChanage',
+        value: function handleProfileFormChanage(e, control) {
+            this.props.dispatch(Actions.changeProfileForm(control.name, e.target.value));
+        }
+    }, {
+        key: 'handleChangePassword',
+        value: function handleChangePassword() {
+            this.setState({
+                isCheckPasswordFormNull: true
+            });
+            if (this.isPasswordFormComplete()) {
+                this.props.dispatch(Actions.changePasswordRequest());
+                var dataHasAuthToken = Object.assign({}, this.props.passwordForm, {
+                    authenticity_token: Utils.csrfToken()
+                });
+                fetch('/api/v1/private/profile/password', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(dataHasAuthToken)
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    this.props.dispatch(Actions.changePasswordSuccess(data));
+                    this.setState({
+                        isCheckPasswordFormNull: false
+                    });
+                }.bind(this)).catch(function (err) {
+                    this.props.dispatch(Actions.changePasswordFailure(err));
+                    this.setState({
+                        isCheckPasswordFormNull: false
+                    });
+                }.bind(this));
+            }
+        }
+    }, {
+        key: 'handleCancelChangePassword',
+        value: function handleCancelChangePassword(e) {
+            this.props.dispatch(Actions.changeCancelPassword());
+        }
+    }, {
+        key: 'handlePasswordFormChanage',
+        value: function handlePasswordFormChanage(e, control) {
+            this.setState({
+                isCheckPasswordFormNull: false
+            });
+            this.props.dispatch(Actions.changePasswordForm(control.name, e.target.value));
+        }
+    }, {
+        key: 'isPasswordNotIdentical',
+        value: function isPasswordNotIdentical() {
+            return this.props.passwordForm != undefined && this.props.passwordForm.newpassword2 != undefined && this.props.passwordForm.newpassword != this.props.passwordForm.newpassword2;
+        }
+    }, {
+        key: 'isPasswordFormComplete',
+        value: function isPasswordFormComplete() {
+            return !this.isPasswordNotIdentical() && this.props.passwordForm != undefined && this.props.passwordForm.password != undefined && this.props.passwordForm.password.trim().length > 0 && this.props.passwordForm.newpassword != undefined && this.props.passwordForm.newpassword.trim().length > 0 && this.props.passwordForm.newpassword2 != undefined && this.props.passwordForm.newpassword2.trim().length > 0;
         }
     }]);
 
@@ -2488,19 +2586,23 @@ var ProfilePage = function (_Component) {
 
 ProfilePage.propTypes = {
     fetching: _react.PropTypes.bool,
-    data: _react.PropTypes.object,
+    form: _react.PropTypes.object,
     err: _react.PropTypes.object,
     displayName: _react.PropTypes.string,
-    displayOccupation: _react.PropTypes.string
+    displayOccupation: _react.PropTypes.string,
+    passwordForm: _react.PropTypes.object,
+    passwordFetching: _react.PropTypes.bool
 };
 
 function select(state) {
     return {
-        fetching: Selectors.profileFetchingSelector(state),
-        data: Selectors.profileFetchDataSelector(state),
-        err: Selectors.profileFetchErrSelector(state),
-        displayName: Selectors.profileDisplayNameSelector(state),
-        displayOccupation: Selectors.profileDisplayOccupationSelector(state)
+        fetching: Selectors.ProfileFetchingSelector(state),
+        form: Selectors.ProfileFormSelector(state),
+        err: Selectors.ProfileFetchErrSelector(state),
+        displayName: Selectors.ProfileDisplayNameSelector(state),
+        displayOccupation: Selectors.ProfileDisplayOccupationSelector(state),
+        passwordForm: Selectors.ProfilePasswordFormSelector(state),
+        passwordFetching: Selectors.ProfilePasswordFetchingSelector(state)
     };
 }
 
@@ -2726,13 +2828,6 @@ var _redux = require('redux');
 
 var _actions = require('../actions');
 
-/**
- * state = {
- *      fetching: false,
- *      response: {},
- *      err: {}
- * }
- */
 function ProfileReducer() {
     var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     var action = arguments[1];
@@ -2746,22 +2841,22 @@ function ProfileReducer() {
             return Object.assign({}, state, {
                 fetching: false,
                 response: action.response,
-                data: action.response
+                form: action.response
             });
         case _actions.TYPE_FETCH_PROFILE_FAILURE:
             return Object.assign({}, state, {
                 fetching: false,
                 err: action.err
             });
-        case _actions.TYPE_CHANGE_PROFILE:
-            var changedData = Object.assign({}, state.data);
+        case _actions.TYPE_CHANGE_PROFILE_FORM:
+            var changedData = Object.assign({}, state.form);
             changedData[action.fieldName] = action.value;
             return Object.assign({}, state, {
-                data: changedData
+                form: changedData
             });
         case _actions.TYPE_CHANGE_CANCEL_PROFILE:
             return Object.assign({}, state, {
-                data: state.response
+                form: state.response
             });
         case _actions.TYPE_SAVE_PROFILE_REQUEST:
             return Object.assign({}, state, {
@@ -2771,7 +2866,7 @@ function ProfileReducer() {
             return Object.assign({}, state, {
                 fetching: false,
                 response: action.response,
-                data: action.response
+                form: action.response
             });
         case _actions.TYPE_SAVE_PROFILE_FAILURE:
             return Object.assign({}, state, {
@@ -2783,8 +2878,43 @@ function ProfileReducer() {
     }
 }
 
+function PasswordReducer() {
+    var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var action = arguments[1];
+
+    switch (action.type) {
+        case _actions.TYPE_CHANGE_PASSWORD_FORM:
+            var changedData = Object.assign({}, state.form);
+            changedData[action.fieldName] = action.value;
+            return Object.assign({}, state, {
+                form: changedData
+            });
+        case _actions.TYPE_CHANGE_CANCEL_PASSWORD:
+            return Object.assign({}, state, {
+                form: {}
+            });
+        case _actions.TYPE_CHANGE_PASSWORD_REQUEST:
+            return Object.assign({}, state, {
+                fetching: true
+            });
+        case _actions.TYPE_CHANGE_PASSWORD_SUCCESS:
+            return Object.assign({}, state, {
+                fetching: false,
+                form: {}
+            });
+        case _actions.TYPE_CHANGE_PASSWORD_FAILURE:
+            return Object.assign({}, state, {
+                fetching: false,
+                form: {}
+            });
+        default:
+            return state;
+    }
+}
+
 exports.default = (0, _redux.combineReducers)({
-    data: ProfileReducer
+    data: ProfileReducer,
+    password: PasswordReducer
 });
 
 },{"../actions":1,"redux":569}],21:[function(require,module,exports){
@@ -2814,24 +2944,24 @@ exports.default = reducers;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.profileDisplayOccupationSelector = exports.profileDisplayNameSelector = exports.profileFetchErrSelector = exports.profileFetchRawDataSelector = exports.profileFetchDataSelector = exports.profileFetchingSelector = undefined;
+exports.ProfilePasswordFetchingSelector = exports.ProfilePasswordFormSelector = exports.ProfileDisplayOccupationSelector = exports.ProfileDisplayNameSelector = exports.ProfileFetchErrSelector = exports.ProfileDataSelector = exports.ProfileFormSelector = exports.ProfileFetchingSelector = undefined;
 
 var _reselect = require('reselect');
 
-var profileFetchingSelector = exports.profileFetchingSelector = function profileFetchingSelector(state) {
+var ProfileFetchingSelector = exports.ProfileFetchingSelector = function ProfileFetchingSelector(state) {
     return state.profile.data.fetching;
 };
-var profileFetchDataSelector = exports.profileFetchDataSelector = function profileFetchDataSelector(state) {
-    return state.profile.data.data;
+var ProfileFormSelector = exports.ProfileFormSelector = function ProfileFormSelector(state) {
+    return state.profile.data.form;
 };
-var profileFetchRawDataSelector = exports.profileFetchRawDataSelector = function profileFetchRawDataSelector(state) {
+var ProfileDataSelector = exports.ProfileDataSelector = function ProfileDataSelector(state) {
     return state.profile.data.response;
 };
-var profileFetchErrSelector = exports.profileFetchErrSelector = function profileFetchErrSelector(state) {
+var ProfileFetchErrSelector = exports.ProfileFetchErrSelector = function ProfileFetchErrSelector(state) {
     return state.profile.data.err;
 };
 
-var profileDisplayNameSelector = exports.profileDisplayNameSelector = (0, _reselect.createSelector)(profileFetchRawDataSelector, function (data) {
+var ProfileDisplayNameSelector = exports.ProfileDisplayNameSelector = (0, _reselect.createSelector)(ProfileDataSelector, function (data) {
     if (data == undefined) {
         return '';
     } else if ((data.first_name == undefined || data.first_name.trim().length === 0) && (data.last_name == undefined || data.last_name.trim().length === 0)) {
@@ -2841,7 +2971,7 @@ var profileDisplayNameSelector = exports.profileDisplayNameSelector = (0, _resel
     }
 });
 
-var profileDisplayOccupationSelector = exports.profileDisplayOccupationSelector = (0, _reselect.createSelector)(profileFetchRawDataSelector, function (data) {
+var ProfileDisplayOccupationSelector = exports.ProfileDisplayOccupationSelector = (0, _reselect.createSelector)(ProfileDataSelector, function (data) {
     if (data == undefined) {
         return '';
     }
@@ -2851,6 +2981,13 @@ var profileDisplayOccupationSelector = exports.profileDisplayOccupationSelector 
         return '';
     }
 });
+
+var ProfilePasswordFormSelector = exports.ProfilePasswordFormSelector = function ProfilePasswordFormSelector(state) {
+    return state.profile.password.form;
+};
+var ProfilePasswordFetchingSelector = exports.ProfilePasswordFetchingSelector = function ProfilePasswordFetchingSelector(state) {
+    return state.profile.password.fetching;
+};
 
 },{"reselect":576}],23:[function(require,module,exports){
 "use strict";

@@ -30,6 +30,21 @@ module Api
 
                     render json: @instance
                 end
+
+                def password
+                    optional! :password, type: String
+                    optional! :newpassword, type: String
+
+                    @instance = current_user
+                    if @instance.valid_password?(params[:password])
+                        @instance.password = params[:newpassword]
+                        @instance.password_confirmation = params[:newpassword]
+                        @instance.save!
+                        render json: @instance
+                    else
+                        render json: { error: 'Invalid password.' }
+                    end
+                end
             end
         end
     end

@@ -88,6 +88,7 @@ class FormSimpleComponent extends Component{
             let readonly = control.readonly != undefined ? control.readonly : false;
             let placeholder = control.placeholder != undefined ? control.placeholder : `Enter your ${control.text.toLowerCase()}`;
             let type = control.type != undefined ? control.type : 'input';
+            let err = control.err != undefined ? control.err : false;
             let value = safestring(this.props.data != undefined ? this.props.data[name] : null);
             let handleChange = this.props.onChange != undefined ? _.partial(this.props.onChange, _, control) : function(){};
 
@@ -112,7 +113,7 @@ class FormSimpleComponent extends Component{
                 }
             }
             items.push(
-                <div key={index} className="form-group">
+                <div key={index} className={`form-group ${err ? 'has-error' : ''}`}>
                     <label className="control-label">{text}</label>
                     {dom}
                 </div>
@@ -138,7 +139,8 @@ FormSimpleComponent.propTypes = {
         text: PropTypes.string.isRequired,
         readonly: PropTypes.bool,
         placeholder: PropTypes.string,
-        type: PropTypes.string
+        type: PropTypes.string,
+        err: PropTypes.bool
     })).isRequired,
     buttons: PropTypes.arrayOf(PropTypes.element).isRequired,
     onChange: PropTypes.func,
