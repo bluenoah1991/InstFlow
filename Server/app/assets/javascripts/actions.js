@@ -1,3 +1,28 @@
+// Toast Action Types
+export const TYPE_SHOW_TOAST = 'TYPE_SHOW_TOAST';
+export const TYPE_SHOW_TOAST_FINISH = 'TYPE_SHOW_TOAST_FINISH';
+
+
+// Toast Actions
+export function showToast(method, title, message){
+    const action = {
+        type: TYPE_SHOW_TOAST,
+        method: method,
+        title: title,
+        message: message
+    };
+    return action;
+}
+
+export function showToastFinish(){
+    const action = {
+        type: TYPE_SHOW_TOAST_FINISH
+    };
+    return action;
+}
+
+
+// Profile Action Types
 export const TYPE_FETCH_PROFILE_REQUEST = 'TYPE_FETCH_PROFILE_REQUEST';
 export const TYPE_FETCH_PROFILE_SUCCESS = 'TYPE_FETCH_PROFILE_SUCCESS';
 export const TYPE_FETCH_PROFILE_FAILURE = 'TYPE_FETCH_PROFILE_FAILURE';
@@ -12,6 +37,8 @@ export const TYPE_CHANGE_PASSWORD_REQUEST = 'TYPE_CHANGE_PASSWORD_REQUEST';
 export const TYPE_CHANGE_PASSWORD_SUCCESS = 'TYPE_CHANGE_PASSWORD_SUCCESS';
 export const TYPE_CHANGE_PASSWORD_FAILURE = 'TYPE_CHANGE_PASSWORD_FAILURE';
 
+
+// Profile Actions
 export function fetchProfileRequest(){
     const action = {
         type: TYPE_FETCH_PROFILE_REQUEST

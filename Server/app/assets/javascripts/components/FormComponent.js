@@ -1,64 +1,45 @@
 import React, {Component, PropTypes} from 'react';
-import {ButtonComponent} from '../components/ButtonComponent';
 
 import _ from 'underscore';
 import {safestring} from '../utils';
 
-/**
- * this.props.fields = [{
- *      name: 'field name', 
- *      readonly: false, 
- *      placeholder: 'enter your field name', 
- *      help: 'help plain text',
- *      value: 'field value'
- * }];
- * 
- * this.props.actions = [{
- *      text: 'button text',
- *      color: 'blue'
- * }];
- */
-export var FormComponent = React.createClass({
-    render: function(){
-        var items = [];
-        this.props.fields.forEach(function(field, index){
-            let name = field.name;
-            let readonly = field.readonly;
-            let placeholder = field.placeholder;
-            let help = field.help;
-            let value = field.value;
-            if(readonly == undefined || !readonly){
+class FormComponent extends Component{
+    render(){
+        let items = [];
+        this.props.controls.forEach(function(control, index){
+            let name = control.name;
+            let text = control.text;
+            let readonly = control.readonly != undefined ? control.readonly : false;
+            let help = control.help != undefined ? control.help : '';
+            let placeholder = control.placeholder != undefined ? control.placeholder : `Enter your ${control.text.toLowerCase()}`;
+            let type = control.type != undefined ? control.type : 'input';
+            let err = control.err != undefined ? control.err : false;
+            let value = safestring(this.props.data != undefined ? this.props.data[name] : null);
+            let handleChange = this.props.onChange != undefined ? _.partial(this.props.onChange, _, control) : function(){};
+
+            if(readonly){
                 items.push(
                     <div key={index} className="form-group form-md-line-input">
-                        <label className="col-md-2 control-label" htmlFor="form_control_1">{name}</label>
-                        <div className="col-md-10">
-                            <input type="text" className="form-control" id="form_control_1" placeholder={placeholder}/>
-                            <div className="form-control-focus"> </div>
-                            <span className="help-block">{help}</span>
-                        </div>
-                    </div>
-                );
-            } else {
-                items.push(
-                    <div key={index} className="form-group form-md-line-input">
-                        <label className="col-md-2 control-label" htmlFor="form_control_1">{name}</label>
+                        <label className="col-md-2 control-label" htmlFor="form_control_1">{text}</label>
                         <div className="col-md-10">
                             <div className="form-control form-control-static"> {value} </div>
                             <div className="form-control-focus"> </div>
                         </div>
                     </div>
                 );
+            } else {
+                items.push(
+                    <div key={index} className="form-group form-md-line-input">
+                        <label className="col-md-2 control-label" htmlFor="form_control_1">{text}</label>
+                        <div className="col-md-10">
+                            <input type="text" className="form-control" id="form_control_1" placeholder={placeholder} value={value} onChange={handleChange} />
+                            <div className="form-control-focus"> </div>
+                            <span className="help-block">{help}</span>
+                        </div>
+                    </div>
+                );
             }
-        });
-
-        var actions = [];
-        this.props.actions.forEach(function(action, index){
-            let text = action.text;
-            let color = action.color;
-            actions.push(
-                <button key={index} type="button" className={`btn ${color}`}>{text}</button>
-            );
-        });
+        }.bind(this));
 
         return (
             <form role="form" className="form-horizontal">
@@ -69,7 +50,7 @@ export var FormComponent = React.createClass({
                     <div className="row">
                         <div className="col-md-offset-2 col-md-10">
                             <div className="btn-toolbar">
-                                {actions}
+                                {this.props.buttons}
                             </div>
                         </div>
                     </div>
@@ -77,7 +58,22 @@ export var FormComponent = React.createClass({
             </form>
         );
     }
-});
+}
+
+FormComponent.propTypes = {
+    controls: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        text: PropTypes.string.isRequired,
+        readonly: PropTypes.bool,
+        help: PropTypes.string,
+        placeholder: PropTypes.string,
+        type: PropTypes.string,
+        err: PropTypes.bool
+    })).isRequired,
+    buttons: PropTypes.arrayOf(PropTypes.element).isRequired,
+    onChange: PropTypes.func,
+    data: PropTypes.object
+};
 
 class FormSimpleComponent extends Component{
     render(){
@@ -200,4 +196,4 @@ export var ReadonlyFormComponent = React.createClass({
     }
 });
 
-export {FormSimpleComponent};
+export {FormComponent, FormSimpleComponent};

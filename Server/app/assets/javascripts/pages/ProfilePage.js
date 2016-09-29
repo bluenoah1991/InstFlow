@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 
+import ToastComponent from '../components/ToastComponent';
 import {RowComponent, ColComponent, PortletComponent, PortletTabComponent, PortletTabContentComponent} from '../components/LayoutComponent';
 import {NoteComponent} from '../components/NoteComponent';
 import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
@@ -11,7 +12,7 @@ import {ButtonComponent, ButtonCircleComponent} from '../components/ButtonCompon
 import {FormSimpleComponent} from '../components/FormComponent';
 import {SettingComponent} from '../components/SettingComponent';
 
-import * as Selectors from '../selectors';
+import {ProfileSelectors} from '../selectors';
 import * as Actions from '../actions';
 import * as Utils from '../utils';
 
@@ -108,38 +109,40 @@ class ProfilePage extends Component {
         }];
         
         return (
-            <PageContentComponent>
-                <PageHeadComponent title="My Profile" />
-                <PageBreadCrumbComponent paths={breadCrumbPaths} />
-                <RowComponent>
-                    <ColComponent size="12">
-                        <ProfileSidebarComponent>
-                            <ProfileCardComponent {...ProfileCardProps} />
-                            <ProfileAboutComponent apps={3} messages={15} tickets={2} />
-                        </ProfileSidebarComponent>
-                        <ProfileContentComponent>
-                            <RowComponent>
-                                <ColComponent size="12">
-                                    <PortletTabComponent title='Profile Account' id='profile_content_portlet_tab'>
-                                        <PortletTabContentComponent title='Personal Info' active={true}>
-                                            <FormSimpleComponent {...PersonalInfoProps} />
-                                        </PortletTabContentComponent>
-                                        <PortletTabContentComponent title='Change Avatar'>
-                                            <p>Blank</p>
-                                        </PortletTabContentComponent>
-                                        <PortletTabContentComponent title='Change Password'>
-                                            <FormSimpleComponent {...ChangePasswordProps} />
-                                        </PortletTabContentComponent>
-                                        <PortletTabContentComponent title='Global Settings'>
-                                            <SettingComponent items={options} />
-                                        </PortletTabContentComponent>
-                                    </PortletTabComponent>
-                                </ColComponent>
-                            </RowComponent>
-                        </ProfileContentComponent>
-                    </ColComponent>
-                </RowComponent>
-            </PageContentComponent>
+            <ToastComponent>
+                <PageContentComponent>
+                    <PageHeadComponent title="My Profile" />
+                    <PageBreadCrumbComponent paths={breadCrumbPaths} />
+                    <RowComponent>
+                        <ColComponent size="12">
+                            <ProfileSidebarComponent>
+                                <ProfileCardComponent {...ProfileCardProps} />
+                                <ProfileAboutComponent apps={3} messages={15} tickets={2} />
+                            </ProfileSidebarComponent>
+                            <ProfileContentComponent>
+                                <RowComponent>
+                                    <ColComponent size="12">
+                                        <PortletTabComponent title='Profile Account' id='profile_content_portlet_tab'>
+                                            <PortletTabContentComponent title='Personal Info' active={true}>
+                                                <FormSimpleComponent {...PersonalInfoProps} />
+                                            </PortletTabContentComponent>
+                                            <PortletTabContentComponent title='Change Avatar'>
+                                                <p>Blank</p>
+                                            </PortletTabContentComponent>
+                                            <PortletTabContentComponent title='Change Password'>
+                                                <FormSimpleComponent {...ChangePasswordProps} />
+                                            </PortletTabContentComponent>
+                                            <PortletTabContentComponent title='Global Settings'>
+                                                <SettingComponent items={options} />
+                                            </PortletTabContentComponent>
+                                        </PortletTabComponent>
+                                    </ColComponent>
+                                </RowComponent>
+                            </ProfileContentComponent>
+                        </ColComponent>
+                    </RowComponent>
+                </PageContentComponent>
+            </ToastComponent>
         );
     }
 
@@ -188,7 +191,6 @@ class ProfilePage extends Component {
         }).then(function(data){
             this.props.dispatch(Actions.saveProfileSuccess(data));
             // TODO Show Toast
-            // Redirect to sign in
         }.bind(this)).catch(function(err){
             this.props.dispatch(Actions.saveProfileFailure(err));
             // TODO Show Toast
@@ -227,13 +229,30 @@ class ProfilePage extends Component {
                 this.setState({
                     isCheckPasswordFormNull: false
                 });
-                // TODO Show Toast
+                let err = data['error'];
+                if(err == undefined || err.trim().length === 0){
+                    this.props.dispatch(Actions.showToast(
+                        'success',
+                        'Change Password',
+                        'Password has been successfully changed!'
+                    ));
+                } else {
+                    this.props.dispatch(Actions.showToast(
+                        'error',
+                        'Change Password',
+                        err
+                    ));
+                }
             }.bind(this)).catch(function(err){
                 this.props.dispatch(Actions.changePasswordFailure(err));
                 this.setState({
                     isCheckPasswordFormNull: false
                 });
-                // TODO Show Toast
+                this.props.dispatch(Actions.showToast(
+                    'error',
+                    'Change Password',
+                    'Password update failed.'
+                ));
             }.bind(this));
         }
     }
@@ -275,13 +294,13 @@ ProfilePage.propTypes = {
 
 function select(state){
     return {
-        fetching: Selectors.ProfileFetchingSelector(state),
-        form: Selectors.ProfileFormSelector(state),
-        err: Selectors.ProfileFetchErrSelector(state),
-        displayName: Selectors.ProfileDisplayNameSelector(state),
-        displayOccupation: Selectors.ProfileDisplayOccupationSelector(state),
-        passwordForm: Selectors.ProfilePasswordFormSelector(state),
-        passwordFetching: Selectors.ProfilePasswordFetchingSelector(state)
+        fetching: ProfileSelectors.FetchingSelector(state),
+        form: ProfileSelectors.FormSelector(state),
+        err: ProfileSelectors.FetchErrSelector(state),
+        displayName: ProfileSelectors.DisplayNameSelector(state),
+        displayOccupation: ProfileSelectors.DisplayOccupationSelector(state),
+        passwordForm: ProfileSelectors.PasswordFormSelector(state),
+        passwordFetching: ProfileSelectors.PasswordFetchingSelector(state)
     };
 }
 

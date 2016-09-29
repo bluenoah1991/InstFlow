@@ -40,13 +40,15 @@ ActiveRecord::Schema.define(version: 20160920015436) do
 
   create_table "applications", force: :cascade do |t|
     t.integer  "admin_id"
-    t.string   "appid",      null: false
-    t.string   "appkey",     null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "name",         null: false
+    t.string   "appid",        null: false
+    t.string   "appkey",       null: false
+    t.string   "ms_appid"
+    t.string   "ms_appsecret"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.index ["admin_id"], name: "index_applications_on_admin_id"
     t.index ["appid"], name: "index_applications_on_appid", unique: true
-    t.index ["appkey"], name: "index_applications_on_appkey", unique: true
   end
 
   create_table "messages", force: :cascade do |t|

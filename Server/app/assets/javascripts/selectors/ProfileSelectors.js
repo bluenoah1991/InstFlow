@@ -1,12 +1,12 @@
 import {createSelector} from 'reselect';
 
-export const ProfileFetchingSelector = state => state.profile.data.fetching;
-export const ProfileFormSelector = state => state.profile.data.form;
-export const ProfileDataSelector = state => state.profile.data.response;
-export const ProfileFetchErrSelector = state => state.profile.data.err;
+export const FetchingSelector = state => state.profile.data.fetching;
+export const FormSelector = state => state.profile.data.form;
+export const DataSelector = state => state.profile.data.response;
+export const FetchErrSelector = state => state.profile.data.err;
 
-export const ProfileDisplayNameSelector = createSelector(
-    ProfileDataSelector,
+export const DisplayNameSelector = createSelector(
+    DataSelector,
     function(data){
         if(data == undefined){
             return '';
@@ -19,8 +19,8 @@ export const ProfileDisplayNameSelector = createSelector(
     }
 );
 
-export const ProfileDisplayOccupationSelector = createSelector(
-    ProfileDataSelector,
+export const DisplayOccupationSelector = createSelector(
+    DataSelector,
     function(data){
         if(data == undefined){
             return '';
@@ -33,5 +33,5 @@ export const ProfileDisplayOccupationSelector = createSelector(
     }
 );
 
-export const ProfilePasswordFormSelector = state => state.profile.password.form;
-export const ProfilePasswordFetchingSelector = state => state.profile.password.fetching;
+export const PasswordFormSelector = state => state.profile.password.form;
+export const PasswordFetchingSelector = state => state.profile.password.fetching;

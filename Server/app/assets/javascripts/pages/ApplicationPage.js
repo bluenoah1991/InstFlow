@@ -5,8 +5,9 @@ import {NoteComponent} from '../components/NoteComponent';
 import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
 import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
-import {BorderedTableComponent} from '../components/TableComponent';
+import {TableComponent} from '../components/TableComponent';
 import {FormComponent} from '../components/FormComponent';
+import {ButtonComponent} from '../components/ButtonComponent';
 
 export var ApplicationPage = React.createClass({
     render: function(){
@@ -14,40 +15,44 @@ export var ApplicationPage = React.createClass({
 
         let breadCrumbPaths = [
             {title: 'Home', href: 'home.html'},
-            {title: 'My Application'}
+            {title: 'My Applications'}
         ];
         
         let note = 'Create the first application for your bot.';
 
-        let headers = [
-            {name: 'application', text: 'Application'},
-            {name: 'action', text: ''}
-        ];
+        let PortletProps = {
+            title: 'Applications',
+            buttons: [
+                <ButtonComponent key={0} color='green' text='New Application' icon='plus' />
+            ]
+        };
 
-        let rows = [
-            {
-                application: 'instflow prod', 
-                action: {type: 'button', value: 'View'}
-            },
-            {
-                application: 'carnival dev', 
-                action: {type: 'button', value: 'View'}
-            }
-        ];
-
-        rows.forEach(function(row, index){
-            row.application = row.application.toUpperCase();
-        });
+        let AppsTableProps = {
+            columns: [
+                {name: 'application', text: 'Application'},
+                {name: 'action', text: ''}
+            ],
+            data: [
+                {
+                    application: 'instflow prod', 
+                    action: <ButtonComponent color='blue' text='View' />
+                },
+                {
+                    application: 'carnival dev', 
+                    action: <ButtonComponent color='blue' text='View' />
+                }
+            ]
+        };
 
         return (
             <PageContentComponent>
-                <PageHeadComponent title="My Application" />
+                <PageHeadComponent title="My Applications" />
                 <PageBreadCrumbComponent paths={breadCrumbPaths} />
                 <NoteComponent note={note} />
                 <RowComponent>
                     <ColComponent size="12">
-                        <PortletComponent title="Application List">
-                            <BorderedTableComponent headers={headers} rows={rows} />
+                        <PortletComponent {...PortletProps}>
+                            <TableComponent {...AppsTableProps} />
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>
@@ -68,30 +73,20 @@ export var ApplicationCreatePage = React.createClass({
         
         let note = 'Create the first application for your bot.';
 
-        let formFields = [{
-            name: 'Application Name',
-            placeholder: 'Enter your application name',
-            help: 'Some help goes here...'
-        },{
-            name: 'Client ID',
-            placeholder: 'Enter your client id',
-            help: 'Some help goes here...'
-        },{
-            name: 'Client Secret',
-            placeholder: 'Enter your client secret',
-            help: 'Some help goes here...'
-        },{
-            name: 'Application Token',
-            readonly: true,
-            value: 'T8du09jgKkdso090'
-        }];
-        let formActions = [{
-            text: 'Cancel',
-            color: 'default'
-        },{
-            text: 'Create',
-            color: 'blue'
-        }];
+        let FormProps = {
+            controls: [
+                {name: 'name', text: 'App Name'},
+                {name: 'appid', text: 'App ID'},
+                {name: 'appkey', text: 'App Key', readonly: true},
+                {name: 'ms_appid', text: 'Microsoft App ID', help: 'Get from dev.botframework.com, different from appid.'},
+                {name: 'ms_appsecret', text: 'Microsoft App Secret'}
+            ],
+            buttons: [
+                <ButtonComponent key={1} color='default' text='Cancel' />,
+                <ButtonComponent key={0} color='blue' text='Create' />
+            ],
+            onChange: function(){}
+        };
 
         return (
             <PageContentComponent>
@@ -101,7 +96,7 @@ export var ApplicationCreatePage = React.createClass({
                 <RowComponent>
                     <ColComponent size="12">
                         <PortletComponent title="New Application">
-                            <FormComponent fields={formFields} actions={formActions}/>
+                            <FormComponent {...FormProps}/>
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>

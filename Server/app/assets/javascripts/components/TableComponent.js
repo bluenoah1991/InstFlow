@@ -1,56 +1,22 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 
-/**
- * this.props.headers = [
- *      {name: 'firstName', text: 'First Name'},
- *      {name: 'lastName', text: 'Last Name'},
- *      {name: 'username', text: 'Username'},
- *      {name: 'action', text: 'Action'},
- * ];
- * 
- * this.props.rows = [
- *      {
- *          firstName: 'Mark', 
- *          lastName: 'Otto', 
- *          username: 'makr124', 
- *          action: {type: 'button', value: 'View'}
- *      }
- * ];
- */
-export var BorderedTableComponent = React.createClass({
-    render: function(){
-        let heads = [];
+class TableComponent extends Component{
+    render(){
+        let columns = [];
         let rows = [];
 
-        this.props.headers.forEach(function(header, index){
-            heads.push(
-                <th key={index}> {header.text} </th>
+        this.props.columns.forEach(function(column, index){
+            columns.push(
+                <th key={index}> {column.text} </th>
             );
         });
-        this.props.rows.forEach(function(row, index){
+
+        this.props.data.forEach(function(item, index){
             let cells = [];
-            this.props.headers.forEach(function(header, index){
-                let name = header.name;
-                let cell = row[name];
-                if(cell == undefined){
-                    cells.push(<td key={index}> </td>);
-                } else if(typeof cell == 'object') {
-                    switch(cell.type){
-                        case 'button':
-                            cells.push(
-                                <td key={index}>
-                                    <a className="btn blue btn-outline sbold" data-toggle="modal" href=""> {cell.value} </a>
-                                </td>
-                                );
-                        break;
-                        case 'label':
-                        default:
-                            cells.push(<td key={index}> {cell.value} </td>);
-                        break;
-                    }
-                } else {
-                    cells.push(<td key={index}> {cell} </td>);
-                }
+            this.props.columns.forEach(function(column, index){
+                let name = column.name;
+                let val = item[name];
+                cells.push(<td key={index}> {val} </td>);
             });
             rows.push(
                 <tr key={index}>{cells}</tr>
@@ -62,7 +28,7 @@ export var BorderedTableComponent = React.createClass({
                 <table className="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            {heads}
+                            {columns}
                         </tr>
                     </thead>
                     <tbody>
@@ -72,4 +38,14 @@ export var BorderedTableComponent = React.createClass({
             </div>
         );
     }
-});
+}
+
+TableComponent.propTypes = {
+    columns: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        text: PropTypes.string.isRequired
+    })),
+    data: PropTypes.array
+};
+
+export {TableComponent};

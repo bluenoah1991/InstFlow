@@ -40,6 +40,11 @@ module Api
                         @instance.password = params[:newpassword]
                         @instance.password_confirmation = params[:newpassword]
                         @instance.save!
+
+                        # http://www.unknownerror.org/opensource/plataformatec/devise/q/stackoverflow/4264750/devise-logging-out-automatically-after-password-change
+                        sign_out(current_user)
+                        sign_in(@instance, bypass: true)
+                        
                         render json: @instance
                     else
                         render json: { error: 'Invalid password.' }

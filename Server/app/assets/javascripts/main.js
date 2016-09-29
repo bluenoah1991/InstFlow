@@ -21,8 +21,8 @@ ReactDOM.render(
         <Router history={hashHistory}>
             <Route name='dashboard' path='/' component={ProfilePage} />
             <Route name='profile' path='/profile' component={ProfilePage} />
+            <Route name='new_app' path='/apps/new' component={ApplicationCreatePage} />
             <Route name='apps' path='/apps' component={ApplicationPage} />
-            <Route name='newapp' path='/newapp' component={ApplicationCreatePage} />
             <Route name='new_user' path='/users/new' component={UserCreatePage} />
             <Route name='user' path='/users/:id' component={UserProfilePage} />
             <Route name='users' path='/users' component={UserManagementPage} />

@@ -21,14 +21,16 @@ export var ColComponent = React.createClass({
     }
 });
 
-export var PortletComponent = React.createClass({
-    render: function(){
+class PortletComponent extends Component{
+    render(){
         return (
             <div className="portlet light bordered">
                 <div className="portlet-title">
-                    <div className="caption font-green-haze">
-                        <i className="icon-settings font-green-haze"></i>
-                        <span className="caption-subject bold uppercase">{this.props.title}</span>
+                    <div className="caption caption-md">
+                        <span className="caption-subject font-blue-madison bold uppercase">{this.props.title}</span>
+                    </div>
+                    <div className="actions">
+                        {this.props.buttons}
                     </div>
                 </div>
                 <div className={`portlet-body ${this.props.extclass}`}>
@@ -37,7 +39,13 @@ export var PortletComponent = React.createClass({
             </div>
         );
     }
-});
+}
+
+PortletComponent.propTypes = {
+    title: PropTypes.string.isRequired,
+    extclass: PropTypes.string,
+    buttons: PropTypes.arrayOf(PropTypes.element)
+}
 
 class PortletTabContentComponent extends Component{
     render(){
@@ -76,7 +84,6 @@ class PortletTabComponent extends Component{
             <div className="portlet light bordered" id={this.props.id}>
                 <div className="portlet-title tabbable-line">
                     <div className="caption caption-md">
-                        <i className="icon-globe theme-font hide"></i>
                         <span className="caption-subject font-blue-madison bold uppercase">{this.props.title}</span>
                     </div>
                     <ul className="nav nav-tabs">
@@ -98,4 +105,8 @@ PortletTabComponent.propTypes = {
     title: PropTypes.string.isRequired
 };
 
-export {PortletTabContentComponent, PortletTabComponent};
+export {
+    PortletComponent,
+    PortletTabContentComponent, 
+    PortletTabComponent
+};
