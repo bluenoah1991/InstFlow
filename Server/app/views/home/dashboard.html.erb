@@ -21,10 +21,20 @@
         <link href="/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
         <!-- END GLOBAL MANDATORY STYLES -->
+        <!-- BEGIN DATATABLE PAGE LEVEL PLUGINS -->
+        <link href="../assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
+        <link href="../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css" rel="stylesheet" type="text/css" />
+        <!-- END DATATABLE PAGE LEVEL PLUGINS -->
+        <!-- BEGIN TOASTR PAGE LEVEL PLUGINS -->
+        <link href="../assets/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
+        <!-- END TOASTR PAGE LEVEL PLUGINS -->
         <!-- BEGIN THEME GLOBAL STYLES -->
         <link href="/assets/global/css/components-md.min.css" rel="stylesheet" id="style_components" type="text/css" />
         <link href="/assets/global/css/plugins-md.min.css" rel="stylesheet" type="text/css" />
         <!-- END THEME GLOBAL STYLES -->
+        <!-- BEGIN PAGE LEVEL STYLES -->
+        <link href="/assets/pages/css/profile.min.css" rel="stylesheet" type="text/css" />
+        <!-- END PAGE LEVEL STYLES -->
         <!-- BEGIN THEME LAYOUT STYLES -->
         <link href="/assets/layouts/layout4/css/layout.min.css" rel="stylesheet" type="text/css" />
         <link href="/assets/layouts/layout4/css/themes/default.min.css" rel="stylesheet" type="text/css" id="style_color" />
@@ -482,81 +492,51 @@
                             </a>
                         </li>
                         <li class="heading">
-                            <h3 class="uppercase">General</h3>
+                            <h3 class="uppercase">User &amp; Message</h3>
                         </li>
-                        <li class="nav-item active ">
-                            <a href="javascript:;" class="nav-link">
-                                <i class="icon-diamond"></i>
-                                <span class="title">Profile</span>
+                        <li class="nav-item  ">
+                            <a href="#/users" class="nav-link">
+                                <i class="icon-puzzle"></i>
+                                <span class="title">User Management</span>
                             </a>
                         </li>
                         <li class="nav-item  ">
                             <a href="javascript:;" class="nav-link">
-                                <i class="icon-diamond"></i>
-                                <span class="title">API Settings</span>
+                                <i class="icon-puzzle"></i>
+                                <span class="title">Message Management</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a href="javascript:;" class="nav-link">
+                                <i class="icon-puzzle"></i>
+                                <span class="title">Setting</span>
                             </a>
                         </li>
                         <li class="heading">
-                            <h3 class="uppercase">User management</h3>
+                            <h3 class="uppercase">Message Sending Service</h3>
                         </li>
                         <li class="nav-item  ">
                             <a href="javascript:;" class="nav-link">
                                 <i class="icon-puzzle"></i>
-                                <span class="title">Configuration</span>
+                                <span class="title">Message Templates</span>
                             </a>
                         </li>
                         <li class="nav-item  ">
                             <a href="javascript:;" class="nav-link">
                                 <i class="icon-puzzle"></i>
-                                <span class="title">Statistics</span>
+                                <span class="title">Group Sending</span>
                             </a>
                         </li>
                         <li class="nav-item  ">
                             <a href="javascript:;" class="nav-link">
                                 <i class="icon-puzzle"></i>
-                                <span class="title">Active Users</span>
-                            </a>
-                        </li>
-                        <li class="heading">
-                            <h3 class="uppercase">History management</h3>
-                        </li>
-                        <li class="nav-item  ">
-                            <a href="javascript:;" class="nav-link">
-                                <i class="icon-puzzle"></i>
-                                <span class="title">Configuration</span>
+                                <span class="title">Sent Messages</span>
                             </a>
                         </li>
                         <li class="nav-item  ">
                             <a href="javascript:;" class="nav-link">
                                 <i class="icon-puzzle"></i>
-                                <span class="title">Histories</span>
-                            </a>
-                        </li>
-                        <li class="heading">
-                            <h3 class="uppercase">Message management</h3>
-                        </li>
-                        <li class="nav-item  ">
-                            <a href="javascript:;" class="nav-link">
-                                <i class="icon-puzzle"></i>
-                                <span class="title">Configuration</span>
-                            </a>
-                        </li>
-                        <li class="nav-item  ">
-                            <a href="javascript:;" class="nav-link">
-                                <i class="icon-puzzle"></i>
-                                <span class="title">Messages Templates</span>
-                            </a>
-                        </li>
-                        <li class="nav-item  ">
-                            <a href="javascript:;" class="nav-link">
-                                <i class="icon-puzzle"></i>
-                                <span class="title">Broadcast Messages</span>
-                            </a>
-                        </li>
-                        <li class="nav-item  ">
-                            <a href="javascript:;" class="nav-link">
-                                <i class="icon-puzzle"></i>
-                                <span class="title">Logs</span>
+                                <span class="title">Setting</span>
                             </a>
                         </li>
                         <li class="heading">
@@ -577,6 +557,21 @@
                                 <span class="title">Feedback</span>
                             </a>
                         </li>
+                        <li class="heading">
+                            <h3 class="uppercase">General</h3>
+                        </li>
+                        <li class="nav-item active ">
+                            <a href="#/profile" class="nav-link">
+                                <i class="icon-diamond"></i>
+                                <span class="title">My Profile</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a href="#/apps" class="nav-link">
+                                <i class="icon-diamond"></i>
+                                <span class="title">My Application</span>
+                            </a>
+                        </li>
                     </ul>
                     <!-- END SIDEBAR MENU -->
                 </div>
@@ -585,208 +580,7 @@
             <!-- END SIDEBAR -->
             <!-- BEGIN CONTENT -->
             <div class="page-content-wrapper">
-                <!-- BEGIN CONTENT BODY -->
-                <div class="page-content">
-                    <!-- BEGIN PAGE HEAD-->
-                    <div class="page-head">
-                        <!-- BEGIN PAGE TITLE -->
-                        <div class="page-title">
-                            <h1>Profile
-                            </h1>
-                        </div>
-                        <!-- END PAGE TITLE -->
-                        <!-- BEGIN PAGE TOOLBAR -->
-                        <div class="page-toolbar">
-                            <!-- BEGIN THEME PANEL -->
-                            <div class="btn-group btn-theme-panel">
-                                <a href="javascript:;" class="btn dropdown-toggle" data-toggle="dropdown">
-                                    <i class="icon-settings"></i>
-                                </a>
-                                <div class="dropdown-menu theme-panel pull-right dropdown-custom hold-on-click">
-                                    <div class="row">
-                                        <div class="col-md-4 col-sm-4 col-xs-12">
-                                            <h3>HEADER</h3>
-                                            <ul class="theme-colors">
-                                                <li class="theme-color theme-color-default active" data-theme="default">
-                                                    <span class="theme-color-view"></span>
-                                                    <span class="theme-color-name">Dark Header</span>
-                                                </li>
-                                                <li class="theme-color theme-color-light " data-theme="light">
-                                                    <span class="theme-color-view"></span>
-                                                    <span class="theme-color-name">Light Header</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-md-8 col-sm-8 col-xs-12 seperator">
-                                            <h3>LAYOUT</h3>
-                                            <ul class="theme-settings">
-                                                <li> Layout
-                                                    <select class="layout-option form-control input-small input-sm">
-                                                        <option value="fluid" selected="selected">Fluid</option>
-                                                        <option value="boxed">Boxed</option>
-                                                    </select>
-                                                </li>
-                                                <li> Header
-                                                    <select class="page-header-option form-control input-small input-sm">
-                                                        <option value="fixed" selected="selected">Fixed</option>
-                                                        <option value="default">Default</option>
-                                                    </select>
-                                                </li>
-                                                <li> Top Dropdowns
-                                                    <select class="page-header-top-dropdown-style-option form-control input-small input-sm">
-                                                        <option value="light">Light</option>
-                                                        <option value="dark" selected="selected">Dark</option>
-                                                    </select>
-                                                </li>
-                                                <li> Sidebar Mode
-                                                    <select class="sidebar-option form-control input-small input-sm">
-                                                        <option value="fixed">Fixed</option>
-                                                        <option value="default" selected="selected">Default</option>
-                                                    </select>
-                                                </li>
-                                                <li> Sidebar Menu
-                                                    <select class="sidebar-menu-option form-control input-small input-sm">
-                                                        <option value="accordion" selected="selected">Accordion</option>
-                                                        <option value="hover">Hover</option>
-                                                    </select>
-                                                </li>
-                                                <li> Sidebar Position
-                                                    <select class="sidebar-pos-option form-control input-small input-sm">
-                                                        <option value="left" selected="selected">Left</option>
-                                                        <option value="right">Right</option>
-                                                    </select>
-                                                </li>
-                                                <li> Footer
-                                                    <select class="page-footer-option form-control input-small input-sm">
-                                                        <option value="fixed">Fixed</option>
-                                                        <option value="default" selected="selected">Default</option>
-                                                    </select>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- END THEME PANEL -->
-                        </div>
-                        <!-- END PAGE TOOLBAR -->
-                    </div>
-                    <!-- END PAGE HEAD-->
-                    <!-- BEGIN PAGE BREADCRUMB -->
-                    <ul class="page-breadcrumb breadcrumb">
-                        <li>
-                            <a href="index.html">Home</a>
-                            <i class="fa fa-circle"></i>
-                        </li>
-                        <li>
-                            <span class="active">Profile</span>
-                        </li>
-                    </ul>
-                    <!-- END PAGE BREADCRUMB -->
-                    <!-- BEGIN PAGE BASE CONTENT -->
-                    <div class="note note-info">
-                        <p> A black page template with a minimal dependency assets to use as a base for any custom page you create </p>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <!-- BEGIN SAMPLE FORM PORTLET-->
-                            <div class="portlet light bordered">
-                                <div class="portlet-title">
-                                    <div class="caption font-green-haze">
-                                        <i class="icon-settings font-green-haze"></i>
-                                        <span class="caption-subject bold uppercase"> Base Information</span>
-                                    </div>
-                                </div>
-                                <div class="portlet-body form">
-                                    <form role="form" class="form-horizontal">
-                                        <div class="form-body">
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Tenant ID</label>
-                                                <div class="col-md-10">
-                                                    <div class="form-control form-control-static"> codemeow </div>
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Email</label>
-                                                <div class="col-md-10">
-                                                    <div class="form-control form-control-static"> codemeow@yahoo.com </div>
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Full Name</label>
-                                                <div class="col-md-10">
-                                                    <input type="text" class="form-control" id="form_control_1" placeholder="Enter your full name">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Password</label>
-                                                <div class="col-md-10">
-                                                    <input type="password" class="form-control" id="form_control_1" placeholder="Enter your password">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Password confirmation</label>
-                                                <div class="col-md-10">
-                                                    <input type="password" class="form-control" id="form_control_1" placeholder="Enter your password again">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Phone Number</label>
-                                                <div class="col-md-10">
-                                                    <input type="text" class="form-control" id="form_control_1" placeholder="Enter your phone number">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Your Company</label>
-                                                <div class="col-md-10">
-                                                    <input type="text" class="form-control" id="form_control_1" placeholder="Enter your company name">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Your Address</label>
-                                                <div class="col-md-10">
-                                                    <input type="text" class="form-control" id="form_control_1" placeholder="Enter your address">
-                                                    <div class="form-control-focus"> </div>
-                                                    <span class="help-block">Some help goes here...</span>
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-md-line-input">
-                                                <label class="col-md-2 control-label" for="form_control_1">Last Login</label>
-                                                <div class="col-md-10">
-                                                    <div class="form-control form-control-static"> Thu, Mar 31, 2016 7:57 PM SGT </div>
-                                                    <div class="form-control-focus"> </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-actions">
-                                            <div class="row">
-                                                <div class="col-md-offset-2 col-md-10">
-                                                    <button type="button" class="btn default">Cancel</button>
-                                                    <button type="button" class="btn blue">Save</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <!-- END SAMPLE FORM PORTLET-->
-                        </div>
-                    </div>
-                    <!-- END PAGE BASE CONTENT -->
-                </div>
-                <!-- END CONTENT BODY -->
+                <!-- REACT POPULATE HERE -->
             </div>
             <!-- END CONTENT -->
             <!-- BEGIN QUICK SIDEBAR -->
@@ -1377,13 +1171,21 @@
         <!-- END CORE PLUGINS -->
         <!-- BEGIN THEME GLOBAL SCRIPTS -->
         <script src="/assets/global/scripts/app.min.js" type="text/javascript"></script>
-        <script src="/assets/global/scripts/main.min.js" type="text/javascript"></script>
         <!-- END THEME GLOBAL SCRIPTS -->
         <!-- BEGIN THEME LAYOUT SCRIPTS -->
         <script src="/assets/layouts/layout4/scripts/layout.min.js" type="text/javascript"></script>
         <script src="/assets/layouts/layout4/scripts/demo.min.js" type="text/javascript"></script>
         <script src="/assets/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
         <!-- END THEME LAYOUT SCRIPTS -->
+        <!-- BEGIN DATATABLE PAGE LEVEL PLUGINS -->
+        <script src="../assets/global/scripts/datatable.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
+        <script src="../assets/global/plugins/bootstrap-toastr/toastr.min.js" type="text/javascript"></script>
+        <!-- END DATATABLE PAGE LEVEL PLUGINS -->
+        <!-- BEGIN MAIN SCRIPTS -->
+        <script src="/assets/global/scripts/main.js" type="text/javascript"></script>
+        <!-- END MAIN SCRIPTS -->
     </body>
 
 </html>

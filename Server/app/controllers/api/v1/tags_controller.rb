@@ -1,34 +1,34 @@
 module Api
     module V1
-        class TagsController < Api::ApplicationController
-            before_action :set_tag, except: [:index, :create]
+        class TagsController < Api::V1::ApplicationController
+            before_action :set_instance, except: [:index, :create]
 
             def index
-                tags = Tag.all
-                render json: tags
+                @instances = Tag.all
+                render json: @instances
             end
 
             def create
                 requires! :tag_id, type: String
 
-                @tag = Tag.new
-                @tag.tag_id = params[:tag_id]
-                @tag.save!
+                @instance = Tag.new
+                @instance.tag_id = params[:tag_id]
+                @instance.save!
                 
-                render json: @tag
+                render json: @instance
             end
 
             def show
-                render json: @tag
+                render json: @instance
             end
 
             def destroy
-                @tag.destroy
+                @instance.destroy
                 render json: { ok: 1 }
             end
 
-            def set_tag
-                @tag = Tag.find(params[:id])
+            def set_instance
+                @instance = Tag.find(params[:id])
             end
         end
     end

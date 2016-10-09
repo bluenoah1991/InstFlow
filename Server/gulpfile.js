@@ -8,6 +8,7 @@ var rename = require("gulp-rename");
 var uglify = require("gulp-uglify");
 var connect = require('gulp-connect');
 var browserify = require('browserify');
+var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 
 //*** Localhost server tast
@@ -81,5 +82,10 @@ gulp.task('minify', function () {
 
 //*** JS compose task
 gulp.task('compose', function(){
-    browserify('./app/assets/javascripts/main.js', {debug: true}).bundle().pipe(source('bundle.js')).pipe(rename({basename: 'main'})).pipe(gulp.dest('./public/assets/global/scripts/'));
+  return browserify('./app/assets/javascripts/main.js', {debug: true})
+    .transform(babelify.configure({presets: ['es2015', 'react']}))
+    .bundle()
+    .pipe(source('bundle.js'))
+    .pipe(rename({basename: 'main'}))
+    .pipe(gulp.dest('./public/assets/global/scripts/'));
 });

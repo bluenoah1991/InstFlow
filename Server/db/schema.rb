@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160906021100) do
+ActiveRecord::Schema.define(version: 20160920015436) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -26,20 +26,46 @@ ActiveRecord::Schema.define(version: 20160906021100) do
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
     t.string   "tenant_id",              default: "", null: false
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "phone_number"
+    t.string   "company_name"
+    t.string   "occupation"
+    t.string   "about"
+    t.string   "website_url"
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
     t.index ["tenant_id"], name: "index_admins_on_tenant_id", unique: true
   end
 
   create_table "applications", force: :cascade do |t|
-    t.integer  "admin_id"
-    t.string   "appid",      null: false
-    t.string   "appkey",     null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "admin_id",     null: false
+    t.string   "name",         null: false
+    t.string   "access_token", null: false
+    t.string   "ms_appid"
+    t.string   "ms_appsecret"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.index ["access_token"], name: "index_applications_on_access_token", unique: true
     t.index ["admin_id"], name: "index_applications_on_admin_id"
-    t.index ["appid"], name: "index_applications_on_appid", unique: true
-    t.index ["appkey"], name: "index_applications_on_appkey", unique: true
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.string   "msg_id",          null: false
+    t.string   "text"
+    t.string   "msg_type"
+    t.string   "source"
+    t.string   "agent"
+    t.string   "user_id"
+    t.string   "user_name"
+    t.string   "channel_id"
+    t.string   "conversation_id"
+    t.string   "bot_id"
+    t.string   "bot_name"
+    t.integer  "orientation"
+    t.datetime "time"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
   create_table "tags", force: :cascade do |t|
@@ -56,12 +82,13 @@ ActiveRecord::Schema.define(version: 20160906021100) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "channel_id", null: false
-    t.string   "user_id",    null: false
+    t.string   "channel_id",             null: false
+    t.string   "user_id",                null: false
     t.string   "name"
     t.text     "extra"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "state",      default: 0, null: false
     t.index ["channel_id", "user_id"], name: "index_users_on_channel_id_and_user_id", unique: true
   end
 

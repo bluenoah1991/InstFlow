@@ -39,6 +39,16 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, only: [:index, :create, :show, :update, :destroy], constraints: TenantdomainConstraint
       resources :tags, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
+      resources :messages, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
+      namespace :private do
+        get 'profile', to: "admins#profile", as: :admin_profile, constraints: TenantdomainConstraint
+        post 'profile', to: "admins#update", as: :update_profile, constraints: TenantdomainConstraint
+        post 'profile/password', to: "admins#password", as: :update_password, constraints: TenantdomainConstraint
+        post 'apps', to: "applications#create", as: :new_app, constraints: TenantdomainConstraint
+        post 'users', to: "users#show", as: :users_datatable, constraints: TenantdomainConstraint
+        post 'users/enable', to: "users#enable", as: :enable_user, constraints: TenantdomainConstraint
+        post 'users/disable', to: "users#disable", as: :disable_user, constraints: TenantdomainConstraint
+      end
     end
   end
 end

@@ -1,11 +1,11 @@
 module Api
     module V1
-        class UsersController < Api::ApplicationController
-            before_action :set_user, except: [:index, :create]
+        class UsersController < Api::V1::ApplicationController
+            before_action :set_instance, except: [:index, :create]
 
             def index
-                users = User.all
-                render json: users
+                @instances = User.all
+                render json: @instances
             end
 
             def create
@@ -15,23 +15,23 @@ module Api
                 optional! :extra, type: String
                 optional! :tags, type: Array
 
-                @user = User.new
-                @user.channel_id = params[:channel_id]
-                @user.user_id = params[:user_id]
-                @user.name = params[:name]
-                @user.extra = params[:extra]
+                @instance = User.new
+                @instance.channel_id = params[:channel_id]
+                @instance.user_id = params[:user_id]
+                @instance.name = params[:name]
+                @instance.extra = params[:extra]
                 if params.has_key?(:tags)
-                    @user.tags = params[:tags].map! { |tag_id| 
+                    @instance.tags = params[:tags].map! { |tag_id| 
                         Tag.find_or_create_by(:tag_id => tag_id)
                     }
                 end
-                @user.save!
+                @instance.save!
 
-                render json: @user
+                render json: @instance
             end
 
             def show
-                render json: @user
+                render json: @instance
             end
 
             def update
@@ -39,25 +39,25 @@ module Api
                 optional! :extra, type: String
                 optional! :tags, type: Array
 
-                @user.name = params[:name].present? ? params[:name] : @user.name
-                @user.extra = params[:extra].present? ? params[:extra] : @user.extra
+                @instance.name = !params[:name].nil? ? params[:name] : @instance.name
+                @instance.extra = !params[:extra].nil? ? params[:extra] : @instance.extra
                 if params.has_key?(:tags)
-                    @user.tags = params[:tags].map! { |tag_id| 
+                    @instance.tags = params[:tags].map! { |tag_id| 
                         Tag.find_or_create_by(:tag_id => tag_id)
                     }
                 end
-                @user.save!
+                @instance.save!
 
-                render json: @user
+                render json: @instance
             end
 
             def destroy
-                @user.destroy
+                @instance.destroy
                 render json: { ok: 1 }
             end
 
-            def set_user
-                @user = User.find(params[:id])
+            def set_instance
+                @instance = User.find(params[:id])
             end
         end
     end
