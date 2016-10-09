@@ -11,12 +11,12 @@ const tt = {
 export default class HttpProxy{
     constructor(){
         this.createNewReq();
-        this.auth_token = `Token token=${process.env.SERVICE_AUTH_TOKEN}`;
+        this.access_token = process.env.SERVICE_ACCESS_TOKEN;
         this.httpclient = restify.createJsonClient({
             url: process.env.SERVICE_BASE_URL || 'https://example.instflow.com/',
             version: '*',
             headers: {
-                'Authorization': this.auth_token
+                'Access-Token': this.access_token
             }
         });
         this.defaultPath = process.env.SERVICE_DEFAULT_PATH || '/api/v1/batch';
