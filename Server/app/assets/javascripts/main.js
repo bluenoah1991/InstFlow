@@ -11,7 +11,8 @@ import {Provider} from 'react-redux';
 import reducers from './reducers';
 
 import ProfilePage from './pages/ProfilePage';
-import {ApplicationPage, ApplicationCreatePage} from './pages/ApplicationPage';
+import {ApplicationPage} from './pages/ApplicationPage';
+import ApplicationCreatePage from './pages/ApplicationCreatePage';
 import {UserManagementPage, UserCreatePage, UserProfilePage} from './pages/UserManagementPage';
 
 let store = createStore(reducers, {});

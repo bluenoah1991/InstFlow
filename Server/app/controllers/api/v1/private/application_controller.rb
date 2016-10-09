@@ -2,7 +2,10 @@ module Api
   module V1
     module Private
       class ApplicationController < ActionController::Base
-        protect_from_forgery with: :exception
+        if Rails.env.production?
+          protect_from_forgery with: :exception
+        end
+        
         helper_method :current_user
         include CanCan::ControllerAdditions
 

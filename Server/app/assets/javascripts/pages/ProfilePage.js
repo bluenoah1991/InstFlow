@@ -190,10 +190,18 @@ class ProfilePage extends Component {
             return response.json();
         }).then(function(data){
             this.props.dispatch(Actions.saveProfileSuccess(data));
-            // TODO Show Toast
+            this.props.dispatch(Actions.showToast(
+                'success',
+                'Change Profile',
+                'Your account has been updated successfully!'
+            ));
         }.bind(this)).catch(function(err){
             this.props.dispatch(Actions.saveProfileFailure(err));
-            // TODO Show Toast
+            this.props.dispatch(Actions.showToast(
+                'error',
+                'Change Profile',
+                err
+            ));
         }.bind(this));
     }
 
@@ -258,6 +266,9 @@ class ProfilePage extends Component {
     }
 
     handleCancelChangePassword(e){
+        this.setState({
+            isCheckPasswordFormNull: false
+        });
         this.props.dispatch(Actions.changeCancelPassword());
     }
 

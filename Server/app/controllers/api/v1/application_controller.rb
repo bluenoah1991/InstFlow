@@ -2,7 +2,6 @@ module Api
   module V1
     class ApplicationController < ActionController::API
       include CanCan::ControllerAdditions
-      include ActionController::HttpAuthentication::Token::ControllerMethods
 
       before_action :authenticate!
 
@@ -80,9 +79,8 @@ module Api
       end
 
       def authenticate_token
-        authenticate_with_http_token do |token, options|
-            @current_app = Application.find_by(appkey: token)
-        end
+        access_token = params[:access_token].presence || request.headers['Access-Token'].presence
+        @current_app = Application.find_by(access_token: access_token)
       end
 
       def unauthorized_token

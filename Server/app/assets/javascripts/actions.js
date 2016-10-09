@@ -139,3 +139,51 @@ export function changePasswordFailure(err){
     }
     return action;
 }
+
+// Application Action Types
+export const TYPE_SAVE_APPLICATION_REQUEST = 'TYPE_SAVE_APPLICATION_REQUEST';
+export const TYPE_SAVE_APPLICATION_SUCCESS = 'TYPE_SAVE_APPLICATION_SUCCESS';
+export const TYPE_SAVE_APPLICATION_FAILURE = 'TYPE_SAVE_APPLICATION_FAILURE';
+export const TYPE_CHANGE_APPLICATION_CREATE_FORM = 'TYPE_CHANGE_APPLICATION_CREATE_FORM';
+export const TYPE_CHANGE_CANCEL_APPLICATION_CREATE = 'TYPE_CHANGE_CANCEL_APPLICATION_CREATE';
+
+
+// Application Actions
+export function saveApplicationRequest(){
+    const action = {
+        type: TYPE_SAVE_APPLICATION_REQUEST
+    }
+    return action;
+}
+
+export function saveApplicationSuccess(response){
+    const action = {
+        type: TYPE_SAVE_APPLICATION_SUCCESS,
+        response: response
+    }
+    return action;
+}
+
+export function saveApplicationFailure(err){
+    const action = {
+        type: TYPE_SAVE_APPLICATION_FAILURE,
+        err: err
+    }
+    return action;
+}
+
+export function changeApplicationCreateForm(fieldName, value){
+    const action = {
+        type: TYPE_CHANGE_APPLICATION_CREATE_FORM,
+        fieldName: fieldName,
+        value: value
+    }
+    return action;
+}
+
+export function changeCancelApplicationCreate(){
+    const action = {
+        type: TYPE_CHANGE_CANCEL_APPLICATION_CREATE
+    }
+    return action;
+}

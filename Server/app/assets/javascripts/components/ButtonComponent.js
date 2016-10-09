@@ -3,11 +3,13 @@ import React from 'react';
 export var ButtonComponent = React.createClass({
     render: function(){
         let icon = null;
+        let href = this.props.href != undefined ? this.props.href : 'javascript:;';
+
         if(this.props.icon != undefined){
             icon = <i className={`fa fa-${this.props.icon}`}></i>
         }
         return (
-            <a href="javascript:;" className={`btn ${this.props.color}`} onClick={this.props.onClick}>
+            <a href={href} className={`btn ${this.props.color}`} onClick={this.props.onClick}>
                  {icon} {this.props.text}
             </a>
         );
