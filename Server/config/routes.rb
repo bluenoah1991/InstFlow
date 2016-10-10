@@ -44,6 +44,8 @@ Rails.application.routes.draw do
         get 'profile', to: "admins#profile", as: :admin_profile, constraints: TenantdomainConstraint
         post 'profile', to: "admins#update", as: :update_profile, constraints: TenantdomainConstraint
         post 'profile/password', to: "admins#password", as: :update_password, constraints: TenantdomainConstraint
+        get 'apps/:id', to: "applications#show", as: :show_app, constraints: TenantdomainConstraint
+        put 'apps/:id', to: "applications#update", as: :update_app, constraints: TenantdomainConstraint
         post 'apps', to: "applications#create", as: :new_app, constraints: TenantdomainConstraint
         post 'users', to: "users#show", as: :users_datatable, constraints: TenantdomainConstraint
         post 'users/enable', to: "users#enable", as: :enable_user, constraints: TenantdomainConstraint

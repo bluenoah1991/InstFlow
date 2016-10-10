@@ -4,15 +4,29 @@ export var ButtonComponent = React.createClass({
     render: function(){
         let icon = null;
         let href = this.props.href != undefined ? this.props.href : 'javascript:;';
+        let enabled = this.props.enabled != undefined ? this.props.enabled : true;
+        let size = this.props.size != undefined ? `btn-${this.props.size}` : '';
 
         if(this.props.icon != undefined){
-            icon = <i className={`fa fa-${this.props.icon}`}></i>
+            let spin = this.props.spin != undefined ? this.props.spin : false;
+            icon = <i className={`fa fa-${this.props.icon} ${spin ? 'fa-spin' : ''}`}></i>
         }
         return (
-            <a href={href} className={`btn ${this.props.color}`} onClick={this.props.onClick}>
+            <a href={href} className={`btn ${size} ${this.props.color} ${enabled ? '' : 'disabled'}`} onClick={this.props.onClick}>
                  {icon} {this.props.text}
             </a>
         );
+    },
+    propTypes: {
+        text: React.PropTypes.string,
+        color: React.PropTypes.string,
+        size: React.PropTypes.string,
+        href: React.PropTypes.string,
+        icon: React.PropTypes.string,
+        spin: React.PropTypes.bool,
+        onClick: React.PropTypes.func,
+        enabled: React.PropTypes.bool,
+        hasRequired: React.PropTypes.bool
     }
 });
 

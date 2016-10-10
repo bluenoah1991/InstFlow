@@ -11,7 +11,8 @@ import {Provider} from 'react-redux';
 import reducers from './reducers';
 
 import ProfilePage from './pages/ProfilePage';
-import {ApplicationPage} from './pages/ApplicationPage';
+import ApplicationPage from './pages/ApplicationPage';
+import {ApplicationsPage} from './pages/ApplicationsPage';
 import ApplicationCreatePage from './pages/ApplicationCreatePage';
 import {UserManagementPage, UserCreatePage, UserProfilePage} from './pages/UserManagementPage';
 
@@ -23,7 +24,8 @@ ReactDOM.render(
             <Route name='dashboard' path='/' component={ProfilePage} />
             <Route name='profile' path='/profile' component={ProfilePage} />
             <Route name='new_app' path='/apps/new' component={ApplicationCreatePage} />
-            <Route name='apps' path='/apps' component={ApplicationPage} />
+            <Route name='app' path='/apps/:id' component={ApplicationPage} />
+            <Route name='apps' path='/apps' component={ApplicationsPage} />
             <Route name='new_user' path='/users/new' component={UserCreatePage} />
             <Route name='user' path='/users/:id' component={UserProfilePage} />
             <Route name='users' path='/users' component={UserManagementPage} />

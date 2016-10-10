@@ -140,15 +140,89 @@ export function changePasswordFailure(err){
     return action;
 }
 
-// Application Action Types
-export const TYPE_SAVE_APPLICATION_REQUEST = 'TYPE_SAVE_APPLICATION_REQUEST';
-export const TYPE_SAVE_APPLICATION_SUCCESS = 'TYPE_SAVE_APPLICATION_SUCCESS';
-export const TYPE_SAVE_APPLICATION_FAILURE = 'TYPE_SAVE_APPLICATION_FAILURE';
+// Application Create Action Types
+export const TYPE_APPLICATION_CREATE_REQUEST = 'TYPE_APPLICATION_CREATE_REQUEST';
+export const TYPE_APPLICATION_CREATE_SUCCESS = 'TYPE_APPLICATION_CREATE_SUCCESS';
+export const TYPE_APPLICATION_CREATE_FAILURE = 'TYPE_APPLICATION_CREATE_FAILURE';
 export const TYPE_CHANGE_APPLICATION_CREATE_FORM = 'TYPE_CHANGE_APPLICATION_CREATE_FORM';
 export const TYPE_CHANGE_CANCEL_APPLICATION_CREATE = 'TYPE_CHANGE_CANCEL_APPLICATION_CREATE';
 
 
+// Application Create Actions
+export function createApplicationRequest(){
+    const action = {
+        type: TYPE_APPLICATION_CREATE_REQUEST
+    }
+    return action;
+}
+
+export function createApplicationSuccess(response){
+    const action = {
+        type: TYPE_APPLICATION_CREATE_SUCCESS,
+        response: response
+    }
+    return action;
+}
+
+export function createApplicationFailure(err){
+    const action = {
+        type: TYPE_APPLICATION_CREATE_FAILURE,
+        err: err
+    }
+    return action;
+}
+
+export function changeApplicationCreateForm(fieldName, value){
+    const action = {
+        type: TYPE_CHANGE_APPLICATION_CREATE_FORM,
+        fieldName: fieldName,
+        value: value
+    }
+    return action;
+}
+
+export function changeCancelApplicationCreate(){
+    const action = {
+        type: TYPE_CHANGE_CANCEL_APPLICATION_CREATE
+    }
+    return action;
+}
+
+// Application Action Types
+export const TYPE_FETCH_APPLICATION_REQUEST = 'TYPE_FETCH_APPLICATION_REQUEST';
+export const TYPE_FETCH_APPLICATION_SUCCESS = 'TYPE_FETCH_APPLICATION_SUCCESS';
+export const TYPE_FETCH_APPLICATION_FAILURE = 'TYPE_FETCH_APPLICATION_FAILURE';
+export const TYPE_SAVE_APPLICATION_REQUEST = 'TYPE_SAVE_APPLICATION_REQUEST';
+export const TYPE_SAVE_APPLICATION_SUCCESS = 'TYPE_SAVE_APPLICATION_SUCCESS';
+export const TYPE_SAVE_APPLICATION_FAILURE = 'TYPE_SAVE_APPLICATION_FAILURE';
+export const TYPE_CHANGE_APPLICATION_FORM = 'TYPE_CHANGE_APPLICATION_FORM';
+export const TYPE_CHANGE_CANCEL_APPLICATION = 'TYPE_CHANGE_CANCEL_APPLICATION';
+
+
 // Application Actions
+export function fetchApplicationRequest(){
+    const action = {
+        type: TYPE_FETCH_APPLICATION_REQUEST
+    };
+    return action;
+}
+
+export function fetchApplicationSuccess(response){
+    const action = {
+        type: TYPE_FETCH_APPLICATION_SUCCESS,
+        response: response
+    };
+    return action;
+}
+
+export function fetchApplicationFailure(err){
+    const action = {
+        type: TYPE_FETCH_APPLICATION_FAILURE,
+        err: err
+    };
+    return action;
+}
+
 export function saveApplicationRequest(){
     const action = {
         type: TYPE_SAVE_APPLICATION_REQUEST
@@ -172,18 +246,18 @@ export function saveApplicationFailure(err){
     return action;
 }
 
-export function changeApplicationCreateForm(fieldName, value){
+export function changeApplicationForm(fieldName, value){
     const action = {
-        type: TYPE_CHANGE_APPLICATION_CREATE_FORM,
+        type: TYPE_CHANGE_APPLICATION_FORM,
         fieldName: fieldName,
         value: value
     }
     return action;
 }
 
-export function changeCancelApplicationCreate(){
+export function changeCancelApplication(){
     const action = {
-        type: TYPE_CHANGE_CANCEL_APPLICATION_CREATE
+        type: TYPE_CHANGE_CANCEL_APPLICATION
     }
     return action;
 }

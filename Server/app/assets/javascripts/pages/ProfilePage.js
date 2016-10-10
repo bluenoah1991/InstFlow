@@ -189,12 +189,22 @@ class ProfilePage extends Component {
         }).then(function(response){
             return response.json();
         }).then(function(data){
-            this.props.dispatch(Actions.saveProfileSuccess(data));
-            this.props.dispatch(Actions.showToast(
-                'success',
-                'Change Profile',
-                'Your account has been updated successfully!'
-            ));
+            let err = data['error'];
+            if(err == undefined || err.trim().length === 0){
+                this.props.dispatch(Actions.saveProfileSuccess(data));
+                this.props.dispatch(Actions.showToast(
+                    'success',
+                    'Change Profile',
+                    'Your account has been updated successfully!'
+                ));
+            } else {
+                this.props.dispatch(Actions.saveProfileFailure(err));
+                this.props.dispatch(Actions.showToast(
+                    'error',
+                    'Change Profile',
+                    data['message']
+                ));
+            }
         }.bind(this)).catch(function(err){
             this.props.dispatch(Actions.saveProfileFailure(err));
             this.props.dispatch(Actions.showToast(
@@ -233,22 +243,23 @@ class ProfilePage extends Component {
             }).then(function(response){
                 return response.json();
             }).then(function(data){
-                this.props.dispatch(Actions.changePasswordSuccess(data));
                 this.setState({
                     isCheckPasswordFormNull: false
                 });
                 let err = data['error'];
                 if(err == undefined || err.trim().length === 0){
+                    this.props.dispatch(Actions.changePasswordSuccess(data));
                     this.props.dispatch(Actions.showToast(
                         'success',
                         'Change Password',
                         'Password has been successfully changed!'
                     ));
                 } else {
+                    this.props.dispatch(Actions.changePasswordFailure(err));
                     this.props.dispatch(Actions.showToast(
                         'error',
                         'Change Password',
-                        err
+                        data['message']
                     ));
                 }
             }.bind(this)).catch(function(err){
