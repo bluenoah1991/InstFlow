@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router'
 
 import ToastComponent from '../components/ToastComponent';
 import {RowComponent, ColComponent, PortletComponent} from '../components/LayoutComponent';
@@ -27,10 +28,18 @@ class BotPage extends Component {
         
         let note = 'Create the first bot for your bot.';
 
+        let help = null;
+        let state = '';
+
+        if(this.props.form != undefined && this.props.form.newborn){
+            help = 'Make sure you save it - you won\'t be able to access it again.';
+            state = 'warning';
+        } 
+        
         let FormProps = {
             controls: [
-                {name: 'name', text: 'bot Name', required: true},
-                {name: 'access_token', text: 'Access Token', required: true},
+                {name: 'name', text: 'Bot Name', required: true},
+                {name: 'access_token', text: 'Access Token', required: true, readonly: true, help: help, state: state},
                 {type: 'hr'},
                 {type: 'h4', text: 'Microsoft Application Settings'},
                 {type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.'},
@@ -55,7 +64,7 @@ class BotPage extends Component {
                     <NoteComponent note={note} />
                     <RowComponent>
                         <ColComponent size="12">
-                            <PortletComponent title="Bot">
+                            <PortletComponent title="Bot" id="bot_content_portlet">
                                 <FormSimpleComponent {...FormProps}/>
                             </PortletComponent>
                         </ColComponent>
@@ -66,14 +75,38 @@ class BotPage extends Component {
     }
 
     componentDidMount(){
-        this.props.dispatch(Actions.fetchBotRequest());
-        fetch(`/api/v1/private/bots/${this.props.params.id}`, {credentials: 'same-origin'}).then(function(response){
-            return response.json();
-        }).then(function(data){
-            this.props.dispatch(Actions.fetchBotSuccess(data));
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.fetchBotFailure(err.toString()));
+        if(this.props.recent_created != undefined && this.props.recent_created.id == parseInt(this.props.params.id)){
+            this.props.dispatch(Actions.openRecentCreatedBot());
+        } else {
+            this.props.dispatch(Actions.fetchBotRequest());
+            fetch(`/api/v1/private/bots/${this.props.params.id}`, {credentials: 'same-origin'}).then(function(response){
+                return response.json();
+            }).then(function(data){
+                this.props.dispatch(Actions.fetchBotSuccess(data));
+            }.bind(this)).catch(function(err){
+                this.props.dispatch(Actions.fetchBotFailure(err.toString()));
+            }.bind(this));
+        }
+
+        // Set route leave hook
+        this.props.router.setRouteLeaveHook(this.props.route, function(){
+            this.props.dispatch(Actions.changeCancelBot());
         }.bind(this));
+    }
+
+    componentDidUpdate(){
+        // Block UI
+        if(this.props.fetching != undefined && this.props.fetching){
+            App.blockUI({
+                target: '#bot_content_portlet',
+                animate: true
+            });
+            window.setTimeout(function() {
+                App.unblockUI('#bot_content_portlet');
+            }, 5000);
+        } else {
+            App.unblockUI('#bot_content_portlet');
+        }
     }
 
     handleFormChange(e, control){
@@ -82,6 +115,7 @@ class BotPage extends Component {
 
     handleCancelSave(e){
         this.props.dispatch(Actions.changeCancelBot());
+        this.props.router.push('/bots');
     }
 
     handleSave(e){
@@ -103,7 +137,6 @@ class BotPage extends Component {
             let err = data['error'];
             if(err == undefined || err.trim().length === 0){
             this.props.dispatch(Actions.saveBotSuccess(data));
-                this.props.history.push(`/bots/${data.id}`);
                 this.props.dispatch(Actions.showToast(
                     'success',
                     'Update Bot',
@@ -137,13 +170,15 @@ BotPage.propTypes = {
 const FetchingSelector = state => state.bot.data.fetching;
 const FormSelector = state => state.bot.data.form;
 const FetchErrSelector = state => state.bot.data.err;
+const RecentCreatedSelector = state => state.bot.data.recent_created;
 
 function select(state){
     return {
         fetching: FetchingSelector(state),
         form: FormSelector(state),
-        err: FetchErrSelector(state)
+        err: FetchErrSelector(state),
+        recent_created: RecentCreatedSelector(state)
     };
 }
 
-export default connect(select)(BotPage);
+export default withRouter(connect(select)(BotPage));

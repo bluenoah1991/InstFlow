@@ -24,7 +24,7 @@ export var ColComponent = React.createClass({
 class PortletComponent extends Component{
     render(){
         return (
-            <div className="portlet light bordered">
+            <div className="portlet light bordered" id={this.props.id}>
                 <div className="portlet-title">
                     <div className="caption caption-md">
                         <span className="caption-subject font-blue-madison bold uppercase">{this.props.title}</span>
@@ -42,6 +42,7 @@ class PortletComponent extends Component{
 }
 
 PortletComponent.propTypes = {
+    id: PropTypes.string,
     title: PropTypes.string.isRequired,
     extclass: PropTypes.string,
     buttons: PropTypes.arrayOf(PropTypes.element)

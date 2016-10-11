@@ -12,7 +12,7 @@ import reducers from './reducers';
 
 import ProfilePage from './pages/ProfilePage';
 import BotPage from './pages/BotPage';
-import {BotsPage} from './pages/BotsPage';
+import BotsPage from './pages/BotsPage';
 import BotCreatePage from './pages/BotCreatePage';
 import {UserManagementPage, UserCreatePage, UserProfilePage} from './pages/UserManagementPage';
 

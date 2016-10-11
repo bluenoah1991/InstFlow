@@ -24,6 +24,9 @@ exports.createBotSuccess = createBotSuccess;
 exports.createBotFailure = createBotFailure;
 exports.changeBotCreateForm = changeBotCreateForm;
 exports.changeCancelBotCreate = changeCancelBotCreate;
+exports.fetchBotsRequest = fetchBotsRequest;
+exports.fetchBotsSuccess = fetchBotsSuccess;
+exports.fetchBotsFailure = fetchBotsFailure;
 exports.fetchBotRequest = fetchBotRequest;
 exports.fetchBotSuccess = fetchBotSuccess;
 exports.fetchBotFailure = fetchBotFailure;
@@ -32,6 +35,8 @@ exports.saveBotSuccess = saveBotSuccess;
 exports.saveBotFailure = saveBotFailure;
 exports.changeBotForm = changeBotForm;
 exports.changeCancelBot = changeCancelBot;
+exports.cleanBotForm = cleanBotForm;
+exports.openRecentCreatedBot = openRecentCreatedBot;
 // Toast Action Types
 var TYPE_SHOW_TOAST = exports.TYPE_SHOW_TOAST = 'TYPE_SHOW_TOAST';
 var TYPE_SHOW_TOAST_FINISH = exports.TYPE_SHOW_TOAST_FINISH = 'TYPE_SHOW_TOAST_FINISH';
@@ -227,8 +232,36 @@ var TYPE_SAVE_BOT_SUCCESS = exports.TYPE_SAVE_BOT_SUCCESS = 'TYPE_SAVE_BOT_SUCCE
 var TYPE_SAVE_BOT_FAILURE = exports.TYPE_SAVE_BOT_FAILURE = 'TYPE_SAVE_BOT_FAILURE';
 var TYPE_CHANGE_BOT_FORM = exports.TYPE_CHANGE_BOT_FORM = 'TYPE_CHANGE_BOT_FORM';
 var TYPE_CHANGE_CANCEL_BOT = exports.TYPE_CHANGE_CANCEL_BOT = 'TYPE_CHANGE_CANCEL_BOT';
+var TYPE_CLEAN_BOT_FORM = exports.TYPE_CLEAN_BOT_FORM = 'TYPE_CLEAN_BOT_FORM';
+var TYPE_FETCH_BOTS_REQUEST = exports.TYPE_FETCH_BOTS_REQUEST = 'TYPE_FETCH_BOTS_REQUEST';
+var TYPE_FETCH_BOTS_SUCCESS = exports.TYPE_FETCH_BOTS_SUCCESS = 'TYPE_FETCH_BOTS_SUCCESS';
+var TYPE_FETCH_BOTS_FAILURE = exports.TYPE_FETCH_BOTS_FAILURE = 'TYPE_FETCH_BOTS_FAILURE';
+var TYPE_OPEN_RECENT_CRAETED_BOT = exports.TYPE_OPEN_RECENT_CRAETED_BOT = 'TYPE_OPEN_RECENT_CRAETED_BOT';
 
 // Bot Actions
+function fetchBotsRequest() {
+    var action = {
+        type: TYPE_FETCH_BOTS_REQUEST
+    };
+    return action;
+}
+
+function fetchBotsSuccess(response) {
+    var action = {
+        type: TYPE_FETCH_BOTS_SUCCESS,
+        response: response
+    };
+    return action;
+}
+
+function fetchBotsFailure(err) {
+    var action = {
+        type: TYPE_FETCH_BOTS_FAILURE,
+        err: err
+    };
+    return action;
+}
+
 function fetchBotRequest() {
     var action = {
         type: TYPE_FETCH_BOT_REQUEST
@@ -287,6 +320,20 @@ function changeBotForm(fieldName, value) {
 function changeCancelBot() {
     var action = {
         type: TYPE_CHANGE_CANCEL_BOT
+    };
+    return action;
+}
+
+function cleanBotForm() {
+    var action = {
+        type: TYPE_CLEAN_BOT_FORM
+    };
+    return action;
+}
+
+function openRecentCreatedBot() {
+    var action = {
+        type: TYPE_OPEN_RECENT_CRAETED_BOT
     };
     return action;
 }
@@ -961,9 +1008,10 @@ var FormSimpleComponent = function (_Component2) {
                 var name = control.name != undefined ? control.name : _underscore2.default.uniqueId('control_');
                 var text = control.text != undefined ? control.text : '';
                 var readonly = control.readonly != undefined ? control.readonly : false;
+                var help = control.help != undefined ? control.help : null;
+                var state = control.state != undefined ? 'has-' + control.state : '';
                 var placeholder = control.placeholder != undefined ? control.placeholder : 'Enter your ' + text.toLowerCase();
                 var type = control.type != undefined ? control.type : 'input';
-                var err = control.err != undefined ? control.err : false;
                 var required = control.required != undefined ? control.required : false;
                 var value = (0, _utils.safestring)(this.props.data != undefined ? this.props.data[name] : null);
                 var handleChange = this.props.onChange != undefined ? _underscore2.default.partial(this.props.onChange, _underscore2.default, control) : function () {};
@@ -1004,15 +1052,27 @@ var FormSimpleComponent = function (_Component2) {
                             dom = _react2.default.createElement('input', { type: 'password', className: 'form-control', placeholder: placeholder, value: value, onChange: handleChange });
                         }
                     }
+
+                    var help_block = [];
+                    if (help != undefined && help.trim().length > 0) {
+                        help_block = _react2.default.createElement(
+                            'p',
+                            { className: 'help-block' },
+                            ' ',
+                            help,
+                            ' '
+                        );
+                    }
                     items.push(_react2.default.createElement(
                         'div',
-                        { key: index, className: 'form-group ' + (err ? 'has-error' : '') },
+                        { key: index, className: 'form-group ' + state },
                         _react2.default.createElement(
                             'label',
                             { className: 'control-label' },
                             text
                         ),
-                        dom
+                        dom,
+                        help_block
                     ));
                 }
             }.bind(this));
@@ -1057,10 +1117,11 @@ FormSimpleComponent.propTypes = {
         name: _react.PropTypes.string,
         text: _react.PropTypes.string,
         readonly: _react.PropTypes.bool,
+        help: _react.PropTypes.string,
+        state: _react.PropTypes.string,
         required: _react.PropTypes.bool,
         placeholder: _react.PropTypes.string,
         type: _react.PropTypes.string,
-        err: _react.PropTypes.bool,
         content: _react.PropTypes.oneOfType([_react.PropTypes.arrayOf(_react.PropTypes.element), _react.PropTypes.element, _react.PropTypes.string])
     })).isRequired,
     buttons: _react.PropTypes.arrayOf(_react.PropTypes.element).isRequired,
@@ -1207,7 +1268,7 @@ var PortletComponent = function (_Component) {
         value: function render() {
             return _react2.default.createElement(
                 'div',
-                { className: 'portlet light bordered' },
+                { className: 'portlet light bordered', id: this.props.id },
                 _react2.default.createElement(
                     'div',
                     { className: 'portlet-title' },
@@ -1239,6 +1300,7 @@ var PortletComponent = function (_Component) {
 }(_react.Component);
 
 PortletComponent.propTypes = {
+    id: _react.PropTypes.string,
     title: _react.PropTypes.string.isRequired,
     extclass: _react.PropTypes.string,
     buttons: _react.PropTypes.arrayOf(_react.PropTypes.element)
@@ -2475,6 +2537,8 @@ var _BotPage2 = _interopRequireDefault(_BotPage);
 
 var _BotsPage = require('./pages/BotsPage');
 
+var _BotsPage2 = _interopRequireDefault(_BotsPage);
+
 var _BotCreatePage = require('./pages/BotCreatePage');
 
 var _BotCreatePage2 = _interopRequireDefault(_BotCreatePage);
@@ -2495,7 +2559,7 @@ _reactDom2.default.render(_react2.default.createElement(
         _react2.default.createElement(_reactRouter.Route, { name: 'profile', path: '/profile', component: _ProfilePage2.default }),
         _react2.default.createElement(_reactRouter.Route, { name: 'new_bot', path: '/bots/new', component: _BotCreatePage2.default }),
         _react2.default.createElement(_reactRouter.Route, { name: 'bot', path: '/bots/:id', component: _BotPage2.default }),
-        _react2.default.createElement(_reactRouter.Route, { name: 'bots', path: '/bots', component: _BotsPage.BotsPage }),
+        _react2.default.createElement(_reactRouter.Route, { name: 'bots', path: '/bots', component: _BotsPage2.default }),
         _react2.default.createElement(_reactRouter.Route, { name: 'new_user', path: '/users/new', component: _UserManagementPage.UserCreatePage }),
         _react2.default.createElement(_reactRouter.Route, { name: 'user', path: '/users/:id', component: _UserManagementPage.UserProfilePage }),
         _react2.default.createElement(_reactRouter.Route, { name: 'users', path: '/users', component: _UserManagementPage.UserManagementPage })
@@ -2616,6 +2680,11 @@ var BotCreatePage = function (_Component) {
             );
         }
     }, {
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            this.props.dispatch(Actions.cleanBotForm());
+        }
+    }, {
         key: 'handleFormChange',
         value: function handleFormChange(e, control) {
             this.props.dispatch(Actions.changeBotCreateForm(control.name, e.target.value));
@@ -2669,13 +2738,13 @@ BotCreatePage.propTypes = {
 };
 
 var FetchingSelector = function FetchingSelector(state) {
-    return state.bot.create.fetching;
+    return state.bot.data.fetching;
 };
 var FormSelector = function FormSelector(state) {
-    return state.bot.create.form;
+    return state.bot.data.form;
 };
 var FetchErrSelector = function FetchErrSelector(state) {
-    return state.bot.create.err;
+    return state.bot.data.err;
 };
 
 function select(state) {
@@ -2702,6 +2771,8 @@ var _react = require('react');
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = require('react-redux');
+
+var _reactRouter = require('react-router');
 
 var _ToastComponent = require('../components/ToastComponent');
 
@@ -2767,8 +2838,16 @@ var BotPage = function (_Component) {
 
             var note = 'Create the first bot for your bot.';
 
+            var help = null;
+            var state = '';
+
+            if (this.props.form != undefined && this.props.form.newborn) {
+                help = 'Make sure you save it - you won\'t be able to access it again.';
+                state = 'warning';
+            }
+
             var FormProps = {
-                controls: [{ name: 'name', text: 'bot Name', required: true }, { name: 'access_token', text: 'Access Token', required: true }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, { state: 'error' }) }, { type: 'hr' }],
+                controls: [{ name: 'name', text: 'Bot Name', required: true }, { name: 'access_token', text: 'Access Token', required: true, readonly: true, help: help, state: state }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, { state: 'error' }) }, { type: 'hr' }],
                 buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'default', text: 'Cancel', onClick: this.handleCancelSave.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'blue', text: 'Save', onClick: this.handleSave.bind(this), hasRequired: true })],
                 onChange: this.handleFormChange.bind(this),
                 data: this.props.form
@@ -2791,7 +2870,7 @@ var BotPage = function (_Component) {
                             { size: '12' },
                             _react2.default.createElement(
                                 _LayoutComponent.PortletComponent,
-                                { title: 'Bot' },
+                                { title: 'Bot', id: 'bot_content_portlet' },
                                 _react2.default.createElement(_FormComponent.FormSimpleComponent, FormProps)
                             )
                         )
@@ -2802,14 +2881,39 @@ var BotPage = function (_Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            this.props.dispatch(Actions.fetchBotRequest());
-            fetch('/api/v1/private/bots/' + this.props.params.id, { credentials: 'same-origin' }).then(function (response) {
-                return response.json();
-            }).then(function (data) {
-                this.props.dispatch(Actions.fetchBotSuccess(data));
-            }.bind(this)).catch(function (err) {
-                this.props.dispatch(Actions.fetchBotFailure(err.toString()));
+            if (this.props.recent_created != undefined && this.props.recent_created.id == parseInt(this.props.params.id)) {
+                this.props.dispatch(Actions.openRecentCreatedBot());
+            } else {
+                this.props.dispatch(Actions.fetchBotRequest());
+                fetch('/api/v1/private/bots/' + this.props.params.id, { credentials: 'same-origin' }).then(function (response) {
+                    return response.json();
+                }).then(function (data) {
+                    this.props.dispatch(Actions.fetchBotSuccess(data));
+                }.bind(this)).catch(function (err) {
+                    this.props.dispatch(Actions.fetchBotFailure(err.toString()));
+                }.bind(this));
+            }
+
+            // Set route leave hook
+            this.props.router.setRouteLeaveHook(this.props.route, function () {
+                this.props.dispatch(Actions.changeCancelBot());
             }.bind(this));
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            // Block UI
+            if (this.props.fetching != undefined && this.props.fetching) {
+                App.blockUI({
+                    target: '#bot_content_portlet',
+                    animate: true
+                });
+                window.setTimeout(function () {
+                    App.unblockUI('#bot_content_portlet');
+                }, 5000);
+            } else {
+                App.unblockUI('#bot_content_portlet');
+            }
         }
     }, {
         key: 'handleFormChange',
@@ -2820,6 +2924,7 @@ var BotPage = function (_Component) {
         key: 'handleCancelSave',
         value: function handleCancelSave(e) {
             this.props.dispatch(Actions.changeCancelBot());
+            this.props.router.push('/bots');
         }
     }, {
         key: 'handleSave',
@@ -2842,7 +2947,6 @@ var BotPage = function (_Component) {
                 var err = data['error'];
                 if (err == undefined || err.trim().length === 0) {
                     this.props.dispatch(Actions.saveBotSuccess(data));
-                    this.props.history.push('/bots/' + data.id);
                     this.props.dispatch(Actions.showToast('success', 'Update Bot', this.props.form.name + ' bot has been updated.'));
                 } else {
                     this.props.dispatch(Actions.saveBotFailure(err));
@@ -2873,30 +2977,41 @@ var FormSelector = function FormSelector(state) {
 var FetchErrSelector = function FetchErrSelector(state) {
     return state.bot.data.err;
 };
+var RecentCreatedSelector = function RecentCreatedSelector(state) {
+    return state.bot.data.recent_created;
+};
 
 function select(state) {
     return {
         fetching: FetchingSelector(state),
         form: FormSelector(state),
-        err: FetchErrSelector(state)
+        err: FetchErrSelector(state),
+        recent_created: RecentCreatedSelector(state)
     };
 }
 
-exports.default = (0, _reactRedux.connect)(select)(BotPage);
+exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(select)(BotPage));
 
-},{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":9,"../components/PageHeadComponent":10,"../components/StateComponent":15,"../components/TableComponent":16,"../components/ToastComponent":17,"../utils":31,"react":571,"react-redux":381}],21:[function(require,module,exports){
+},{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":9,"../components/PageHeadComponent":10,"../components/StateComponent":15,"../components/TableComponent":16,"../components/ToastComponent":17,"../utils":31,"react":571,"react-redux":381,"react-router":419}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.BotsPage = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = require('react-redux');
+
+var _ToastComponent = require('../components/ToastComponent');
+
+var _ToastComponent2 = _interopRequireDefault(_ToastComponent);
 
 var _LayoutComponent = require('../components/LayoutComponent');
 
@@ -2920,58 +3035,153 @@ var _FormComponent = require('../components/FormComponent');
 
 var _ButtonComponent = require('../components/ButtonComponent');
 
+var _actions = require('../actions');
+
+var Actions = _interopRequireWildcard(_actions);
+
+var _utils = require('../utils');
+
+var Utils = _interopRequireWildcard(_utils);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var BotsPage = exports.BotsPage = _react2.default.createClass({
-    displayName: 'BotsPage',
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    render: function render() {
-        // init data 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-        var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'My Bots' }];
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-        var note = 'Create the first bot for your bot.';
+var BotsPage = function (_Component) {
+    _inherits(BotsPage, _Component);
 
-        var PortletProps = {
-            title: 'Bots',
-            buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'green', text: 'New Bot', icon: 'plus', href: '#bots/new' })]
-        };
+    function BotsPage() {
+        _classCallCheck(this, BotsPage);
 
-        var BotsTableProps = {
-            columns: [{ name: 'name', text: 'Bot' }, { name: 'action', text: '' }],
-            data: [{
-                name: 'instflow prod',
-                action: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'blue', text: 'View' })
-            }, {
-                name: 'carnival dev',
-                action: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'blue', text: 'View' })
-            }]
-        };
+        return _possibleConstructorReturn(this, (BotsPage.__proto__ || Object.getPrototypeOf(BotsPage)).apply(this, arguments));
+    }
 
-        return _react2.default.createElement(
-            _PageContentComponent2.default,
-            null,
-            _react2.default.createElement(_PageHeadComponent2.default, { title: 'My Bots' }),
-            _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
-            _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
-            _react2.default.createElement(
-                _LayoutComponent.RowComponent,
+    _createClass(BotsPage, [{
+        key: 'render',
+        value: function render() {
+            // init data 
+
+            var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'My Bots' }];
+
+            var note = 'Create the first bot for your bot.';
+
+            var PortletProps = {
+                title: 'Bots',
+                buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'green', text: 'New Bot', icon: 'plus', href: '#bots/new' })]
+            };
+
+            var data = [];
+            if (this.props.list != undefined) {
+                data = this.props.list.map(function (item) {
+                    return Object.assign({}, item, {
+                        ms_account: this.connectState(item),
+                        view: _react2.default.createElement(_ButtonComponent.ButtonComponent, { href: '#bots/' + item.id, color: 'blue', size: 'xs', text: 'View' })
+                    });
+                }.bind(this));
+            }
+
+            var BotsTableProps = {
+                columns: [{ name: 'name', text: 'Bot' }, { name: 'access_token', text: 'Access Token' }, { name: 'ms_account', text: 'Microsoft Account' }, { name: 'view', text: '' }],
+                data: data
+            };
+
+            return _react2.default.createElement(
+                _ToastComponent2.default,
                 null,
                 _react2.default.createElement(
-                    _LayoutComponent.ColComponent,
-                    { size: '12' },
+                    _PageContentComponent2.default,
+                    null,
+                    _react2.default.createElement(_PageHeadComponent2.default, { title: 'My Bots' }),
+                    _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
+                    _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
                     _react2.default.createElement(
-                        _LayoutComponent.PortletComponent,
-                        PortletProps,
-                        _react2.default.createElement(_TableComponent.TableComponent, BotsTableProps)
+                        _LayoutComponent.RowComponent,
+                        null,
+                        _react2.default.createElement(
+                            _LayoutComponent.ColComponent,
+                            { size: '12' },
+                            _react2.default.createElement(
+                                _LayoutComponent.PortletComponent,
+                                _extends({}, PortletProps, { id: 'bots_content_portlet' }),
+                                _react2.default.createElement(_TableComponent.TableComponent, BotsTableProps)
+                            )
+                        )
                     )
                 )
-            )
-        );
-    }
-});
+            );
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.props.dispatch(Actions.fetchBotsRequest());
+            fetch('/api/v1/private/bots', { credentials: 'same-origin' }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                this.props.dispatch(Actions.fetchBotsSuccess(data));
+            }.bind(this)).catch(function (err) {
+                this.props.dispatch(Actions.fetchBotsFailure(err.toString()));
+                this.props.dispatch(Actions.showToast('error', 'Bad Request', err.toString()));
+            }.bind(this));
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            // Block UI
+            if (this.props.fetching != undefined && this.props.fetching) {
+                App.blockUI({
+                    target: '#bots_content_portlet',
+                    animate: true
+                });
+                window.setTimeout(function () {
+                    App.unblockUI('#bots_content_portlet');
+                }, 5000);
+            } else {
+                App.unblockUI('#bots_content_portlet');
+            }
+        }
+    }, {
+        key: 'connectState',
+        value: function connectState(item) {
+            return _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', icon: 'check', text: 'Connected', enabled: false });
+        }
+    }]);
 
-},{"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":9,"../components/PageHeadComponent":10,"../components/TableComponent":16,"react":571,"react-redux":381}],22:[function(require,module,exports){
+    return BotsPage;
+}(_react.Component);
+
+BotsPage.propTypes = {
+    fetching: _react.PropTypes.bool,
+    list: _react.PropTypes.array,
+    err: _react.PropTypes.string
+};
+
+var FetchingSelector = function FetchingSelector(state) {
+    return state.bot.data.fetching;
+};
+var ListSelector = function ListSelector(state) {
+    return state.bot.data.list;
+};
+var FetchErrSelector = function FetchErrSelector(state) {
+    return state.bot.data.err;
+};
+
+function select(state) {
+    return {
+        fetching: FetchingSelector(state),
+        list: ListSelector(state),
+        err: FetchErrSelector(state)
+    };
+}
+
+exports.default = (0, _reactRedux.connect)(select)(BotsPage);
+
+},{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":9,"../components/PageHeadComponent":10,"../components/TableComponent":16,"../components/ToastComponent":17,"../utils":31,"react":571,"react-redux":381}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3071,7 +3281,7 @@ var ProfilePage = function (_Component) {
             var isNewPasswordEmpty = this.state.isCheckPasswordFormNull && (this.props.passwordForm == undefined || this.props.passwordForm.newpassword == undefined || this.props.passwordForm.newpassword.trim().length === 0);
             var isNewPassword2Empty = this.state.isCheckPasswordFormNull && (this.props.passwordForm == undefined || this.props.passwordForm.newpassword2 == undefined || this.props.passwordForm.newpassword2.trim().length === 0);
             var ChangePasswordProps = {
-                controls: [{ name: 'password', text: 'Current Password', placeholder: '', type: 'password', err: isPasswordEmpty }, { name: 'newpassword', text: 'New Password', placeholder: '', type: 'password', err: isNewPasswordEmpty }, { name: 'newpassword2', text: 'Re-type New Password', placeholder: '', type: 'password', err: isNewPassword2Empty || this.isPasswordNotIdentical() }],
+                controls: [{ name: 'password', text: 'Current Password', placeholder: '', type: 'password', state: isPasswordEmpty ? 'error' : '' }, { name: 'newpassword', text: 'New Password', placeholder: '', type: 'password', state: isNewPasswordEmpty ? 'error' : '' }, { name: 'newpassword2', text: 'Re-type New Password', placeholder: '', type: 'password', state: isNewPassword2Empty || this.isPasswordNotIdentical() ? 'error' : '' }],
                 buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'green', text: 'Change Password', onClick: this.handleChangePassword.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'default', text: 'Cancel', onClick: this.handleCancelChangePassword.bind(this) })],
                 onChange: this.handlePasswordFormChanage.bind(this),
                 data: this.props.passwordForm
@@ -3165,7 +3375,8 @@ var ProfilePage = function (_Component) {
             }).then(function (data) {
                 this.props.dispatch(Actions.fetchProfileSuccess(data));
             }.bind(this)).catch(function (err) {
-                this.props.dispatch(Actions.fetchProfileFailure(err));
+                this.props.dispatch(Actions.fetchProfileFailure(err.toString()));
+                this.props.dispatch(Actions.showToast('error', 'Bad Request', err.toString()));
             }.bind(this));
         }
     }, {
@@ -3542,7 +3753,7 @@ var _redux = require('redux');
 
 var _actions = require('../actions');
 
-function CreateReducer() {
+function BotReducer() {
     var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     var action = arguments[1];
 
@@ -3555,7 +3766,8 @@ function CreateReducer() {
             return Object.assign({}, state, {
                 fetching: false,
                 response: action.response,
-                form: action.response
+                form: action.response,
+                recent_created: action.response
             });
         case _actions.TYPE_BOT_CREATE_FAILURE:
             return Object.assign({}, state, {
@@ -3572,16 +3784,6 @@ function CreateReducer() {
             return Object.assign({}, state, {
                 form: state.response
             });
-        default:
-            return state;
-    }
-}
-
-function BotReducer() {
-    var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    var action = arguments[1];
-
-    switch (action.type) {
         case _actions.TYPE_FETCH_BOT_REQUEST:
             return Object.assign({}, state, {
                 fetching: true
@@ -3622,13 +3824,36 @@ function BotReducer() {
             return Object.assign({}, state, {
                 form: state.response
             });
+        case _actions.TYPE_CLEAN_BOT_FORM:
+            return Object.assign({}, state, {
+                form: null
+            });
+        case _actions.TYPE_FETCH_BOTS_REQUEST:
+            return Object.assign({}, state, {
+                fetching: true
+            });
+        case _actions.TYPE_FETCH_BOTS_SUCCESS:
+            return Object.assign({}, state, {
+                fetching: false,
+                list: action.response
+            });
+        case _actions.TYPE_FETCH_BOTS_FAILURE:
+            return Object.assign({}, state, {
+                fetching: false,
+                err: action.err
+            });
+        case _actions.TYPE_OPEN_RECENT_CRAETED_BOT:
+            return Object.assign({}, state, {
+                response: state.recent_created,
+                form: state.recent_created,
+                recent_created: null
+            });
         default:
             return state;
     }
 }
 
 exports.default = (0, _redux.combineReducers)({
-    create: CreateReducer,
     data: BotReducer
 });
 

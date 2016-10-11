@@ -73,9 +73,9 @@ class ProfilePage extends Component {
             (this.props.passwordForm == undefined || this.props.passwordForm.newpassword2 == undefined || this.props.passwordForm.newpassword2.trim().length === 0);
         let ChangePasswordProps = {
             controls: [
-                {name: 'password', text: 'Current Password', placeholder: '', type: 'password', err: isPasswordEmpty},
-                {name: 'newpassword', text: 'New Password', placeholder: '', type: 'password', err: isNewPasswordEmpty},
-                {name: 'newpassword2', text: 'Re-type New Password', placeholder: '', type: 'password', err: isNewPassword2Empty || this.isPasswordNotIdentical()}
+                {name: 'password', text: 'Current Password', placeholder: '', type: 'password', state: isPasswordEmpty ? 'error' : ''},
+                {name: 'newpassword', text: 'New Password', placeholder: '', type: 'password', state: isNewPasswordEmpty ? 'error' : ''},
+                {name: 'newpassword2', text: 'Re-type New Password', placeholder: '', type: 'password', state: isNewPassword2Empty || this.isPasswordNotIdentical() ? 'error' : ''}
             ],
             buttons: [
                 <ButtonComponent key={0} color='green' text='Change Password' onClick={this.handleChangePassword.bind(this)} />,
@@ -153,7 +153,12 @@ class ProfilePage extends Component {
         }).then(function(data){
             this.props.dispatch(Actions.fetchProfileSuccess(data));
         }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.fetchProfileFailure(err));
+            this.props.dispatch(Actions.fetchProfileFailure(err.toString()));
+            this.props.dispatch(Actions.showToast(
+                'error',
+                'Bad Request',
+                err.toString()
+            ));
         }.bind(this));
     }
 

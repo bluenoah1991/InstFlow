@@ -4,7 +4,6 @@ class CreateBots < ActiveRecord::Migration[5.0]
       t.belongs_to :admin, null: false
       t.string :name, null: false
       t.string :access_token, null: false
-      t.boolean :can_view_access_token, default: true
       t.string :ms_appid, null: true
       t.string :ms_appsecret, null: true
 

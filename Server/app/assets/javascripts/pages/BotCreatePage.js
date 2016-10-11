@@ -65,6 +65,10 @@ class BotCreatePage extends Component {
         );
     }
 
+    componentWillMount(){
+        this.props.dispatch(Actions.cleanBotForm());
+    }
+
     handleFormChange(e, control){
         this.props.dispatch(Actions.changeBotCreateForm(control.name, e.target.value));
     }
@@ -123,9 +127,9 @@ BotCreatePage.propTypes = {
     err: PropTypes.string
 };
 
-const FetchingSelector = state => state.bot.create.fetching;
-const FormSelector = state => state.bot.create.form;
-const FetchErrSelector = state => state.bot.create.err;
+const FetchingSelector = state => state.bot.data.fetching;
+const FormSelector = state => state.bot.data.form;
+const FetchErrSelector = state => state.bot.data.err;
 
 function select(state){
     return {

@@ -5,7 +5,7 @@ module Api
                 before_action :authenticate_admin!
                 before_action :authenticate_tenant!
 
-                def show
+                def index
                     render json: UserDatatable.new(view_context, user_filter_params)
                 end
 

@@ -12,10 +12,15 @@ import {
     TYPE_BOT_CREATE_SUCCESS, 
     TYPE_BOT_CREATE_FAILURE,
     TYPE_CHANGE_BOT_CREATE_FORM,
-    TYPE_CHANGE_CANCEL_BOT_CREATE
+    TYPE_CHANGE_CANCEL_BOT_CREATE,
+    TYPE_CLEAN_BOT_FORM,
+    TYPE_FETCH_BOTS_REQUEST,
+    TYPE_FETCH_BOTS_SUCCESS,
+    TYPE_FETCH_BOTS_FAILURE,
+    TYPE_OPEN_RECENT_CRAETED_BOT
 } from '../actions';
 
-function CreateReducer(state={}, action){
+function BotReducer(state={}, action){
     switch(action.type){
         case TYPE_BOT_CREATE_REQUEST:
             return Object.assign({}, state, {
@@ -25,7 +30,8 @@ function CreateReducer(state={}, action){
             return Object.assign({}, state, {
                 fetching: false,
                 response: action.response,
-                form: action.response
+                form: action.response,
+                recent_created: action.response
             });
         case TYPE_BOT_CREATE_FAILURE:
             return Object.assign({}, state, {
@@ -42,13 +48,6 @@ function CreateReducer(state={}, action){
             return Object.assign({}, state, {
                 form: state.response
             });
-        default:
-            return state;
-    }
-}
-
-function BotReducer(state={}, action){
-    switch(action.type){
         case TYPE_FETCH_BOT_REQUEST:
             return Object.assign({}, state, {
                 fetching: true
@@ -89,12 +88,35 @@ function BotReducer(state={}, action){
             return Object.assign({}, state, {
                 form: state.response
             });
+        case TYPE_CLEAN_BOT_FORM:
+            return Object.assign({}, state, {
+                form: null
+            });
+        case TYPE_FETCH_BOTS_REQUEST:
+            return Object.assign({}, state, {
+                fetching: true
+            });
+        case TYPE_FETCH_BOTS_SUCCESS:
+            return Object.assign({}, state, {
+                fetching: false,
+                list: action.response
+            });
+        case TYPE_FETCH_BOTS_FAILURE:
+            return Object.assign({}, state, {
+                fetching: false,
+                err: action.err
+            });
+        case TYPE_OPEN_RECENT_CRAETED_BOT:
+            return Object.assign({}, state, {
+                response: state.recent_created,
+                form: state.recent_created,
+                recent_created: null
+            });
         default:
             return state;
     }
 }
 
 export default combineReducers({
-    create: CreateReducer,
     data: BotReducer
 });

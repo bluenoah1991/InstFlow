@@ -197,9 +197,36 @@ export const TYPE_SAVE_BOT_SUCCESS = 'TYPE_SAVE_BOT_SUCCESS';
 export const TYPE_SAVE_BOT_FAILURE = 'TYPE_SAVE_BOT_FAILURE';
 export const TYPE_CHANGE_BOT_FORM = 'TYPE_CHANGE_BOT_FORM';
 export const TYPE_CHANGE_CANCEL_BOT = 'TYPE_CHANGE_CANCEL_BOT';
-
+export const TYPE_CLEAN_BOT_FORM = 'TYPE_CLEAN_BOT_FORM';
+export const TYPE_FETCH_BOTS_REQUEST = 'TYPE_FETCH_BOTS_REQUEST';
+export const TYPE_FETCH_BOTS_SUCCESS = 'TYPE_FETCH_BOTS_SUCCESS';
+export const TYPE_FETCH_BOTS_FAILURE = 'TYPE_FETCH_BOTS_FAILURE';
+export const TYPE_OPEN_RECENT_CRAETED_BOT = 'TYPE_OPEN_RECENT_CRAETED_BOT';
 
 // Bot Actions
+export function fetchBotsRequest(){
+    const action = {
+        type: TYPE_FETCH_BOTS_REQUEST
+    };
+    return action;
+}
+
+export function fetchBotsSuccess(response){
+    const action = {
+        type: TYPE_FETCH_BOTS_SUCCESS,
+        response: response
+    };
+    return action;
+}
+
+export function fetchBotsFailure(err){
+    const action = {
+        type: TYPE_FETCH_BOTS_FAILURE,
+        err: err
+    };
+    return action;
+}
+
 export function fetchBotRequest(){
     const action = {
         type: TYPE_FETCH_BOT_REQUEST
@@ -258,6 +285,20 @@ export function changeBotForm(fieldName, value){
 export function changeCancelBot(){
     const action = {
         type: TYPE_CHANGE_CANCEL_BOT
+    }
+    return action;
+}
+
+export function cleanBotForm(){
+    const action = {
+        type: TYPE_CLEAN_BOT_FORM
+    }
+    return action;
+}
+
+export function openRecentCreatedBot(){
+    const action = {
+        type: TYPE_OPEN_RECENT_CRAETED_BOT
     }
     return action;
 }

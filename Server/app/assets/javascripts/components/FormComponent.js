@@ -86,9 +86,10 @@ class FormSimpleComponent extends Component{
             let name = control.name != undefined ? control.name : _.uniqueId('control_');
             let text = control.text != undefined ? control.text : '';
             let readonly = control.readonly != undefined ? control.readonly : false;
+            let help = control.help != undefined ? control.help : null;
+            let state = control.state != undefined ? `has-${control.state}` : '';
             let placeholder = control.placeholder != undefined ? control.placeholder : `Enter your ${text.toLowerCase()}`;
             let type = control.type != undefined ? control.type : 'input';
-            let err = control.err != undefined ? control.err : false;
             let required = control.required != undefined ? control.required : false;
             let value = safestring(this.props.data != undefined ? this.props.data[name] : null);
             let handleChange = this.props.onChange != undefined ? _.partial(this.props.onChange, _, control) : function(){};
@@ -129,10 +130,16 @@ class FormSimpleComponent extends Component{
                         dom = <input type="password" className="form-control" placeholder={placeholder} value={value} onChange={handleChange} />
                     }
                 }
+
+                let help_block = [];
+                if(help != undefined && help.trim().length > 0){
+                    help_block = <p className="help-block"> {help} </p>;
+                }
                 items.push(
-                    <div key={index} className={`form-group ${err ? 'has-error' : ''}`}>
+                    <div key={index} className={`form-group ${state}`}>
                         <label className="control-label">{text}</label>
                         {dom}
+                        {help_block}
                     </div>
                 );
             }
@@ -171,10 +178,11 @@ FormSimpleComponent.propTypes = {
         name: PropTypes.string,
         text: PropTypes.string,
         readonly: PropTypes.bool,
+        help: PropTypes.string,
+        state: PropTypes.string,
         required: PropTypes.bool,
         placeholder: PropTypes.string,
         type: PropTypes.string,
-        err: PropTypes.bool,
         content: PropTypes.oneOfType([
             PropTypes.arrayOf(PropTypes.element),
             PropTypes.element,
