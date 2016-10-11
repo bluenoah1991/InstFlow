@@ -117,7 +117,7 @@ class ProfilePage extends Component {
                         <ColComponent size="12">
                             <ProfileSidebarComponent>
                                 <ProfileCardComponent {...ProfileCardProps} />
-                                <ProfileAboutComponent apps={3} messages={15} tickets={2} />
+                                <ProfileAboutComponent bots={3} messages={15} tickets={2} />
                             </ProfileSidebarComponent>
                             <ProfileContentComponent>
                                 <RowComponent>

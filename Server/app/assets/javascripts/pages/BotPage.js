@@ -15,21 +15,21 @@ import {ConnectStateComponent} from '../components/StateComponent';
 import * as Actions from '../actions';
 import * as Utils from '../utils';
 
-class ApplicationPage extends Component {
+class BotPage extends Component {
     render(){
         // init data 
 
         let breadCrumbPaths = [
             {title: 'Home', href: 'home.html'},
-            {title: 'My Applications', href: '#apps'},
-            {title: 'Application'}
+            {title: 'My Bots', href: '#bots'},
+            {title: 'Bot'}
         ];
         
-        let note = 'Create the first application for your bot.';
+        let note = 'Create the first bot for your bot.';
 
         let FormProps = {
             controls: [
-                {name: 'name', text: 'App Name', required: true},
+                {name: 'name', text: 'bot Name', required: true},
                 {name: 'access_token', text: 'Access Token', required: true},
                 {type: 'hr'},
                 {type: 'h4', text: 'Microsoft Application Settings'},
@@ -50,12 +50,12 @@ class ApplicationPage extends Component {
         return (
             <ToastComponent>
                 <PageContentComponent>
-                    <PageHeadComponent title="Application" />
+                    <PageHeadComponent title="Bot" />
                     <PageBreadCrumbComponent paths={breadCrumbPaths} />
                     <NoteComponent note={note} />
                     <RowComponent>
                         <ColComponent size="12">
-                            <PortletComponent title="Application">
+                            <PortletComponent title="Bot">
                                 <FormSimpleComponent {...FormProps}/>
                             </PortletComponent>
                         </ColComponent>
@@ -66,30 +66,30 @@ class ApplicationPage extends Component {
     }
 
     componentDidMount(){
-        this.props.dispatch(Actions.fetchApplicationRequest());
-        fetch(`/api/v1/private/apps/${this.props.params.id}`, {credentials: 'same-origin'}).then(function(response){
+        this.props.dispatch(Actions.fetchBotRequest());
+        fetch(`/api/v1/private/bots/${this.props.params.id}`, {credentials: 'same-origin'}).then(function(response){
             return response.json();
         }).then(function(data){
-            this.props.dispatch(Actions.fetchApplicationSuccess(data));
+            this.props.dispatch(Actions.fetchBotSuccess(data));
         }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.fetchApplicationFailure(err.toString()));
+            this.props.dispatch(Actions.fetchBotFailure(err.toString()));
         }.bind(this));
     }
 
     handleFormChange(e, control){
-        this.props.dispatch(Actions.changeApplicationForm(control.name, e.target.value));
+        this.props.dispatch(Actions.changeBotForm(control.name, e.target.value));
     }
 
     handleCancelSave(e){
-        this.props.dispatch(Actions.changeCancelApplication());
+        this.props.dispatch(Actions.changeCancelBot());
     }
 
     handleSave(e){
-        this.props.dispatch(Actions.saveApplicationRequest());
+        this.props.dispatch(Actions.saveBotRequest());
         let dataHasAuthToken = Object.assign({}, this.props.form, {
             authenticity_token: Utils.csrfToken()
         });
-        fetch(`/api/v1/private/apps/${this.props.params.id}`, {
+        fetch(`/api/v1/private/bots/${this.props.params.id}`, {
             method: 'PUT', 
             headers: {
                 'Accept': 'application/json',
@@ -102,41 +102,41 @@ class ApplicationPage extends Component {
         }).then(function(data){
             let err = data['error'];
             if(err == undefined || err.trim().length === 0){
-            this.props.dispatch(Actions.saveApplicationSuccess(data));
-                this.props.history.push(`/apps/${data.id}`);
+            this.props.dispatch(Actions.saveBotSuccess(data));
+                this.props.history.push(`/bots/${data.id}`);
                 this.props.dispatch(Actions.showToast(
                     'success',
-                    'Update Application',
-                    `${this.props.form.name} application has been updated.`
+                    'Update Bot',
+                    `${this.props.form.name} bot has been updated.`
                 ));
             } else {
-                this.props.dispatch(Actions.saveApplicationFailure(err));
+                this.props.dispatch(Actions.saveBotFailure(err));
                 this.props.dispatch(Actions.showToast(
                     'error',
-                    'Update Application',
+                    'Update Bot',
                     data['message']
                 ));
             }
         }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.saveApplicationFailure(err.toString()));
+            this.props.dispatch(Actions.saveBotFailure(err.toString()));
             this.props.dispatch(Actions.showToast(
                 'error',
-                'Update Application',
+                'Update Bot',
                 err.toString()
             ));
         }.bind(this));
     }
 }
 
-ApplicationPage.propTypes = {
+BotPage.propTypes = {
     fetching: PropTypes.bool,
     form: PropTypes.object,
     err: PropTypes.string
 };
 
-const FetchingSelector = state => state.application.data.fetching;
-const FormSelector = state => state.application.data.form;
-const FetchErrSelector = state => state.application.data.err;
+const FetchingSelector = state => state.bot.data.fetching;
+const FormSelector = state => state.bot.data.form;
+const FetchErrSelector = state => state.bot.data.err;
 
 function select(state){
     return {
@@ -146,4 +146,4 @@ function select(state){
     };
 }
 
-export default connect(select)(ApplicationPage);
+export default connect(select)(BotPage);

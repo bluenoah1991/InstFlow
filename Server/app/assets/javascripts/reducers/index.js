@@ -2,12 +2,12 @@ import {combineReducers} from 'redux';
 
 import ToastReducer from './ToastReducer';
 import ProfileReducer from './ProfileReducer';
-import ApplicationReducer from './ApplicationReducer';
+import BotReducer from './BotReducer';
 
 const reducers = combineReducers({
     toast: ToastReducer,
     profile: ProfileReducer,
-    application: ApplicationReducer
+    bot: BotReducer
 });
 
 export default reducers;

@@ -1,7 +1,7 @@
 module Api
     module V1
         module Private
-            class ApplicationsController < Api::V1::Private::ApplicationController
+            class BotsController < Api::V1::Private::ApplicationController
                 before_action :authenticate_admin!
                 before_action :authenticate_tenant!
                 before_action :set_instance, except: [:create]
@@ -11,7 +11,7 @@ module Api
                     optional! :ms_appid, type: String
                     optional! :ms_appkey, type: String
 
-                    @instance = Application.new
+                    @instance = Bot.new
                     @instance.name = params[:name]
                     @instance.ms_appid = params[:ms_appid]
                     @instance.ms_appsecret = params[:ms_appsecret]
@@ -22,7 +22,13 @@ module Api
                 end
 
                 def show
-                    render json: @instance.to_json
+                    if @instance.can_view_access_token
+                        @instance.can_view_access_token = false
+                        @instance.save!
+                        render json: @instance.to_json
+                    else
+                        render json: @instance.to_json
+                    end
                 end
 
                 def update
@@ -39,7 +45,7 @@ module Api
                 end
 
                 def set_instance
-                    @instance = Application.find(params[:id])
+                    @instance = Bot.find(params[:id])
                 end
             end
         end

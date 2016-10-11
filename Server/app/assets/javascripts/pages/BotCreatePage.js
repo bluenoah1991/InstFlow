@@ -16,21 +16,21 @@ import {ConnectStateComponent} from '../components/StateComponent';
 import * as Actions from '../actions';
 import * as Utils from '../utils';
 
-class ApplicationCreatePage extends Component {
+class BotCreatePage extends Component {
     render(){
         // init data 
 
         let breadCrumbPaths = [
             {title: 'Home', href: 'home.html'},
-            {title: 'My Applications', href: '#apps'},
-            {title: 'New Application'}
+            {title: 'My Bots', href: '#bots'},
+            {title: 'New Bot'}
         ];
         
-        let note = 'Create the first application for your bot.';
+        let note = 'Create the first bot for your bot.';
 
         let FormProps = {
             controls: [
-                {name: 'name', text: 'App Name', required: true},
+                {name: 'name', text: 'Bot Name', required: true},
                 {type: 'hr'},
                 {type: 'h4', text: 'Microsoft Application Settings'},
                 {type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.'},
@@ -50,12 +50,12 @@ class ApplicationCreatePage extends Component {
         return (
             <ToastComponent>
                 <PageContentComponent>
-                    <PageHeadComponent title="New Application" />
+                    <PageHeadComponent title="New Bot" />
                     <PageBreadCrumbComponent paths={breadCrumbPaths} />
                     <NoteComponent note={note} />
                     <RowComponent>
                         <ColComponent size="12">
-                            <PortletComponent title="New Application">
+                            <PortletComponent title="New Bot">
                                 <FormSimpleComponent {...FormProps}/>
                             </PortletComponent>
                         </ColComponent>
@@ -66,19 +66,19 @@ class ApplicationCreatePage extends Component {
     }
 
     handleFormChange(e, control){
-        this.props.dispatch(Actions.changeApplicationCreateForm(control.name, e.target.value));
+        this.props.dispatch(Actions.changeBotCreateForm(control.name, e.target.value));
     }
 
     handleCancelCreate(e){
-        this.props.dispatch(Actions.changeCancelApplicationCreate());
+        this.props.dispatch(Actions.changeCancelBotCreate());
     }
 
     handleCreate(e){
-        this.props.dispatch(Actions.createApplicationRequest());
+        this.props.dispatch(Actions.createBotRequest());
         let dataHasAuthToken = Object.assign({}, this.props.form, {
             authenticity_token: Utils.csrfToken()
         });
-        fetch('/api/v1/private/apps', {
+        fetch('/api/v1/private/bots', {
             method: 'POST', 
             headers: {
                 'Accept': 'application/json',
@@ -91,41 +91,41 @@ class ApplicationCreatePage extends Component {
         }).then(function(data){
             let err = data['error'];
             if(err == undefined || err.trim().length === 0){
-            this.props.dispatch(Actions.createApplicationSuccess(data));
+            this.props.dispatch(Actions.createBotSuccess(data));
                 this.props.dispatch(Actions.showToast(
                     'success',
-                    'Create Application',
-                    `${this.props.form.name} application has been created.`
+                    'Create Bot',
+                    `${this.props.form.name} bot has been created.`
                 ));
-                hashHistory.push(`/apps/${data.id}`);
+                hashHistory.push(`/bots/${data.id}`);
             } else {
-                this.props.dispatch(Actions.createApplicationFailure(err));
+                this.props.dispatch(Actions.createBotFailure(err));
                 this.props.dispatch(Actions.showToast(
                     'error',
-                    'Create Application',
+                    'Create Bot',
                     data['message']
                 ));
             }
         }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.createApplicationFailure(err.toString()));
+            this.props.dispatch(Actions.createBotFailure(err.toString()));
             this.props.dispatch(Actions.showToast(
                 'error',
-                'Create Application',
+                'Create Bot',
                 err.toString()
             ));
         }.bind(this));
     }
 }
 
-ApplicationCreatePage.propTypes = {
+BotCreatePage.propTypes = {
     fetching: PropTypes.bool,
     form: PropTypes.object,
     err: PropTypes.string
 };
 
-const FetchingSelector = state => state.application.create.fetching;
-const FormSelector = state => state.application.create.form;
-const FetchErrSelector = state => state.application.create.err;
+const FetchingSelector = state => state.bot.create.fetching;
+const FormSelector = state => state.bot.create.form;
+const FetchErrSelector = state => state.bot.create.err;
 
 function select(state){
     return {
@@ -135,4 +135,4 @@ function select(state){
     };
 }
 
-export default connect(select)(ApplicationCreatePage);
+export default connect(select)(BotCreatePage);

@@ -19,19 +19,19 @@ exports.changeCancelPassword = changeCancelPassword;
 exports.changePasswordRequest = changePasswordRequest;
 exports.changePasswordSuccess = changePasswordSuccess;
 exports.changePasswordFailure = changePasswordFailure;
-exports.createApplicationRequest = createApplicationRequest;
-exports.createApplicationSuccess = createApplicationSuccess;
-exports.createApplicationFailure = createApplicationFailure;
-exports.changeApplicationCreateForm = changeApplicationCreateForm;
-exports.changeCancelApplicationCreate = changeCancelApplicationCreate;
-exports.fetchApplicationRequest = fetchApplicationRequest;
-exports.fetchApplicationSuccess = fetchApplicationSuccess;
-exports.fetchApplicationFailure = fetchApplicationFailure;
-exports.saveApplicationRequest = saveApplicationRequest;
-exports.saveApplicationSuccess = saveApplicationSuccess;
-exports.saveApplicationFailure = saveApplicationFailure;
-exports.changeApplicationForm = changeApplicationForm;
-exports.changeCancelApplication = changeCancelApplication;
+exports.createBotRequest = createBotRequest;
+exports.createBotSuccess = createBotSuccess;
+exports.createBotFailure = createBotFailure;
+exports.changeBotCreateForm = changeBotCreateForm;
+exports.changeCancelBotCreate = changeCancelBotCreate;
+exports.fetchBotRequest = fetchBotRequest;
+exports.fetchBotSuccess = fetchBotSuccess;
+exports.fetchBotFailure = fetchBotFailure;
+exports.saveBotRequest = saveBotRequest;
+exports.saveBotSuccess = saveBotSuccess;
+exports.saveBotFailure = saveBotFailure;
+exports.changeBotForm = changeBotForm;
+exports.changeCancelBot = changeCancelBot;
 // Toast Action Types
 var TYPE_SHOW_TOAST = exports.TYPE_SHOW_TOAST = 'TYPE_SHOW_TOAST';
 var TYPE_SHOW_TOAST_FINISH = exports.TYPE_SHOW_TOAST_FINISH = 'TYPE_SHOW_TOAST_FINISH';
@@ -171,122 +171,122 @@ function changePasswordFailure(err) {
     return action;
 }
 
-// Application Create Action Types
-var TYPE_APPLICATION_CREATE_REQUEST = exports.TYPE_APPLICATION_CREATE_REQUEST = 'TYPE_APPLICATION_CREATE_REQUEST';
-var TYPE_APPLICATION_CREATE_SUCCESS = exports.TYPE_APPLICATION_CREATE_SUCCESS = 'TYPE_APPLICATION_CREATE_SUCCESS';
-var TYPE_APPLICATION_CREATE_FAILURE = exports.TYPE_APPLICATION_CREATE_FAILURE = 'TYPE_APPLICATION_CREATE_FAILURE';
-var TYPE_CHANGE_APPLICATION_CREATE_FORM = exports.TYPE_CHANGE_APPLICATION_CREATE_FORM = 'TYPE_CHANGE_APPLICATION_CREATE_FORM';
-var TYPE_CHANGE_CANCEL_APPLICATION_CREATE = exports.TYPE_CHANGE_CANCEL_APPLICATION_CREATE = 'TYPE_CHANGE_CANCEL_APPLICATION_CREATE';
+// Bot Create Action Types
+var TYPE_BOT_CREATE_REQUEST = exports.TYPE_BOT_CREATE_REQUEST = 'TYPE_BOT_CREATE_REQUEST';
+var TYPE_BOT_CREATE_SUCCESS = exports.TYPE_BOT_CREATE_SUCCESS = 'TYPE_BOT_CREATE_SUCCESS';
+var TYPE_BOT_CREATE_FAILURE = exports.TYPE_BOT_CREATE_FAILURE = 'TYPE_BOT_CREATE_FAILURE';
+var TYPE_CHANGE_BOT_CREATE_FORM = exports.TYPE_CHANGE_BOT_CREATE_FORM = 'TYPE_CHANGE_BOT_CREATE_FORM';
+var TYPE_CHANGE_CANCEL_BOT_CREATE = exports.TYPE_CHANGE_CANCEL_BOT_CREATE = 'TYPE_CHANGE_CANCEL_BOT_CREATE';
 
-// Application Create Actions
-function createApplicationRequest() {
+// Bot Create Actions
+function createBotRequest() {
     var action = {
-        type: TYPE_APPLICATION_CREATE_REQUEST
+        type: TYPE_BOT_CREATE_REQUEST
     };
     return action;
 }
 
-function createApplicationSuccess(response) {
+function createBotSuccess(response) {
     var action = {
-        type: TYPE_APPLICATION_CREATE_SUCCESS,
+        type: TYPE_BOT_CREATE_SUCCESS,
         response: response
     };
     return action;
 }
 
-function createApplicationFailure(err) {
+function createBotFailure(err) {
     var action = {
-        type: TYPE_APPLICATION_CREATE_FAILURE,
+        type: TYPE_BOT_CREATE_FAILURE,
         err: err
     };
     return action;
 }
 
-function changeApplicationCreateForm(fieldName, value) {
+function changeBotCreateForm(fieldName, value) {
     var action = {
-        type: TYPE_CHANGE_APPLICATION_CREATE_FORM,
+        type: TYPE_CHANGE_BOT_CREATE_FORM,
         fieldName: fieldName,
         value: value
     };
     return action;
 }
 
-function changeCancelApplicationCreate() {
+function changeCancelBotCreate() {
     var action = {
-        type: TYPE_CHANGE_CANCEL_APPLICATION_CREATE
+        type: TYPE_CHANGE_CANCEL_BOT_CREATE
     };
     return action;
 }
 
-// Application Action Types
-var TYPE_FETCH_APPLICATION_REQUEST = exports.TYPE_FETCH_APPLICATION_REQUEST = 'TYPE_FETCH_APPLICATION_REQUEST';
-var TYPE_FETCH_APPLICATION_SUCCESS = exports.TYPE_FETCH_APPLICATION_SUCCESS = 'TYPE_FETCH_APPLICATION_SUCCESS';
-var TYPE_FETCH_APPLICATION_FAILURE = exports.TYPE_FETCH_APPLICATION_FAILURE = 'TYPE_FETCH_APPLICATION_FAILURE';
-var TYPE_SAVE_APPLICATION_REQUEST = exports.TYPE_SAVE_APPLICATION_REQUEST = 'TYPE_SAVE_APPLICATION_REQUEST';
-var TYPE_SAVE_APPLICATION_SUCCESS = exports.TYPE_SAVE_APPLICATION_SUCCESS = 'TYPE_SAVE_APPLICATION_SUCCESS';
-var TYPE_SAVE_APPLICATION_FAILURE = exports.TYPE_SAVE_APPLICATION_FAILURE = 'TYPE_SAVE_APPLICATION_FAILURE';
-var TYPE_CHANGE_APPLICATION_FORM = exports.TYPE_CHANGE_APPLICATION_FORM = 'TYPE_CHANGE_APPLICATION_FORM';
-var TYPE_CHANGE_CANCEL_APPLICATION = exports.TYPE_CHANGE_CANCEL_APPLICATION = 'TYPE_CHANGE_CANCEL_APPLICATION';
+// Bot Action Types
+var TYPE_FETCH_BOT_REQUEST = exports.TYPE_FETCH_BOT_REQUEST = 'TYPE_FETCH_BOT_REQUEST';
+var TYPE_FETCH_BOT_SUCCESS = exports.TYPE_FETCH_BOT_SUCCESS = 'TYPE_FETCH_BOT_SUCCESS';
+var TYPE_FETCH_BOT_FAILURE = exports.TYPE_FETCH_BOT_FAILURE = 'TYPE_FETCH_BOT_FAILURE';
+var TYPE_SAVE_BOT_REQUEST = exports.TYPE_SAVE_BOT_REQUEST = 'TYPE_SAVE_BOT_REQUEST';
+var TYPE_SAVE_BOT_SUCCESS = exports.TYPE_SAVE_BOT_SUCCESS = 'TYPE_SAVE_BOT_SUCCESS';
+var TYPE_SAVE_BOT_FAILURE = exports.TYPE_SAVE_BOT_FAILURE = 'TYPE_SAVE_BOT_FAILURE';
+var TYPE_CHANGE_BOT_FORM = exports.TYPE_CHANGE_BOT_FORM = 'TYPE_CHANGE_BOT_FORM';
+var TYPE_CHANGE_CANCEL_BOT = exports.TYPE_CHANGE_CANCEL_BOT = 'TYPE_CHANGE_CANCEL_BOT';
 
-// Application Actions
-function fetchApplicationRequest() {
+// Bot Actions
+function fetchBotRequest() {
     var action = {
-        type: TYPE_FETCH_APPLICATION_REQUEST
+        type: TYPE_FETCH_BOT_REQUEST
     };
     return action;
 }
 
-function fetchApplicationSuccess(response) {
+function fetchBotSuccess(response) {
     var action = {
-        type: TYPE_FETCH_APPLICATION_SUCCESS,
+        type: TYPE_FETCH_BOT_SUCCESS,
         response: response
     };
     return action;
 }
 
-function fetchApplicationFailure(err) {
+function fetchBotFailure(err) {
     var action = {
-        type: TYPE_FETCH_APPLICATION_FAILURE,
+        type: TYPE_FETCH_BOT_FAILURE,
         err: err
     };
     return action;
 }
 
-function saveApplicationRequest() {
+function saveBotRequest() {
     var action = {
-        type: TYPE_SAVE_APPLICATION_REQUEST
+        type: TYPE_SAVE_BOT_REQUEST
     };
     return action;
 }
 
-function saveApplicationSuccess(response) {
+function saveBotSuccess(response) {
     var action = {
-        type: TYPE_SAVE_APPLICATION_SUCCESS,
+        type: TYPE_SAVE_BOT_SUCCESS,
         response: response
     };
     return action;
 }
 
-function saveApplicationFailure(err) {
+function saveBotFailure(err) {
     var action = {
-        type: TYPE_SAVE_APPLICATION_FAILURE,
+        type: TYPE_SAVE_BOT_FAILURE,
         err: err
     };
     return action;
 }
 
-function changeApplicationForm(fieldName, value) {
+function changeBotForm(fieldName, value) {
     var action = {
-        type: TYPE_CHANGE_APPLICATION_FORM,
+        type: TYPE_CHANGE_BOT_FORM,
         fieldName: fieldName,
         value: value
     };
     return action;
 }
 
-function changeCancelApplication() {
+function changeCancelBot() {
     var action = {
-        type: TYPE_CHANGE_CANCEL_APPLICATION
+        type: TYPE_CHANGE_CANCEL_BOT
     };
     return action;
 }
@@ -1986,13 +1986,13 @@ var ProfileAboutComponent = exports.ProfileAboutComponent = _react2.default.crea
                         'div',
                         { className: 'uppercase profile-stat-title' },
                         ' ',
-                        this.props.apps,
+                        this.props.bots,
                         ' '
                     ),
                     _react2.default.createElement(
                         'div',
                         { className: 'uppercase profile-stat-text' },
-                        ' Apps '
+                        ' Bots '
                     )
                 ),
                 _react2.default.createElement(
@@ -2469,15 +2469,15 @@ var _ProfilePage = require('./pages/ProfilePage');
 
 var _ProfilePage2 = _interopRequireDefault(_ProfilePage);
 
-var _ApplicationPage = require('./pages/ApplicationPage');
+var _BotPage = require('./pages/BotPage');
 
-var _ApplicationPage2 = _interopRequireDefault(_ApplicationPage);
+var _BotPage2 = _interopRequireDefault(_BotPage);
 
-var _ApplicationsPage = require('./pages/ApplicationsPage');
+var _BotsPage = require('./pages/BotsPage');
 
-var _ApplicationCreatePage = require('./pages/ApplicationCreatePage');
+var _BotCreatePage = require('./pages/BotCreatePage');
 
-var _ApplicationCreatePage2 = _interopRequireDefault(_ApplicationCreatePage);
+var _BotCreatePage2 = _interopRequireDefault(_BotCreatePage);
 
 var _UserManagementPage = require('./pages/UserManagementPage');
 
@@ -2493,16 +2493,16 @@ _reactDom2.default.render(_react2.default.createElement(
         { history: _reactRouter.hashHistory },
         _react2.default.createElement(_reactRouter.Route, { name: 'dashboard', path: '/', component: _ProfilePage2.default }),
         _react2.default.createElement(_reactRouter.Route, { name: 'profile', path: '/profile', component: _ProfilePage2.default }),
-        _react2.default.createElement(_reactRouter.Route, { name: 'new_app', path: '/apps/new', component: _ApplicationCreatePage2.default }),
-        _react2.default.createElement(_reactRouter.Route, { name: 'app', path: '/apps/:id', component: _ApplicationPage2.default }),
-        _react2.default.createElement(_reactRouter.Route, { name: 'apps', path: '/apps', component: _ApplicationsPage.ApplicationsPage }),
+        _react2.default.createElement(_reactRouter.Route, { name: 'new_bot', path: '/bots/new', component: _BotCreatePage2.default }),
+        _react2.default.createElement(_reactRouter.Route, { name: 'bot', path: '/bots/:id', component: _BotPage2.default }),
+        _react2.default.createElement(_reactRouter.Route, { name: 'bots', path: '/bots', component: _BotsPage.BotsPage }),
         _react2.default.createElement(_reactRouter.Route, { name: 'new_user', path: '/users/new', component: _UserManagementPage.UserCreatePage }),
         _react2.default.createElement(_reactRouter.Route, { name: 'user', path: '/users/:id', component: _UserManagementPage.UserProfilePage }),
         _react2.default.createElement(_reactRouter.Route, { name: 'users', path: '/users', component: _UserManagementPage.UserManagementPage })
     )
 ), document.getElementsByClassName('page-content-wrapper')[0]);
 
-},{"./pages/ApplicationCreatePage":19,"./pages/ApplicationPage":20,"./pages/ApplicationsPage":21,"./pages/ProfilePage":22,"./pages/UserManagementPage":23,"./reducers":27,"babel-polyfill":32,"jquery-ujs":375,"react":571,"react-dom":378,"react-redux":381,"react-router":419,"redux":577,"whatwg-fetch":591}],19:[function(require,module,exports){
+},{"./pages/BotCreatePage":19,"./pages/BotPage":20,"./pages/BotsPage":21,"./pages/ProfilePage":22,"./pages/UserManagementPage":23,"./reducers":27,"babel-polyfill":32,"jquery-ujs":375,"react":571,"react-dom":378,"react-redux":381,"react-router":419,"redux":577,"whatwg-fetch":591}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2565,26 +2565,26 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var ApplicationCreatePage = function (_Component) {
-    _inherits(ApplicationCreatePage, _Component);
+var BotCreatePage = function (_Component) {
+    _inherits(BotCreatePage, _Component);
 
-    function ApplicationCreatePage() {
-        _classCallCheck(this, ApplicationCreatePage);
+    function BotCreatePage() {
+        _classCallCheck(this, BotCreatePage);
 
-        return _possibleConstructorReturn(this, (ApplicationCreatePage.__proto__ || Object.getPrototypeOf(ApplicationCreatePage)).apply(this, arguments));
+        return _possibleConstructorReturn(this, (BotCreatePage.__proto__ || Object.getPrototypeOf(BotCreatePage)).apply(this, arguments));
     }
 
-    _createClass(ApplicationCreatePage, [{
+    _createClass(BotCreatePage, [{
         key: 'render',
         value: function render() {
             // init data 
 
-            var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'My Applications', href: '#apps' }, { title: 'New Application' }];
+            var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'My Bots', href: '#bots' }, { title: 'New Bot' }];
 
-            var note = 'Create the first application for your bot.';
+            var note = 'Create the first bot for your bot.';
 
             var FormProps = {
-                controls: [{ name: 'name', text: 'App Name', required: true }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, { state: 'error' }) }, { type: 'hr' }],
+                controls: [{ name: 'name', text: 'Bot Name', required: true }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, { state: 'error' }) }, { type: 'hr' }],
                 buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'default', text: 'Cancel', onClick: this.handleCancelCreate.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'blue', text: 'Create', onClick: this.handleCreate.bind(this), hasRequired: true })],
                 onChange: this.handleFormChange.bind(this),
                 data: this.props.form
@@ -2596,7 +2596,7 @@ var ApplicationCreatePage = function (_Component) {
                 _react2.default.createElement(
                     _PageContentComponent2.default,
                     null,
-                    _react2.default.createElement(_PageHeadComponent2.default, { title: 'New Application' }),
+                    _react2.default.createElement(_PageHeadComponent2.default, { title: 'New Bot' }),
                     _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
                     _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
                     _react2.default.createElement(
@@ -2607,7 +2607,7 @@ var ApplicationCreatePage = function (_Component) {
                             { size: '12' },
                             _react2.default.createElement(
                                 _LayoutComponent.PortletComponent,
-                                { title: 'New Application' },
+                                { title: 'New Bot' },
                                 _react2.default.createElement(_FormComponent.FormSimpleComponent, FormProps)
                             )
                         )
@@ -2618,21 +2618,21 @@ var ApplicationCreatePage = function (_Component) {
     }, {
         key: 'handleFormChange',
         value: function handleFormChange(e, control) {
-            this.props.dispatch(Actions.changeApplicationCreateForm(control.name, e.target.value));
+            this.props.dispatch(Actions.changeBotCreateForm(control.name, e.target.value));
         }
     }, {
         key: 'handleCancelCreate',
         value: function handleCancelCreate(e) {
-            this.props.dispatch(Actions.changeCancelApplicationCreate());
+            this.props.dispatch(Actions.changeCancelBotCreate());
         }
     }, {
         key: 'handleCreate',
         value: function handleCreate(e) {
-            this.props.dispatch(Actions.createApplicationRequest());
+            this.props.dispatch(Actions.createBotRequest());
             var dataHasAuthToken = Object.assign({}, this.props.form, {
                 authenticity_token: Utils.csrfToken()
             });
-            fetch('/api/v1/private/apps', {
+            fetch('/api/v1/private/bots', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -2645,37 +2645,37 @@ var ApplicationCreatePage = function (_Component) {
             }).then(function (data) {
                 var err = data['error'];
                 if (err == undefined || err.trim().length === 0) {
-                    this.props.dispatch(Actions.createApplicationSuccess(data));
-                    this.props.dispatch(Actions.showToast('success', 'Create Application', this.props.form.name + ' application has been created.'));
-                    _reactRouter.hashHistory.push('/apps/' + data.id);
+                    this.props.dispatch(Actions.createBotSuccess(data));
+                    this.props.dispatch(Actions.showToast('success', 'Create Bot', this.props.form.name + ' bot has been created.'));
+                    _reactRouter.hashHistory.push('/bots/' + data.id);
                 } else {
-                    this.props.dispatch(Actions.createApplicationFailure(err));
-                    this.props.dispatch(Actions.showToast('error', 'Create Application', data['message']));
+                    this.props.dispatch(Actions.createBotFailure(err));
+                    this.props.dispatch(Actions.showToast('error', 'Create Bot', data['message']));
                 }
             }.bind(this)).catch(function (err) {
-                this.props.dispatch(Actions.createApplicationFailure(err.toString()));
-                this.props.dispatch(Actions.showToast('error', 'Create Application', err.toString()));
+                this.props.dispatch(Actions.createBotFailure(err.toString()));
+                this.props.dispatch(Actions.showToast('error', 'Create Bot', err.toString()));
             }.bind(this));
         }
     }]);
 
-    return ApplicationCreatePage;
+    return BotCreatePage;
 }(_react.Component);
 
-ApplicationCreatePage.propTypes = {
+BotCreatePage.propTypes = {
     fetching: _react.PropTypes.bool,
     form: _react.PropTypes.object,
     err: _react.PropTypes.string
 };
 
 var FetchingSelector = function FetchingSelector(state) {
-    return state.application.create.fetching;
+    return state.bot.create.fetching;
 };
 var FormSelector = function FormSelector(state) {
-    return state.application.create.form;
+    return state.bot.create.form;
 };
 var FetchErrSelector = function FetchErrSelector(state) {
-    return state.application.create.err;
+    return state.bot.create.err;
 };
 
 function select(state) {
@@ -2686,7 +2686,7 @@ function select(state) {
     };
 }
 
-exports.default = (0, _reactRedux.connect)(select)(ApplicationCreatePage);
+exports.default = (0, _reactRedux.connect)(select)(BotCreatePage);
 
 },{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":9,"../components/PageHeadComponent":10,"../components/StateComponent":15,"../components/TableComponent":16,"../components/ToastComponent":17,"../utils":31,"react":571,"react-redux":381,"react-router":419}],20:[function(require,module,exports){
 'use strict';
@@ -2749,26 +2749,26 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var ApplicationPage = function (_Component) {
-    _inherits(ApplicationPage, _Component);
+var BotPage = function (_Component) {
+    _inherits(BotPage, _Component);
 
-    function ApplicationPage() {
-        _classCallCheck(this, ApplicationPage);
+    function BotPage() {
+        _classCallCheck(this, BotPage);
 
-        return _possibleConstructorReturn(this, (ApplicationPage.__proto__ || Object.getPrototypeOf(ApplicationPage)).apply(this, arguments));
+        return _possibleConstructorReturn(this, (BotPage.__proto__ || Object.getPrototypeOf(BotPage)).apply(this, arguments));
     }
 
-    _createClass(ApplicationPage, [{
+    _createClass(BotPage, [{
         key: 'render',
         value: function render() {
             // init data 
 
-            var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'My Applications', href: '#apps' }, { title: 'Application' }];
+            var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'My Bots', href: '#bots' }, { title: 'Bot' }];
 
-            var note = 'Create the first application for your bot.';
+            var note = 'Create the first bot for your bot.';
 
             var FormProps = {
-                controls: [{ name: 'name', text: 'App Name', required: true }, { name: 'access_token', text: 'Access Token', required: true }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, { state: 'error' }) }, { type: 'hr' }],
+                controls: [{ name: 'name', text: 'bot Name', required: true }, { name: 'access_token', text: 'Access Token', required: true }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, { state: 'error' }) }, { type: 'hr' }],
                 buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'default', text: 'Cancel', onClick: this.handleCancelSave.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'blue', text: 'Save', onClick: this.handleSave.bind(this), hasRequired: true })],
                 onChange: this.handleFormChange.bind(this),
                 data: this.props.form
@@ -2780,7 +2780,7 @@ var ApplicationPage = function (_Component) {
                 _react2.default.createElement(
                     _PageContentComponent2.default,
                     null,
-                    _react2.default.createElement(_PageHeadComponent2.default, { title: 'Application' }),
+                    _react2.default.createElement(_PageHeadComponent2.default, { title: 'Bot' }),
                     _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
                     _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
                     _react2.default.createElement(
@@ -2791,7 +2791,7 @@ var ApplicationPage = function (_Component) {
                             { size: '12' },
                             _react2.default.createElement(
                                 _LayoutComponent.PortletComponent,
-                                { title: 'Application' },
+                                { title: 'Bot' },
                                 _react2.default.createElement(_FormComponent.FormSimpleComponent, FormProps)
                             )
                         )
@@ -2802,33 +2802,33 @@ var ApplicationPage = function (_Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            this.props.dispatch(Actions.fetchApplicationRequest());
-            fetch('/api/v1/private/apps/' + this.props.params.id, { credentials: 'same-origin' }).then(function (response) {
+            this.props.dispatch(Actions.fetchBotRequest());
+            fetch('/api/v1/private/bots/' + this.props.params.id, { credentials: 'same-origin' }).then(function (response) {
                 return response.json();
             }).then(function (data) {
-                this.props.dispatch(Actions.fetchApplicationSuccess(data));
+                this.props.dispatch(Actions.fetchBotSuccess(data));
             }.bind(this)).catch(function (err) {
-                this.props.dispatch(Actions.fetchApplicationFailure(err.toString()));
+                this.props.dispatch(Actions.fetchBotFailure(err.toString()));
             }.bind(this));
         }
     }, {
         key: 'handleFormChange',
         value: function handleFormChange(e, control) {
-            this.props.dispatch(Actions.changeApplicationForm(control.name, e.target.value));
+            this.props.dispatch(Actions.changeBotForm(control.name, e.target.value));
         }
     }, {
         key: 'handleCancelSave',
         value: function handleCancelSave(e) {
-            this.props.dispatch(Actions.changeCancelApplication());
+            this.props.dispatch(Actions.changeCancelBot());
         }
     }, {
         key: 'handleSave',
         value: function handleSave(e) {
-            this.props.dispatch(Actions.saveApplicationRequest());
+            this.props.dispatch(Actions.saveBotRequest());
             var dataHasAuthToken = Object.assign({}, this.props.form, {
                 authenticity_token: Utils.csrfToken()
             });
-            fetch('/api/v1/private/apps/' + this.props.params.id, {
+            fetch('/api/v1/private/bots/' + this.props.params.id, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
@@ -2841,37 +2841,37 @@ var ApplicationPage = function (_Component) {
             }).then(function (data) {
                 var err = data['error'];
                 if (err == undefined || err.trim().length === 0) {
-                    this.props.dispatch(Actions.saveApplicationSuccess(data));
-                    this.props.history.push('/apps/' + data.id);
-                    this.props.dispatch(Actions.showToast('success', 'Update Application', this.props.form.name + ' application has been updated.'));
+                    this.props.dispatch(Actions.saveBotSuccess(data));
+                    this.props.history.push('/bots/' + data.id);
+                    this.props.dispatch(Actions.showToast('success', 'Update Bot', this.props.form.name + ' bot has been updated.'));
                 } else {
-                    this.props.dispatch(Actions.saveApplicationFailure(err));
-                    this.props.dispatch(Actions.showToast('error', 'Update Application', data['message']));
+                    this.props.dispatch(Actions.saveBotFailure(err));
+                    this.props.dispatch(Actions.showToast('error', 'Update Bot', data['message']));
                 }
             }.bind(this)).catch(function (err) {
-                this.props.dispatch(Actions.saveApplicationFailure(err.toString()));
-                this.props.dispatch(Actions.showToast('error', 'Update Application', err.toString()));
+                this.props.dispatch(Actions.saveBotFailure(err.toString()));
+                this.props.dispatch(Actions.showToast('error', 'Update Bot', err.toString()));
             }.bind(this));
         }
     }]);
 
-    return ApplicationPage;
+    return BotPage;
 }(_react.Component);
 
-ApplicationPage.propTypes = {
+BotPage.propTypes = {
     fetching: _react.PropTypes.bool,
     form: _react.PropTypes.object,
     err: _react.PropTypes.string
 };
 
 var FetchingSelector = function FetchingSelector(state) {
-    return state.application.data.fetching;
+    return state.bot.data.fetching;
 };
 var FormSelector = function FormSelector(state) {
-    return state.application.data.form;
+    return state.bot.data.form;
 };
 var FetchErrSelector = function FetchErrSelector(state) {
-    return state.application.data.err;
+    return state.bot.data.err;
 };
 
 function select(state) {
@@ -2882,7 +2882,7 @@ function select(state) {
     };
 }
 
-exports.default = (0, _reactRedux.connect)(select)(ApplicationPage);
+exports.default = (0, _reactRedux.connect)(select)(BotPage);
 
 },{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":9,"../components/PageHeadComponent":10,"../components/StateComponent":15,"../components/TableComponent":16,"../components/ToastComponent":17,"../utils":31,"react":571,"react-redux":381}],21:[function(require,module,exports){
 'use strict';
@@ -2890,7 +2890,7 @@ exports.default = (0, _reactRedux.connect)(select)(ApplicationPage);
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.ApplicationsPage = undefined;
+exports.BotsPage = undefined;
 
 var _react = require('react');
 
@@ -2922,23 +2922,23 @@ var _ButtonComponent = require('../components/ButtonComponent');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ApplicationsPage = exports.ApplicationsPage = _react2.default.createClass({
-    displayName: 'ApplicationsPage',
+var BotsPage = exports.BotsPage = _react2.default.createClass({
+    displayName: 'BotsPage',
 
     render: function render() {
         // init data 
 
-        var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'My Applications' }];
+        var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'My Bots' }];
 
-        var note = 'Create the first application for your bot.';
+        var note = 'Create the first bot for your bot.';
 
         var PortletProps = {
-            title: 'Applications',
-            buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'green', text: 'New Application', icon: 'plus', href: '#apps/new' })]
+            title: 'Bots',
+            buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'green', text: 'New Bot', icon: 'plus', href: '#bots/new' })]
         };
 
-        var AppsTableProps = {
-            columns: [{ name: 'name', text: 'Application' }, { name: 'action', text: '' }],
+        var BotsTableProps = {
+            columns: [{ name: 'name', text: 'Bot' }, { name: 'action', text: '' }],
             data: [{
                 name: 'instflow prod',
                 action: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'blue', text: 'View' })
@@ -2951,7 +2951,7 @@ var ApplicationsPage = exports.ApplicationsPage = _react2.default.createClass({
         return _react2.default.createElement(
             _PageContentComponent2.default,
             null,
-            _react2.default.createElement(_PageHeadComponent2.default, { title: 'My Applications' }),
+            _react2.default.createElement(_PageHeadComponent2.default, { title: 'My Bots' }),
             _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
             _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
             _react2.default.createElement(
@@ -2963,7 +2963,7 @@ var ApplicationsPage = exports.ApplicationsPage = _react2.default.createClass({
                     _react2.default.createElement(
                         _LayoutComponent.PortletComponent,
                         PortletProps,
-                        _react2.default.createElement(_TableComponent.TableComponent, AppsTableProps)
+                        _react2.default.createElement(_TableComponent.TableComponent, BotsTableProps)
                     )
                 )
             )
@@ -3109,7 +3109,7 @@ var ProfilePage = function (_Component) {
                                 _ProfileComponent.ProfileSidebarComponent,
                                 null,
                                 _react2.default.createElement(_ProfileComponent.ProfileCardComponent, ProfileCardProps),
-                                _react2.default.createElement(_ProfileComponent.ProfileAboutComponent, { apps: 3, messages: 15, tickets: 2 })
+                                _react2.default.createElement(_ProfileComponent.ProfileAboutComponent, { bots: 3, messages: 15, tickets: 2 })
                             ),
                             _react2.default.createElement(
                                 _ProfileComponent.ProfileContentComponent,
@@ -3547,28 +3547,28 @@ function CreateReducer() {
     var action = arguments[1];
 
     switch (action.type) {
-        case _actions.TYPE_APPLICATION_CREATE_REQUEST:
+        case _actions.TYPE_BOT_CREATE_REQUEST:
             return Object.assign({}, state, {
                 fetching: true
             });
-        case _actions.TYPE_APPLICATION_CREATE_SUCCESS:
+        case _actions.TYPE_BOT_CREATE_SUCCESS:
             return Object.assign({}, state, {
                 fetching: false,
                 response: action.response,
                 form: action.response
             });
-        case _actions.TYPE_APPLICATION_CREATE_FAILURE:
+        case _actions.TYPE_BOT_CREATE_FAILURE:
             return Object.assign({}, state, {
                 fetching: false,
                 err: action.err
             });
-        case _actions.TYPE_CHANGE_APPLICATION_CREATE_FORM:
+        case _actions.TYPE_CHANGE_BOT_CREATE_FORM:
             var changedData = Object.assign({}, state.form);
             changedData[action.fieldName] = action.value;
             return Object.assign({}, state, {
                 form: changedData
             });
-        case _actions.TYPE_CHANGE_CANCEL_APPLICATION_CREATE:
+        case _actions.TYPE_CHANGE_CANCEL_BOT_CREATE:
             return Object.assign({}, state, {
                 form: state.response
             });
@@ -3577,48 +3577,48 @@ function CreateReducer() {
     }
 }
 
-function ApplicationReducer() {
+function BotReducer() {
     var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
     var action = arguments[1];
 
     switch (action.type) {
-        case _actions.TYPE_FETCH_APPLICATION_REQUEST:
+        case _actions.TYPE_FETCH_BOT_REQUEST:
             return Object.assign({}, state, {
                 fetching: true
             });
-        case _actions.TYPE_FETCH_APPLICATION_SUCCESS:
+        case _actions.TYPE_FETCH_BOT_SUCCESS:
             return Object.assign({}, state, {
                 fetching: false,
                 response: action.response,
                 form: action.response
             });
-        case _actions.TYPE_FETCH_APPLICATION_FAILURE:
+        case _actions.TYPE_FETCH_BOT_FAILURE:
             return Object.assign({}, state, {
                 fetching: false,
                 err: action.err
             });
-        case _actions.TYPE_SAVE_APPLICATION_REQUEST:
+        case _actions.TYPE_SAVE_BOT_REQUEST:
             return Object.assign({}, state, {
                 fetching: true
             });
-        case _actions.TYPE_SAVE_APPLICATION_SUCCESS:
+        case _actions.TYPE_SAVE_BOT_SUCCESS:
             return Object.assign({}, state, {
                 fetching: false,
                 response: action.response,
                 form: action.response
             });
-        case _actions.TYPE_SAVE_APPLICATION_FAILURE:
+        case _actions.TYPE_SAVE_BOT_FAILURE:
             return Object.assign({}, state, {
                 fetching: false,
                 err: action.err
             });
-        case _actions.TYPE_CHANGE_APPLICATION_FORM:
+        case _actions.TYPE_CHANGE_BOT_FORM:
             var changedData = Object.assign({}, state.form);
             changedData[action.fieldName] = action.value;
             return Object.assign({}, state, {
                 form: changedData
             });
-        case _actions.TYPE_CHANGE_CANCEL_APPLICATION:
+        case _actions.TYPE_CHANGE_CANCEL_BOT:
             return Object.assign({}, state, {
                 form: state.response
             });
@@ -3629,7 +3629,7 @@ function ApplicationReducer() {
 
 exports.default = (0, _redux.combineReducers)({
     create: CreateReducer,
-    data: ApplicationReducer
+    data: BotReducer
 });
 
 },{"../actions":1,"redux":577}],25:[function(require,module,exports){
@@ -3781,21 +3781,21 @@ var _ProfileReducer = require('./ProfileReducer');
 
 var _ProfileReducer2 = _interopRequireDefault(_ProfileReducer);
 
-var _ApplicationReducer = require('./ApplicationReducer');
+var _BotReducer = require('./BotReducer');
 
-var _ApplicationReducer2 = _interopRequireDefault(_ApplicationReducer);
+var _BotReducer2 = _interopRequireDefault(_BotReducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var reducers = (0, _redux.combineReducers)({
     toast: _ToastReducer2.default,
     profile: _ProfileReducer2.default,
-    application: _ApplicationReducer2.default
+    bot: _BotReducer2.default
 });
 
 exports.default = reducers;
 
-},{"./ApplicationReducer":24,"./ProfileReducer":25,"./ToastReducer":26,"redux":577}],28:[function(require,module,exports){
+},{"./BotReducer":24,"./ProfileReducer":25,"./ToastReducer":26,"redux":577}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

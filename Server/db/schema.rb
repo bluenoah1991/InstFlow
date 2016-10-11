@@ -38,16 +38,17 @@ ActiveRecord::Schema.define(version: 20160920015436) do
     t.index ["tenant_id"], name: "index_admins_on_tenant_id", unique: true
   end
 
-  create_table "applications", force: :cascade do |t|
-    t.integer  "admin_id",     null: false
-    t.string   "name",         null: false
-    t.string   "access_token", null: false
+  create_table "bots", force: :cascade do |t|
+    t.integer  "admin_id",                             null: false
+    t.string   "name",                                 null: false
+    t.string   "access_token",                         null: false
+    t.boolean  "can_view_access_token", default: true
     t.string   "ms_appid"
     t.string   "ms_appsecret"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-    t.index ["access_token"], name: "index_applications_on_access_token", unique: true
-    t.index ["admin_id"], name: "index_applications_on_admin_id"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.index ["access_token"], name: "index_bots_on_access_token", unique: true
+    t.index ["admin_id"], name: "index_bots_on_admin_id"
   end
 
   create_table "messages", force: :cascade do |t|

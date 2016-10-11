@@ -8,7 +8,7 @@ class Admin < ApplicationRecord
 
   validates :tenant_id, uniqueness: true
 
-  has_many :applications
+  has_many :bots
 
   private
 

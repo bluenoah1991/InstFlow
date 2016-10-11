@@ -140,124 +140,124 @@ export function changePasswordFailure(err){
     return action;
 }
 
-// Application Create Action Types
-export const TYPE_APPLICATION_CREATE_REQUEST = 'TYPE_APPLICATION_CREATE_REQUEST';
-export const TYPE_APPLICATION_CREATE_SUCCESS = 'TYPE_APPLICATION_CREATE_SUCCESS';
-export const TYPE_APPLICATION_CREATE_FAILURE = 'TYPE_APPLICATION_CREATE_FAILURE';
-export const TYPE_CHANGE_APPLICATION_CREATE_FORM = 'TYPE_CHANGE_APPLICATION_CREATE_FORM';
-export const TYPE_CHANGE_CANCEL_APPLICATION_CREATE = 'TYPE_CHANGE_CANCEL_APPLICATION_CREATE';
+// Bot Create Action Types
+export const TYPE_BOT_CREATE_REQUEST = 'TYPE_BOT_CREATE_REQUEST';
+export const TYPE_BOT_CREATE_SUCCESS = 'TYPE_BOT_CREATE_SUCCESS';
+export const TYPE_BOT_CREATE_FAILURE = 'TYPE_BOT_CREATE_FAILURE';
+export const TYPE_CHANGE_BOT_CREATE_FORM = 'TYPE_CHANGE_BOT_CREATE_FORM';
+export const TYPE_CHANGE_CANCEL_BOT_CREATE = 'TYPE_CHANGE_CANCEL_BOT_CREATE';
 
 
-// Application Create Actions
-export function createApplicationRequest(){
+// Bot Create Actions
+export function createBotRequest(){
     const action = {
-        type: TYPE_APPLICATION_CREATE_REQUEST
+        type: TYPE_BOT_CREATE_REQUEST
     }
     return action;
 }
 
-export function createApplicationSuccess(response){
+export function createBotSuccess(response){
     const action = {
-        type: TYPE_APPLICATION_CREATE_SUCCESS,
+        type: TYPE_BOT_CREATE_SUCCESS,
         response: response
     }
     return action;
 }
 
-export function createApplicationFailure(err){
+export function createBotFailure(err){
     const action = {
-        type: TYPE_APPLICATION_CREATE_FAILURE,
+        type: TYPE_BOT_CREATE_FAILURE,
         err: err
     }
     return action;
 }
 
-export function changeApplicationCreateForm(fieldName, value){
+export function changeBotCreateForm(fieldName, value){
     const action = {
-        type: TYPE_CHANGE_APPLICATION_CREATE_FORM,
+        type: TYPE_CHANGE_BOT_CREATE_FORM,
         fieldName: fieldName,
         value: value
     }
     return action;
 }
 
-export function changeCancelApplicationCreate(){
+export function changeCancelBotCreate(){
     const action = {
-        type: TYPE_CHANGE_CANCEL_APPLICATION_CREATE
+        type: TYPE_CHANGE_CANCEL_BOT_CREATE
     }
     return action;
 }
 
-// Application Action Types
-export const TYPE_FETCH_APPLICATION_REQUEST = 'TYPE_FETCH_APPLICATION_REQUEST';
-export const TYPE_FETCH_APPLICATION_SUCCESS = 'TYPE_FETCH_APPLICATION_SUCCESS';
-export const TYPE_FETCH_APPLICATION_FAILURE = 'TYPE_FETCH_APPLICATION_FAILURE';
-export const TYPE_SAVE_APPLICATION_REQUEST = 'TYPE_SAVE_APPLICATION_REQUEST';
-export const TYPE_SAVE_APPLICATION_SUCCESS = 'TYPE_SAVE_APPLICATION_SUCCESS';
-export const TYPE_SAVE_APPLICATION_FAILURE = 'TYPE_SAVE_APPLICATION_FAILURE';
-export const TYPE_CHANGE_APPLICATION_FORM = 'TYPE_CHANGE_APPLICATION_FORM';
-export const TYPE_CHANGE_CANCEL_APPLICATION = 'TYPE_CHANGE_CANCEL_APPLICATION';
+// Bot Action Types
+export const TYPE_FETCH_BOT_REQUEST = 'TYPE_FETCH_BOT_REQUEST';
+export const TYPE_FETCH_BOT_SUCCESS = 'TYPE_FETCH_BOT_SUCCESS';
+export const TYPE_FETCH_BOT_FAILURE = 'TYPE_FETCH_BOT_FAILURE';
+export const TYPE_SAVE_BOT_REQUEST = 'TYPE_SAVE_BOT_REQUEST';
+export const TYPE_SAVE_BOT_SUCCESS = 'TYPE_SAVE_BOT_SUCCESS';
+export const TYPE_SAVE_BOT_FAILURE = 'TYPE_SAVE_BOT_FAILURE';
+export const TYPE_CHANGE_BOT_FORM = 'TYPE_CHANGE_BOT_FORM';
+export const TYPE_CHANGE_CANCEL_BOT = 'TYPE_CHANGE_CANCEL_BOT';
 
 
-// Application Actions
-export function fetchApplicationRequest(){
+// Bot Actions
+export function fetchBotRequest(){
     const action = {
-        type: TYPE_FETCH_APPLICATION_REQUEST
+        type: TYPE_FETCH_BOT_REQUEST
     };
     return action;
 }
 
-export function fetchApplicationSuccess(response){
+export function fetchBotSuccess(response){
     const action = {
-        type: TYPE_FETCH_APPLICATION_SUCCESS,
+        type: TYPE_FETCH_BOT_SUCCESS,
         response: response
     };
     return action;
 }
 
-export function fetchApplicationFailure(err){
+export function fetchBotFailure(err){
     const action = {
-        type: TYPE_FETCH_APPLICATION_FAILURE,
+        type: TYPE_FETCH_BOT_FAILURE,
         err: err
     };
     return action;
 }
 
-export function saveApplicationRequest(){
+export function saveBotRequest(){
     const action = {
-        type: TYPE_SAVE_APPLICATION_REQUEST
+        type: TYPE_SAVE_BOT_REQUEST
     }
     return action;
 }
 
-export function saveApplicationSuccess(response){
+export function saveBotSuccess(response){
     const action = {
-        type: TYPE_SAVE_APPLICATION_SUCCESS,
+        type: TYPE_SAVE_BOT_SUCCESS,
         response: response
     }
     return action;
 }
 
-export function saveApplicationFailure(err){
+export function saveBotFailure(err){
     const action = {
-        type: TYPE_SAVE_APPLICATION_FAILURE,
+        type: TYPE_SAVE_BOT_FAILURE,
         err: err
     }
     return action;
 }
 
-export function changeApplicationForm(fieldName, value){
+export function changeBotForm(fieldName, value){
     const action = {
-        type: TYPE_CHANGE_APPLICATION_FORM,
+        type: TYPE_CHANGE_BOT_FORM,
         fieldName: fieldName,
         value: value
     }
     return action;
 }
 
-export function changeCancelApplication(){
+export function changeCancelBot(){
     const action = {
-        type: TYPE_CHANGE_CANCEL_APPLICATION
+        type: TYPE_CHANGE_CANCEL_BOT
     }
     return action;
 }

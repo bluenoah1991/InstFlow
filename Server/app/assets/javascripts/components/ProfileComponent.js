@@ -44,8 +44,8 @@ export var ProfileAboutComponent = React.createClass({
             <div className="portlet light bordered">
                 <div className="row list-separated profile-stat">
                     <div className="col-md-4 col-sm-4 col-xs-6">
-                        <div className="uppercase profile-stat-title"> {this.props.apps} </div>
-                        <div className="uppercase profile-stat-text"> Apps </div>
+                        <div className="uppercase profile-stat-title"> {this.props.bots} </div>
+                        <div className="uppercase profile-stat-text"> Bots </div>
                     </div>
                     <div className="col-md-4 col-sm-4 col-xs-6">
                         <div className="uppercase profile-stat-title"> {this.props.messages} </div>

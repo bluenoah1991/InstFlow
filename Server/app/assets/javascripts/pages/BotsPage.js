@@ -10,27 +10,27 @@ import {TableComponent} from '../components/TableComponent';
 import {FormComponent} from '../components/FormComponent';
 import {ButtonComponent} from '../components/ButtonComponent';
 
-export var ApplicationsPage = React.createClass({
+export var BotsPage = React.createClass({
     render: function(){
         // init data 
 
         let breadCrumbPaths = [
             {title: 'Home', href: 'home.html'},
-            {title: 'My Applications'}
+            {title: 'My Bots'}
         ];
         
-        let note = 'Create the first application for your bot.';
+        let note = 'Create the first bot for your bot.';
 
         let PortletProps = {
-            title: 'Applications',
+            title: 'Bots',
             buttons: [
-                <ButtonComponent key={0} color='green' text='New Application' icon='plus' href='#apps/new' />
+                <ButtonComponent key={0} color='green' text='New Bot' icon='plus' href='#bots/new' />
             ]
         };
 
-        let AppsTableProps = {
+        let BotsTableProps = {
             columns: [
-                {name: 'name', text: 'Application'},
+                {name: 'name', text: 'Bot'},
                 {name: 'action', text: ''}
             ],
             data: [
@@ -47,13 +47,13 @@ export var ApplicationsPage = React.createClass({
 
         return (
             <PageContentComponent>
-                <PageHeadComponent title="My Applications" />
+                <PageHeadComponent title="My Bots" />
                 <PageBreadCrumbComponent paths={breadCrumbPaths} />
                 <NoteComponent note={note} />
                 <RowComponent>
                     <ColComponent size="12">
                         <PortletComponent {...PortletProps}>
-                            <TableComponent {...AppsTableProps} />
+                            <TableComponent {...BotsTableProps} />
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>
