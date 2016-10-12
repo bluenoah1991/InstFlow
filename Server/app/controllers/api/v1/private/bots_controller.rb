@@ -43,6 +43,11 @@ module Api
                     render json: @instance
                 end
 
+                def destroy
+                    @instance.destroy
+                    render json: { ok: 1 }
+                end
+
                 def set_instance
                     @instance = Bot.find(params[:id])
                 end

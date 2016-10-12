@@ -8,8 +8,8 @@ import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
 import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
 import {TableToolbarComponent, DataTableComponent} from '../components/DataTableComponent';
-import {FormComponent, ReadonlyFormComponent} from '../components/FormComponent';
-import {ModalComponent} from '../components/ModalComponent';
+import FormComponent from '../components/FormComponent';
+import {Modal2Component} from '../components/Modal2Component';
 
 export var UserManagementPage = React.createClass({
     getInitialState: function(){
@@ -78,8 +78,8 @@ export var UserManagementPage = React.createClass({
                         <PortletComponent title="User List">
                             <TableToolbarComponent buttons={buttons} context={ee} />
                             <DataTableComponent context={ee} enableModalId={this.state.enableModalId} disableModalId={this.state.disableModalId} />
-                            <ModalComponent id={this.state.disableModalId} title={modalTitle} body={modalBody} context={ee} eventName='disable' />
-                            <ModalComponent id={this.state.enableModalId} title={modalTitle} body={modalBody} context={ee} eventName='enable' />
+                            <Modal2Component id={this.state.disableModalId} title={modalTitle} body={modalBody} context={ee} eventName='disable' />
+                            <Modal2Component id={this.state.enableModalId} title={modalTitle} body={modalBody} context={ee} eventName='enable' />
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>
@@ -97,30 +97,19 @@ export var UserCreatePage = React.createClass({
             {title: 'User Management', href: '#/users'},
             {title: 'New User'}
         ];
-        let formFields = [{
-            name: 'Name',
-            placeholder: 'Enter user name',
-            help: 'Some help goes here...'
-        },{
-            name: 'Channel ID',
-            placeholder: 'Enter channel id',
-            help: 'Some help goes here...'
-        },{
-            name: 'User ID',
-            placeholder: 'Enter user id',
-            help: 'Some help goes here...'
-        },{
-            name: 'Extra',
-            placeholder: 'Enter user extra data',
-            help: 'Some help goes here...'
-        }];
-        let formActions = [{
-            text: 'Cancel',
-            color: 'default'
-        },{
-            text: 'Create',
-            color: 'blue'
-        }];
+
+        let FormProps = {
+            controls: [
+                {name: 'name', text: 'Name', required: true},
+                {name: 'channel_id', text: 'Channel ID', required: true},
+                {name: 'user_id', text: 'User ID', required: true},
+                {name: 'extra', text: 'Extra', required: true},
+            ],
+            buttons: [
+                <ButtonComponent key={1} color='default' text='Cancel' />,
+                <ButtonComponent key={0} color='blue' text='Create' hasRequired={true} />
+            ]
+        };
         
         return (
             <PageContentComponent>
@@ -129,7 +118,7 @@ export var UserCreatePage = React.createClass({
                 <RowComponent>
                     <ColComponent size="12">
                         <PortletComponent title="User Information" extclass="form">
-                            <FormComponent fields={formFields} actions={formActions}/>
+                            <FormComponent {...FormProps}/>
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>
@@ -148,22 +137,14 @@ export var UserProfilePage = React.createClass({
             {title: 'User Info'}
         ];
 
-        let id = this.props.params.id;
-
-        let formFields = [{
-            name: 'Name',
-            value: 'codemeow'
-        },{
-            name: 'Channel ID',
-            value: 'Tud88934fsdf'
-        },{
-            name: 'User ID',
-            value: '837719001'
-        },{
-            name: 'Extra',
-            value: ''
-        }];
-        let formActions = [];
+        let FormProps = {
+            controls: [
+                {name: 'name', text: 'Name', required: true},
+                {name: 'channel_id', text: 'Channel ID', required: true},
+                {name: 'user_id', text: 'User ID', required: true},
+                {name: 'extra', text: 'Extra', required: true},
+            ]
+        };
         
         return (
             <PageContentComponent>
@@ -172,7 +153,7 @@ export var UserProfilePage = React.createClass({
                 <RowComponent>
                     <ColComponent size="12">
                         <PortletComponent title="User Info" extclass="form">
-                            <ReadonlyFormComponent fields={formFields} actions={formActions}/>
+                            <FormComponent {...FormProps}/>
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>

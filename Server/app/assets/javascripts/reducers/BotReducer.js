@@ -46,7 +46,7 @@ function BotReducer(state={}, action){
             });
         case TYPE_CHANGE_CANCEL_BOT_CREATE:
             return Object.assign({}, state, {
-                form: state.response
+                form: null
             });
         case TYPE_FETCH_BOT_REQUEST:
             return Object.assign({}, state, {

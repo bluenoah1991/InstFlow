@@ -115,7 +115,7 @@ var datatableInit = function (tableId, defaultAjaxParams) {
                 'targets': [0, 6]
             },{
                 'render': function(data, type, row){
-                    let content = `<a href="#/users/${data}" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>`;
+                    let content = `<a href="#/users/${data.id}" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>`;
                     if(data.state == 0){
                         content += `<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id='${data.id}'><i class="fa fa-times"></i> Disable</a>`;
                     } else if(data.state == -1){
@@ -126,7 +126,7 @@ var datatableInit = function (tableId, defaultAjaxParams) {
                 'targets': ['column-actions']
             },{
                 'render': function(data, type, row){
-                    return `<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input name="id[]" type="checkbox" class="checkboxes" value="${data}"/><span></span></label>`;
+                    return `<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input name="id[]" type="checkbox" class="checkboxes" value="${data.id}"/><span></span></label>`;
                 },
                 'targets': ['column-checkbox']
             }],

@@ -80,7 +80,7 @@ module Api
 
       def authenticate_token
         access_token = params[:access_token].presence || request.headers['Access-Token'].presence
-        @current_app = Application.find_by(access_token: access_token)
+        @current_app = Bot.find_by(access_token: access_token)
       end
 
       def unauthorized_token

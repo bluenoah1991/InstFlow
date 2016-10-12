@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
+import _ from 'underscore';
 
 import ToastComponent from '../components/ToastComponent';
 import {RowComponent, ColComponent, PortletComponent} from '../components/LayoutComponent';
@@ -8,7 +9,6 @@ import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
 import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
 import {TableComponent} from '../components/TableComponent';
-import {FormComponent} from '../components/FormComponent';
 import {ButtonComponent} from '../components/ButtonComponent';
 
 import * as Actions from '../actions';
@@ -36,8 +36,11 @@ class BotsPage extends Component{
         if(this.props.list != undefined){
             data = this.props.list.map(function(item){
                 return Object.assign({}, item, {
-                    ms_account: this.connectState(item),
-                    view: <ButtonComponent href={`#bots/${item.id}`} color='blue' size='xs' text='View' />
+                    ms_app: this.connectState(item),
+                    actions: [
+                        <ButtonComponent key={0} href={`#bots/${item.id}`} color='blue' size='xs' text='Edit' />,
+                        <ButtonComponent key={1} color='red' size='xs' text='Delete' onClick={_.partial(this.handleDelete.bind(this), _, item)} />
+                    ]
                 });
             }.bind(this));
         }
@@ -46,8 +49,8 @@ class BotsPage extends Component{
             columns: [
                 {name: 'name', text: 'Bot'},
                 {name: 'access_token', text: 'Access Token'},
-                {name: 'ms_account', text: 'Microsoft Account'},
-                {name: 'view', text: ''}
+                {name: 'ms_app', text: 'Microsoft Application'},
+                {name: 'actions', text: ''}
             ],
             data: data
         };
@@ -71,19 +74,7 @@ class BotsPage extends Component{
     }
 
     componentDidMount(){
-        this.props.dispatch(Actions.fetchBotsRequest());
-        fetch('/api/v1/private/bots', {credentials: 'same-origin'}).then(function(response){
-            return response.json();
-        }).then(function(data){
-            this.props.dispatch(Actions.fetchBotsSuccess(data));
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.fetchBotsFailure(err.toString()));
-            this.props.dispatch(Actions.showToast(
-                'error',
-                'Bad Request',
-                err.toString()
-            ));
-        }.bind(this));
+        this.fetchBots();
     }
 
     componentDidUpdate(){
@@ -101,8 +92,67 @@ class BotsPage extends Component{
         }
     }
 
+    fetchBots(){
+        this.props.dispatch(Actions.fetchBotsRequest());
+        fetch('/api/v1/private/bots', {credentials: 'same-origin'}).then(function(response){
+            return response.json();
+        }).then(function(data){
+            this.props.dispatch(Actions.fetchBotsSuccess(data));
+        }.bind(this)).catch(function(err){
+            this.props.dispatch(Actions.fetchBotsFailure(err.toString()));
+            this.props.dispatch(Actions.showToast(
+                'error',
+                'Bad Request',
+                err.toString()
+            ));
+        }.bind(this));
+    }
+
     connectState(item){
         return <ButtonComponent color='green' size='xs' icon='check' text='Connected' enabled={false} />;
+    }
+
+    handleDelete(e, item){
+        this.props.dispatch(Actions.showModal(
+            null, null, function(){
+                this.props.dispatch(Actions.deleteBotRequest());
+                fetch(`/api/v1/private/bots/${item.id}`, {
+                    method: 'DELETE',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                }).then(function(response){
+                    return response.json();
+                }).then(function(data){
+                    let err = data['error'];
+                    if(err == undefined || err.trim().length === 0){
+                        this.props.dispatch(Actions.deleteBotSuccess(data));
+                        this.fetchBots();
+                        this.props.dispatch(Actions.showToast(
+                            'success',
+                            'Delete Bot',
+                            `You have successfully removed the bot ${item.name}.`
+                        ));
+                    } else {
+                        this.props.dispatch(Actions.deleteBotFailure(err.toString()));
+                        this.props.dispatch(Actions.showToast(
+                            'error',
+                            'Delete Bot',
+                            data['message']
+                        ));
+                    }
+                }.bind(this)).catch(function(err){
+                    this.props.dispatch(Actions.deleteBotFailure(err.toString()));
+                    this.props.dispatch(Actions.showToast(
+                        'error',
+                        'Bad Request',
+                        err.toString()
+                    ));
+                }.bind(this));
+            }.bind(this)
+        ));
     }
 }
 

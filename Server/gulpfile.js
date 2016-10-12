@@ -80,8 +80,8 @@ gulp.task('minify', function () {
     gulp.src(['./public/assets/layouts/**/scripts/*.js','!./public/assets/layouts/**/scripts/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./public/assets/layouts/'));
 });
 
-//*** JS compose task
-gulp.task('compose', function(){
+//*** JS bundle task
+gulp.task('bundle', function(){
   return browserify('./app/assets/javascripts/main.js', {debug: true})
     .transform(babelify.configure({presets: ['es2015', 'react']}))
     .bundle()

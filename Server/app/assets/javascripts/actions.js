@@ -202,6 +202,9 @@ export const TYPE_FETCH_BOTS_REQUEST = 'TYPE_FETCH_BOTS_REQUEST';
 export const TYPE_FETCH_BOTS_SUCCESS = 'TYPE_FETCH_BOTS_SUCCESS';
 export const TYPE_FETCH_BOTS_FAILURE = 'TYPE_FETCH_BOTS_FAILURE';
 export const TYPE_OPEN_RECENT_CRAETED_BOT = 'TYPE_OPEN_RECENT_CRAETED_BOT';
+export const TYPE_DELETE_BOT_REQUEST = 'TYPE_DELETE_BOT_REQUEST';
+export const TYPE_DELETE_BOT_SUCCESS = 'TYPE_DELETE_BOT_SUCCESS';
+export const TYPE_DELETE_BOT_FAILURE = 'TYPE_DELETE_BOT_FAILURE';
 
 // Bot Actions
 export function fetchBotsRequest(){
@@ -299,6 +302,52 @@ export function cleanBotForm(){
 export function openRecentCreatedBot(){
     const action = {
         type: TYPE_OPEN_RECENT_CRAETED_BOT
+    }
+    return action;
+}
+
+export function deleteBotRequest(){
+    const action = {
+        type: TYPE_DELETE_BOT_REQUEST
+    };
+    return action;
+}
+
+export function deleteBotSuccess(response){
+    const action = {
+        type: TYPE_DELETE_BOT_SUCCESS,
+        response: response
+    };
+    return action;
+}
+
+export function deleteBotFailure(err){
+    const action = {
+        type: TYPE_DELETE_BOT_FAILURE,
+        err: err
+    };
+    return action;
+}
+
+// Modal Action Types
+export const TYPE_SHOW_MODAL = 'TYPE_SHOW_MODAL';
+export const TYPE_SHOW_MODAL_FINISH = 'TYPE_SHOW_MODAL_FINISH';
+
+
+// Modal Actions
+export function showModal(title, body, handleEvent){
+    const action = {
+        type: TYPE_SHOW_MODAL,
+        title: title,
+        body: body,
+        handleEvent: handleEvent
+    }
+    return action;
+}
+
+export function showModalFinish(){
+    const action = {
+        type: TYPE_SHOW_MODAL_FINISH
     }
     return action;
 }

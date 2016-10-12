@@ -9,7 +9,7 @@ import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
 import {ProfileCardComponent, ProfileAboutComponent, ProfileSidebarComponent, ProfileContentComponent} from '../components/ProfileComponent';
 import {ButtonComponent, ButtonCircleComponent} from '../components/ButtonComponent';
-import {FormSimpleComponent} from '../components/FormComponent';
+import FormComponent from '../components/FormComponent';
 import {SettingComponent} from '../components/SettingComponent';
 
 import {ProfileSelectors} from '../selectors';
@@ -124,13 +124,13 @@ class ProfilePage extends Component {
                                     <ColComponent size="12">
                                         <PortletTabComponent title='Profile Account' id='profile_content_portlet_tab'>
                                             <PortletTabContentComponent title='Personal Info' active={true}>
-                                                <FormSimpleComponent {...PersonalInfoProps} />
+                                                <FormComponent {...PersonalInfoProps} />
                                             </PortletTabContentComponent>
                                             <PortletTabContentComponent title='Change Avatar'>
                                                 <p>Blank</p>
                                             </PortletTabContentComponent>
                                             <PortletTabContentComponent title='Change Password'>
-                                                <FormSimpleComponent {...ChangePasswordProps} />
+                                                <FormComponent {...ChangePasswordProps} />
                                             </PortletTabContentComponent>
                                             <PortletTabContentComponent title='Global Settings'>
                                                 <SettingComponent items={options} />
@@ -211,11 +211,11 @@ class ProfilePage extends Component {
                 ));
             }
         }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.saveProfileFailure(err));
+            this.props.dispatch(Actions.saveProfileFailure(err.toString()));
             this.props.dispatch(Actions.showToast(
                 'error',
                 'Change Profile',
-                err
+                err.toString()
             ));
         }.bind(this));
     }

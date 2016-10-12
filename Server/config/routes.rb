@@ -46,6 +46,7 @@ Rails.application.routes.draw do
         post 'profile/password', to: "admins#password", as: :update_password, constraints: TenantdomainConstraint
         get 'bots/:id', to: "bots#show", as: :show_bot, constraints: TenantdomainConstraint
         put 'bots/:id', to: "bots#update", as: :update_bot, constraints: TenantdomainConstraint
+        delete 'bots/:id', to: "bots#destroy", as: :delete_bot, constraints: TenantdomainConstraint
         get 'bots', to: "bots#index", as: :bots, constraints: TenantdomainConstraint
         post 'bots', to: "bots#create", as: :new_bot, constraints: TenantdomainConstraint
         post 'users', to: "users#index", as: :users, constraints: TenantdomainConstraint

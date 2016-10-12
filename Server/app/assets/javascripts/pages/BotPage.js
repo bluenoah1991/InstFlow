@@ -9,7 +9,7 @@ import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
 import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
 import {TableComponent} from '../components/TableComponent';
-import {FormComponent, FormSimpleComponent} from '../components/FormComponent';
+import FormComponent from '../components/FormComponent';
 import {ButtonComponent} from '../components/ButtonComponent';
 import {ConnectStateComponent} from '../components/StateComponent';
 
@@ -65,7 +65,7 @@ class BotPage extends Component {
                     <RowComponent>
                         <ColComponent size="12">
                             <PortletComponent title="Bot" id="bot_content_portlet">
-                                <FormSimpleComponent {...FormProps}/>
+                                <FormComponent {...FormProps}/>
                             </PortletComponent>
                         </ColComponent>
                     </RowComponent>

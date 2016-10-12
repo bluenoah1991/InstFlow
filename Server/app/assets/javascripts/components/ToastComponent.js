@@ -41,7 +41,7 @@ ToastComponent.propTypes = {
     toastMessage: PropTypes.string
 };
 
-function selectToast(state){
+function select(state){
     return {
         showToast: ToastSelectors.ShowToastSelector(state),
         toastMethod: ToastSelectors.ToastMethodSelector(state),
@@ -50,4 +50,4 @@ function selectToast(state){
     };
 }
 
-export default connect(selectToast)(ToastComponent);
+export default connect(select)(ToastComponent);
