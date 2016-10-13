@@ -2655,9 +2655,9 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouter = require('react-router');
-
 var _reactRedux = require('react-redux');
+
+var _reactRouter = require('react-router');
 
 var _ToastComponent = require('../components/ToastComponent');
 
@@ -2726,7 +2726,7 @@ var BotCreatePage = function (_Component) {
             var note = 'Create the first bot for your bot.';
 
             var FormProps = {
-                controls: [{ name: 'name', text: 'Bot Name', required: true }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, { state: 'error' }) }, { type: 'hr' }],
+                controls: [{ name: 'name', text: 'Bot Name', required: true }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, { state: 'init' }) }, { type: 'hr' }],
                 buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'default', text: 'Cancel', onClick: this.handleCancelCreate.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'blue', text: 'Create', onClick: this.handleCreate.bind(this), hasRequired: true })],
                 onChange: this.handleFormChange.bind(this),
                 data: this.props.form
@@ -2758,6 +2758,14 @@ var BotCreatePage = function (_Component) {
             );
         }
     }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            // Set route leave hook
+            this.props.router.setRouteLeaveHook(this.props.route, function () {
+                this.props.dispatch(Actions.changeCancelBotCreate());
+            }.bind(this));
+        }
+    }, {
         key: 'componentWillMount',
         value: function componentWillMount() {
             this.props.dispatch(Actions.cleanBotForm());
@@ -2771,6 +2779,7 @@ var BotCreatePage = function (_Component) {
         key: 'handleCancelCreate',
         value: function handleCancelCreate(e) {
             this.props.dispatch(Actions.changeCancelBotCreate());
+            this.props.router.push('/bots');
         }
     }, {
         key: 'handleCreate',
@@ -2794,7 +2803,7 @@ var BotCreatePage = function (_Component) {
                 if (err == undefined || err.trim().length === 0) {
                     this.props.dispatch(Actions.createBotSuccess(data));
                     this.props.dispatch(Actions.showToast('success', 'Create Bot', this.props.form.name + ' bot has been created.'));
-                    _reactRouter.hashHistory.push('/bots/' + data.id);
+                    this.props.router.push('/bots/' + data.id);
                 } else {
                     this.props.dispatch(Actions.createBotFailure(err));
                     this.props.dispatch(Actions.showToast('error', 'Create Bot', data['message']));
@@ -2833,7 +2842,7 @@ function select(state) {
     };
 }
 
-exports.default = (0, _reactRedux.connect)(select)(BotCreatePage);
+exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(select)(BotCreatePage));
 
 },{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":5,"../components/LayoutComponent":6,"../components/NoteComponent":9,"../components/PageBreadCrumbComponent":10,"../components/PageContentComponent":11,"../components/PageHeadComponent":12,"../components/StateComponent":17,"../components/TableComponent":18,"../components/ToastComponent":19,"../utils":34,"react":574,"react-redux":384,"react-router":422}],22:[function(require,module,exports){
 'use strict';
@@ -3158,20 +3167,41 @@ var BotsPage = function (_Component) {
                 buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'green', text: 'New Bot', icon: 'plus', href: '#bots/new' })]
             };
 
-            var data = [];
-            if (this.props.list != undefined) {
-                data = this.props.list.map(function (item) {
+            var PortletBody = null;
+            if (this.props.list != undefined && this.props.list.length > 0) {
+                var data = this.props.list.map(function (item) {
                     return Object.assign({}, item, {
                         ms_app: this.connectState(item),
                         actions: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, href: '#bots/' + item.id, color: 'blue', size: 'xs', text: 'Edit' }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'red', size: 'xs', text: 'Delete', onClick: _underscore2.default.partial(this.handleDelete.bind(this), _underscore2.default, item) })]
                     });
                 }.bind(this));
-            }
 
-            var BotsTableProps = {
-                columns: [{ name: 'name', text: 'Bot' }, { name: 'access_token', text: 'Access Token' }, { name: 'ms_app', text: 'Microsoft Application' }, { name: 'actions', text: '' }],
-                data: data
-            };
+                var BotsTableProps = {
+                    columns: [{ name: 'name', text: 'Bot' }, { name: 'access_token', text: 'Access Token' }, { name: 'ms_app', text: 'Microsoft Application' }, { name: 'actions', text: '' }],
+                    data: data
+                };
+                PortletBody = _react2.default.createElement(_TableComponent.TableComponent, BotsTableProps);
+            } else {
+                PortletBody = _react2.default.createElement(
+                    'div',
+                    null,
+                    _react2.default.createElement(
+                        'h4',
+                        null,
+                        'Information!'
+                    ),
+                    _react2.default.createElement(
+                        'p',
+                        null,
+                        ' Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. '
+                    ),
+                    _react2.default.createElement(
+                        'p',
+                        null,
+                        _react2.default.createElement(_ButtonComponent.ButtonComponent, { href: '#bots/new', color: 'blue', text: 'New Bot' })
+                    )
+                );
+            }
 
             return _react2.default.createElement(
                 _ToastComponent2.default,
@@ -3191,7 +3221,7 @@ var BotsPage = function (_Component) {
                             _react2.default.createElement(
                                 _LayoutComponent.PortletComponent,
                                 _extends({}, PortletProps, { id: 'bots_content_portlet' }),
-                                _react2.default.createElement(_TableComponent.TableComponent, BotsTableProps)
+                                PortletBody
                             )
                         )
                     )

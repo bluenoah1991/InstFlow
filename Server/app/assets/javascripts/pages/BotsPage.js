@@ -32,9 +32,9 @@ class BotsPage extends Component{
             ]
         };
 
-        let data = [];
-        if(this.props.list != undefined){
-            data = this.props.list.map(function(item){
+        let PortletBody = null;
+        if(this.props.list != undefined && this.props.list.length > 0){
+            let data = this.props.list.map(function(item){
                 return Object.assign({}, item, {
                     ms_app: this.connectState(item),
                     actions: [
@@ -43,17 +43,28 @@ class BotsPage extends Component{
                     ]
                 });
             }.bind(this));
-        }
 
-        let BotsTableProps = {
-            columns: [
-                {name: 'name', text: 'Bot'},
-                {name: 'access_token', text: 'Access Token'},
-                {name: 'ms_app', text: 'Microsoft Application'},
-                {name: 'actions', text: ''}
-            ],
-            data: data
-        };
+            let BotsTableProps = {
+                columns: [
+                    {name: 'name', text: 'Bot'},
+                    {name: 'access_token', text: 'Access Token'},
+                    {name: 'ms_app', text: 'Microsoft Application'},
+                    {name: 'actions', text: ''}
+                ],
+                data: data
+            };
+            PortletBody = <TableComponent {...BotsTableProps} />;
+        } else {
+            PortletBody = (
+                <div>
+                    <h4>Information!</h4>
+                    <p> Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. </p>
+                    <p>
+                        <ButtonComponent href={`#bots/new`} color='blue' text='New Bot' />
+                    </p>
+                </div>
+            );
+        }
 
         return (
             <ToastComponent>
@@ -64,7 +75,7 @@ class BotsPage extends Component{
                     <RowComponent>
                         <ColComponent size="12">
                             <PortletComponent {...PortletProps} id="bots_content_portlet">
-                                <TableComponent {...BotsTableProps} />
+                                {PortletBody}
                             </PortletComponent>
                         </ColComponent>
                     </RowComponent>

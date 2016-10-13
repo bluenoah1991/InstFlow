@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import {hashHistory} from 'react-router';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router'
 
 import ToastComponent from '../components/ToastComponent';
 import {RowComponent, ColComponent, PortletComponent} from '../components/LayoutComponent';
@@ -36,7 +36,7 @@ class BotCreatePage extends Component {
                 {type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.'},
                 {name: 'ms_appid', text: 'Microsoft App ID'},
                 {name: 'ms_appsecret', text: 'Microsoft App Secret'},
-                {type: 'inline', content: <ConnectStateComponent state='error' />},
+                {type: 'inline', content: <ConnectStateComponent state='init' />},
                 {type: 'hr'}
             ],
             buttons: [
@@ -65,6 +65,13 @@ class BotCreatePage extends Component {
         );
     }
 
+    componentDidMount(){
+        // Set route leave hook
+        this.props.router.setRouteLeaveHook(this.props.route, function(){
+            this.props.dispatch(Actions.changeCancelBotCreate());
+        }.bind(this));
+    }
+
     componentWillMount(){
         this.props.dispatch(Actions.cleanBotForm());
     }
@@ -75,6 +82,7 @@ class BotCreatePage extends Component {
 
     handleCancelCreate(e){
         this.props.dispatch(Actions.changeCancelBotCreate());
+        this.props.router.push('/bots');
     }
 
     handleCreate(e){
@@ -101,7 +109,7 @@ class BotCreatePage extends Component {
                     'Create Bot',
                     `${this.props.form.name} bot has been created.`
                 ));
-                hashHistory.push(`/bots/${data.id}`);
+                this.props.router.push(`/bots/${data.id}`);
             } else {
                 this.props.dispatch(Actions.createBotFailure(err));
                 this.props.dispatch(Actions.showToast(
@@ -139,4 +147,4 @@ function select(state){
     };
 }
 
-export default connect(select)(BotCreatePage);
+export default withRouter(connect(select)(BotCreatePage));
