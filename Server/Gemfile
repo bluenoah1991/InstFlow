@@ -60,3 +60,6 @@ gem 'rails_12factor', group: :production
 
 # jQuery Datatables Server side plugin
 gem 'ajax-datatables-rails'
+
+# Ruby Http Client
+gem 'http'

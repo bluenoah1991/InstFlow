@@ -4,7 +4,9 @@ module Api
             class BotsController < Api::V1::Private::ApplicationController
                 before_action :authenticate_admin!
                 before_action :authenticate_tenant!
-                before_action :set_instance, except: [:index, :create]
+                before_action :set_instance, except: [:index, :create, :connect]
+
+                @@TOKEN_ENDPOINT = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
 
                 def index
                     @instances = Bot.all
@@ -24,6 +26,24 @@ module Api
                     @instance.save!
 
                     render json: @instance, serializer: BotWithoutMaskSerializer
+                end
+
+                def connect
+                    requires! :ms_appid, type: String
+                    requires! :ms_appsecret, type: String
+
+                    response = HTTP.timeout(:global, :write => 2, :connect => 5, :read => 10)
+                        .post(@@TOKEN_ENDPOINT, :form => {
+                            :grant_type => 'client_credentials',
+                            :client_id => params[:ms_appid],
+                            :client_secret => params[:ms_appsecret],
+                            :scope => 'https://graph.microsoft.com/.default'
+                        })
+                    if response.code == 200
+                        render json: { state: 1 }
+                    else
+                        render json: { state: -1 }
+                    end
                 end
 
                 def show
