@@ -1,5 +1,5 @@
 class BotSerializer < ApplicationSerializer
-  attributes :id, :name, :access_token, :ms_appid, :ms_appsecret
+  attributes :id, :name, :access_token, :ms_appid, :ms_appsecret, :connected
 
   def access_token
     object.access_token.gsub(/(?<=\S{3})\S/, '*')

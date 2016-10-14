@@ -39,13 +39,14 @@ ActiveRecord::Schema.define(version: 20160920015436) do
   end
 
   create_table "bots", force: :cascade do |t|
-    t.integer  "admin_id",     null: false
-    t.string   "name",         null: false
-    t.string   "access_token", null: false
+    t.integer  "admin_id",                     null: false
+    t.string   "name",                         null: false
+    t.string   "access_token",                 null: false
     t.string   "ms_appid"
     t.string   "ms_appsecret"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.boolean  "connected",    default: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
     t.index ["access_token"], name: "index_bots_on_access_token", unique: true
     t.index ["admin_id"], name: "index_bots_on_admin_id"
   end

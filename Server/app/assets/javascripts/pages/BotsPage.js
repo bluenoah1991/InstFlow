@@ -48,7 +48,7 @@ class BotsPage extends Component{
                 columns: [
                     {name: 'name', text: 'Bot'},
                     {name: 'access_token', text: 'Access Token'},
-                    {name: 'ms_app', text: 'Microsoft Application'},
+                    {name: 'ms_app', text: 'Microsoft Account Connect'},
                     {name: 'actions', text: ''}
                 ],
                 data: data
@@ -120,7 +120,11 @@ class BotsPage extends Component{
     }
 
     connectState(item){
-        return <ButtonComponent color='green' size='xs' icon='check' text='Connected' enabled={false} />;
+        if(item.connected){
+            return <ButtonComponent color='green' size='xs' icon='check' text='Connected' enabled={false} />;
+        } else {
+            return <ButtonComponent color='red' size='xs' icon='remove' text='Failed' enabled={false} />;
+        }
     }
 
     handleDelete(e, item){

@@ -1,5 +1,5 @@
 class BotWithoutMaskSerializer < ApplicationSerializer
-  attributes :id, :name, :access_token, :ms_appid, :ms_appsecret, :newborn
+  attributes :id, :name, :access_token, :ms_appid, :ms_appsecret, :connected, :newborn
 
   def newborn
     true

@@ -6,6 +6,7 @@ class CreateBots < ActiveRecord::Migration[5.0]
       t.string :access_token, null: false
       t.string :ms_appid, null: true
       t.string :ms_appsecret, null: true
+      t.boolean :connected, default: false
 
       t.timestamps
     end

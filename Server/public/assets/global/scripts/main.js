@@ -40,6 +40,9 @@ exports.openRecentCreatedBot = openRecentCreatedBot;
 exports.deleteBotRequest = deleteBotRequest;
 exports.deleteBotSuccess = deleteBotSuccess;
 exports.deleteBotFailure = deleteBotFailure;
+exports.connectMSRequest = connectMSRequest;
+exports.connectMSSuccess = connectMSSuccess;
+exports.connectMSFailure = connectMSFailure;
 exports.showModal = showModal;
 exports.showModalFinish = showModalFinish;
 // Toast Action Types
@@ -245,6 +248,9 @@ var TYPE_OPEN_RECENT_CRAETED_BOT = exports.TYPE_OPEN_RECENT_CRAETED_BOT = 'TYPE_
 var TYPE_DELETE_BOT_REQUEST = exports.TYPE_DELETE_BOT_REQUEST = 'TYPE_DELETE_BOT_REQUEST';
 var TYPE_DELETE_BOT_SUCCESS = exports.TYPE_DELETE_BOT_SUCCESS = 'TYPE_DELETE_BOT_SUCCESS';
 var TYPE_DELETE_BOT_FAILURE = exports.TYPE_DELETE_BOT_FAILURE = 'TYPE_DELETE_BOT_FAILURE';
+var TYPE_CONNECT_MS_REQUEST = exports.TYPE_CONNECT_MS_REQUEST = 'TYPE_CONNECT_MS_REQUEST';
+var TYPE_CONNECT_MS_SUCCESS = exports.TYPE_CONNECT_MS_SUCCESS = 'TYPE_CONNECT_MS_SUCCESS';
+var TYPE_CONNECT_MS_FAILURE = exports.TYPE_CONNECT_MS_FAILURE = 'TYPE_CONNECT_MS_FAILURE';
 
 // Bot Actions
 function fetchBotsRequest() {
@@ -364,6 +370,29 @@ function deleteBotSuccess(response) {
 function deleteBotFailure(err) {
     var action = {
         type: TYPE_DELETE_BOT_FAILURE,
+        err: err
+    };
+    return action;
+}
+
+function connectMSRequest() {
+    var action = {
+        type: TYPE_CONNECT_MS_REQUEST
+    };
+    return action;
+}
+
+function connectMSSuccess(response) {
+    var action = {
+        type: TYPE_CONNECT_MS_SUCCESS,
+        response: response
+    };
+    return action;
+}
+
+function connectMSFailure(err) {
+    var action = {
+        type: TYPE_CONNECT_MS_FAILURE,
         err: err
     };
     return action;
@@ -2342,10 +2371,10 @@ var ConnectStateComponent = exports.ConnectStateComponent = _react2.default.crea
 
     render: function render() {
         var states = {
-            init: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', text: 'Connect' }),
+            init: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', text: 'Connect', onClick: this.props.onClick }),
             connecting: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', icon: 'spinner', spin: true, text: 'Connecting' }),
             connected: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', icon: 'check', text: 'Connected', enabled: false }),
-            error: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'red', size: 'xs', icon: 'remove', text: 'Rejected', enabled: false }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'green', size: 'xs', text: 'Reconnect' })]
+            error: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'red', size: 'xs', icon: 'remove', text: 'Rejected', enabled: false }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'green', size: 'xs', text: 'Reconnect', onClick: this.props.onClick })]
         };
         var state = states[this.props.state];
         if (state == undefined) {
@@ -2358,7 +2387,7 @@ var ConnectStateComponent = exports.ConnectStateComponent = _react2.default.crea
         );
     },
     propTypes: {
-        state: _react2.default.PropTypes.string
+        state: _react2.default.PropTypes.oneOf(['init', 'connecting', 'connected', 'error'])
     }
 });
 
@@ -2725,8 +2754,14 @@ var BotCreatePage = function (_Component) {
 
             var note = 'Create the first bot for your bot.';
 
+            // microsoft account connect state
+            var ConnectStateProps = {
+                state: this.props.state != undefined ? this.props.state : 'init',
+                onClick: this.handleConnect.bind(this)
+            };
+
             var FormProps = {
-                controls: [{ name: 'name', text: 'Bot Name', required: true }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, { state: 'init' }) }, { type: 'hr' }],
+                controls: [{ name: 'name', text: 'Bot Name', required: true }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, ConnectStateProps) }, { type: 'hr' }],
                 buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'default', text: 'Cancel', onClick: this.handleCancelCreate.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'blue', text: 'Create', onClick: this.handleCreate.bind(this), hasRequired: true })],
                 onChange: this.handleFormChange.bind(this),
                 data: this.props.form
@@ -2769,6 +2804,43 @@ var BotCreatePage = function (_Component) {
         key: 'componentWillMount',
         value: function componentWillMount() {
             this.props.dispatch(Actions.cleanBotForm());
+        }
+    }, {
+        key: 'handleConnect',
+        value: function handleConnect() {
+            this.props.dispatch(Actions.connectMSRequest());
+            var dataHasAuthToken = Object.assign({}, this.props.form, {
+                authenticity_token: Utils.csrfToken()
+            });
+            fetch('/api/v1/private/bots/connect', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(dataHasAuthToken)
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                var err = data['error'];
+                var state = data['state'];
+                if (err == undefined || err.trim().length === 0) {
+                    if (state != undefined && state === 1) {
+                        this.props.dispatch(Actions.connectMSSuccess(data));
+                        this.props.dispatch(Actions.showToast('success', 'Connect Microsoft Account', 'Connected.'));
+                    } else {
+                        this.props.dispatch(Actions.connectMSFailure(err));
+                        this.props.dispatch(Actions.showToast('error', 'Connect Microsoft Account', 'Validation failed.'));
+                    }
+                } else {
+                    this.props.dispatch(Actions.connectMSFailure(err));
+                    this.props.dispatch(Actions.showToast('error', 'Connect Microsoft Account', data['message']));
+                }
+            }.bind(this)).catch(function (err) {
+                this.props.dispatch(Actions.connectMSFailure(err.toString()));
+                this.props.dispatch(Actions.showToast('error', 'Connect Microsoft Account', err.toString()));
+            }.bind(this));
         }
     }, {
         key: 'handleFormChange',
@@ -2821,7 +2893,8 @@ var BotCreatePage = function (_Component) {
 BotCreatePage.propTypes = {
     fetching: _react.PropTypes.bool,
     form: _react.PropTypes.object,
-    err: _react.PropTypes.string
+    err: _react.PropTypes.string,
+    state: _react.PropTypes.string
 };
 
 var FetchingSelector = function FetchingSelector(state) {
@@ -2833,12 +2906,16 @@ var FormSelector = function FormSelector(state) {
 var FetchErrSelector = function FetchErrSelector(state) {
     return state.bot.data.err;
 };
+var StateSelector = function StateSelector(state) {
+    return state.bot.data.connect_state;
+};
 
 function select(state) {
     return {
         fetching: FetchingSelector(state),
         form: FormSelector(state),
-        err: FetchErrSelector(state)
+        err: FetchErrSelector(state),
+        state: StateSelector(state)
     };
 }
 
@@ -2927,6 +3004,7 @@ var BotPage = function (_Component) {
 
             var note = 'Create the first bot for your bot.';
 
+            // display the prompt if there is no data.
             var help = null;
             var state = '';
 
@@ -2935,8 +3013,14 @@ var BotPage = function (_Component) {
                 state = 'warning';
             }
 
+            // microsoft account connect state
+            var ConnectStateProps = {
+                state: this.props.state != undefined ? this.props.state : 'init',
+                onClick: this.handleConnect.bind(this)
+            };
+
             var FormProps = {
-                controls: [{ name: 'name', text: 'Bot Name', required: true }, { name: 'access_token', text: 'Access Token', required: true, readonly: true, help: help, state: state }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, { state: 'error' }) }, { type: 'hr' }],
+                controls: [{ name: 'name', text: 'Bot Name', required: true }, { name: 'access_token', text: 'Access Token', required: true, readonly: true, help: help, state: state }, { type: 'hr' }, { type: 'h4', text: 'Microsoft Application Settings' }, { type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.' }, { name: 'ms_appid', text: 'Microsoft App ID' }, { name: 'ms_appsecret', text: 'Microsoft App Secret' }, { type: 'inline', content: _react2.default.createElement(_StateComponent.ConnectStateComponent, ConnectStateProps) }, { type: 'hr' }],
                 buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'default', text: 'Cancel', onClick: this.handleCancelSave.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'blue', text: 'Save', onClick: this.handleSave.bind(this), hasRequired: true })],
                 onChange: this.handleFormChange.bind(this),
                 data: this.props.form
@@ -3005,6 +3089,43 @@ var BotPage = function (_Component) {
             }
         }
     }, {
+        key: 'handleConnect',
+        value: function handleConnect() {
+            this.props.dispatch(Actions.connectMSRequest());
+            var dataHasAuthToken = Object.assign({}, this.props.form, {
+                authenticity_token: Utils.csrfToken()
+            });
+            fetch('/api/v1/private/bots/connect', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify(dataHasAuthToken)
+            }).then(function (response) {
+                return response.json();
+            }).then(function (data) {
+                var err = data['error'];
+                var state = data['state'];
+                if (err == undefined || err.trim().length === 0) {
+                    if (state != undefined && state === 1) {
+                        this.props.dispatch(Actions.connectMSSuccess(data));
+                        this.props.dispatch(Actions.showToast('success', 'Connect Microsoft Account', 'Connected.'));
+                    } else {
+                        this.props.dispatch(Actions.connectMSFailure(err));
+                        this.props.dispatch(Actions.showToast('error', 'Connect Microsoft Account', 'Validation failed.'));
+                    }
+                } else {
+                    this.props.dispatch(Actions.connectMSFailure(err));
+                    this.props.dispatch(Actions.showToast('error', 'Connect Microsoft Account', data['message']));
+                }
+            }.bind(this)).catch(function (err) {
+                this.props.dispatch(Actions.connectMSFailure(err.toString()));
+                this.props.dispatch(Actions.showToast('error', 'Connect Microsoft Account', err.toString()));
+            }.bind(this));
+        }
+    }, {
         key: 'handleFormChange',
         value: function handleFormChange(e, control) {
             this.props.dispatch(Actions.changeBotForm(control.name, e.target.value));
@@ -3054,7 +3175,8 @@ var BotPage = function (_Component) {
 BotPage.propTypes = {
     fetching: _react.PropTypes.bool,
     form: _react.PropTypes.object,
-    err: _react.PropTypes.string
+    err: _react.PropTypes.string,
+    state: _react.PropTypes.string
 };
 
 var FetchingSelector = function FetchingSelector(state) {
@@ -3069,13 +3191,17 @@ var FetchErrSelector = function FetchErrSelector(state) {
 var RecentCreatedSelector = function RecentCreatedSelector(state) {
     return state.bot.data.recent_created;
 };
+var StateSelector = function StateSelector(state) {
+    return state.bot.data.connect_state;
+};
 
 function select(state) {
     return {
         fetching: FetchingSelector(state),
         form: FormSelector(state),
         err: FetchErrSelector(state),
-        recent_created: RecentCreatedSelector(state)
+        recent_created: RecentCreatedSelector(state),
+        state: StateSelector(state)
     };
 }
 
@@ -3177,7 +3303,7 @@ var BotsPage = function (_Component) {
                 }.bind(this));
 
                 var BotsTableProps = {
-                    columns: [{ name: 'name', text: 'Bot' }, { name: 'access_token', text: 'Access Token' }, { name: 'ms_app', text: 'Microsoft Application' }, { name: 'actions', text: '' }],
+                    columns: [{ name: 'name', text: 'Bot' }, { name: 'access_token', text: 'Access Token' }, { name: 'ms_app', text: 'Microsoft Account Connect' }, { name: 'actions', text: '' }],
                     data: data
                 };
                 PortletBody = _react2.default.createElement(_TableComponent.TableComponent, BotsTableProps);
@@ -3265,7 +3391,11 @@ var BotsPage = function (_Component) {
     }, {
         key: 'connectState',
         value: function connectState(item) {
-            return _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', icon: 'check', text: 'Connected', enabled: false });
+            if (item.connected) {
+                return _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', icon: 'check', text: 'Connected', enabled: false });
+            } else {
+                return _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'red', size: 'xs', icon: 'remove', text: 'Failed', enabled: false });
+            }
         }
     }, {
         key: 'handleDelete',
@@ -3896,22 +4026,33 @@ function BotReducer() {
         case _actions.TYPE_CHANGE_BOT_CREATE_FORM:
             var changedData = Object.assign({}, state.form);
             changedData[action.fieldName] = action.value;
+            var connect_state = state.connect_state;
+            if (action.fieldName == 'ms_appid' || action.fieldName == 'ms_appsecret') {
+                connect_state = 'init';
+            }
             return Object.assign({}, state, {
-                form: changedData
+                form: changedData,
+                connect_state: connect_state
             });
         case _actions.TYPE_CHANGE_CANCEL_BOT_CREATE:
             return Object.assign({}, state, {
-                form: null
+                form: null,
+                connect_state: null
             });
         case _actions.TYPE_FETCH_BOT_REQUEST:
             return Object.assign({}, state, {
                 fetching: true
             });
         case _actions.TYPE_FETCH_BOT_SUCCESS:
+            var connect_state = 'init';
+            if (action.response.connected) {
+                connect_state = 'connected';
+            }
             return Object.assign({}, state, {
                 fetching: false,
                 response: action.response,
-                form: action.response
+                form: action.response,
+                connect_state: connect_state
             });
         case _actions.TYPE_FETCH_BOT_FAILURE:
             return Object.assign({}, state, {
@@ -3936,12 +4077,22 @@ function BotReducer() {
         case _actions.TYPE_CHANGE_BOT_FORM:
             var changedData = Object.assign({}, state.form);
             changedData[action.fieldName] = action.value;
+            var connect_state = state.connect_state;
+            if (action.fieldName == 'ms_appid' || action.fieldName == 'ms_appsecret') {
+                connect_state = 'init';
+            }
             return Object.assign({}, state, {
-                form: changedData
+                form: changedData,
+                connect_state: connect_state
             });
         case _actions.TYPE_CHANGE_CANCEL_BOT:
+            var connect_state = 'init';
+            if (state.response.connected) {
+                connect_state = 'connected';
+            }
             return Object.assign({}, state, {
-                form: state.response
+                form: state.response,
+                connect_state: connect_state
             });
         case _actions.TYPE_CLEAN_BOT_FORM:
             return Object.assign({}, state, {
@@ -3962,10 +4113,27 @@ function BotReducer() {
                 err: action.err
             });
         case _actions.TYPE_OPEN_RECENT_CRAETED_BOT:
+            var connect_state = 'init';
+            if (state.recent_created.connected) {
+                connect_state = 'connected';
+            }
             return Object.assign({}, state, {
                 response: state.recent_created,
                 form: state.recent_created,
+                connect_state: connect_state,
                 recent_created: null
+            });
+        case _actions.TYPE_CONNECT_MS_REQUEST:
+            return Object.assign({}, state, {
+                connect_state: 'connecting'
+            });
+        case _actions.TYPE_CONNECT_MS_SUCCESS:
+            return Object.assign({}, state, {
+                connect_state: 'connected'
+            });
+        case _actions.TYPE_CONNECT_MS_FAILURE:
+            return Object.assign({}, state, {
+                connect_state: 'error'
             });
         default:
             return state;

@@ -27,6 +27,12 @@ class BotCreatePage extends Component {
         ];
         
         let note = 'Create the first bot for your bot.';
+        
+        // microsoft account connect state
+        let ConnectStateProps = {
+            state: this.props.state != undefined ? this.props.state : 'init',
+            onClick: this.handleConnect.bind(this)
+        };
 
         let FormProps = {
             controls: [
@@ -36,7 +42,7 @@ class BotCreatePage extends Component {
                 {type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.'},
                 {name: 'ms_appid', text: 'Microsoft App ID'},
                 {name: 'ms_appsecret', text: 'Microsoft App Secret'},
-                {type: 'inline', content: <ConnectStateComponent state='init' />},
+                {type: 'inline', content: <ConnectStateComponent {...ConnectStateProps} />},
                 {type: 'hr'}
             ],
             buttons: [
@@ -74,6 +80,58 @@ class BotCreatePage extends Component {
 
     componentWillMount(){
         this.props.dispatch(Actions.cleanBotForm());
+    }
+
+    handleConnect(){
+        this.props.dispatch(Actions.connectMSRequest());
+        let dataHasAuthToken = Object.assign({}, this.props.form, {
+            authenticity_token: Utils.csrfToken()
+        });
+        fetch('/api/v1/private/bots/connect', {
+            method: 'POST', 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(dataHasAuthToken)
+        }).then(function(response){
+            return response.json();
+        }).then(function(data){
+            let err = data['error'];
+            let state = data['state'];
+            if(err == undefined || err.trim().length === 0){
+                if(state != undefined && state === 1){
+                    this.props.dispatch(Actions.connectMSSuccess(data));
+                    this.props.dispatch(Actions.showToast(
+                        'success',
+                        'Connect Microsoft Account',
+                        'Connected.'
+                    ));
+                } else {
+                    this.props.dispatch(Actions.connectMSFailure(err));
+                    this.props.dispatch(Actions.showToast(
+                        'error',
+                        'Connect Microsoft Account',
+                        'Validation failed.'
+                    ));
+                }
+            } else {
+                this.props.dispatch(Actions.connectMSFailure(err));
+                this.props.dispatch(Actions.showToast(
+                    'error',
+                    'Connect Microsoft Account',
+                    data['message']
+                ));
+            }
+        }.bind(this)).catch(function(err){
+            this.props.dispatch(Actions.connectMSFailure(err.toString()));
+            this.props.dispatch(Actions.showToast(
+                'error',
+                'Connect Microsoft Account',
+                err.toString()
+            ));
+        }.bind(this));
     }
 
     handleFormChange(e, control){
@@ -132,18 +190,21 @@ class BotCreatePage extends Component {
 BotCreatePage.propTypes = {
     fetching: PropTypes.bool,
     form: PropTypes.object,
-    err: PropTypes.string
+    err: PropTypes.string,
+    state: PropTypes.string
 };
 
 const FetchingSelector = state => state.bot.data.fetching;
 const FormSelector = state => state.bot.data.form;
 const FetchErrSelector = state => state.bot.data.err;
+const StateSelector = state => state.bot.data.connect_state;
 
 function select(state){
     return {
         fetching: FetchingSelector(state),
         form: FormSelector(state),
-        err: FetchErrSelector(state)
+        err: FetchErrSelector(state),
+        state: StateSelector(state)
     };
 }
 

@@ -205,6 +205,9 @@ export const TYPE_OPEN_RECENT_CRAETED_BOT = 'TYPE_OPEN_RECENT_CRAETED_BOT';
 export const TYPE_DELETE_BOT_REQUEST = 'TYPE_DELETE_BOT_REQUEST';
 export const TYPE_DELETE_BOT_SUCCESS = 'TYPE_DELETE_BOT_SUCCESS';
 export const TYPE_DELETE_BOT_FAILURE = 'TYPE_DELETE_BOT_FAILURE';
+export const TYPE_CONNECT_MS_REQUEST = 'TYPE_CONNECT_MS_REQUEST';
+export const TYPE_CONNECT_MS_SUCCESS = 'TYPE_CONNECT_MS_SUCCESS';
+export const TYPE_CONNECT_MS_FAILURE = 'TYPE_CONNECT_MS_FAILURE';
 
 // Bot Actions
 export function fetchBotsRequest(){
@@ -324,6 +327,29 @@ export function deleteBotSuccess(response){
 export function deleteBotFailure(err){
     const action = {
         type: TYPE_DELETE_BOT_FAILURE,
+        err: err
+    };
+    return action;
+}
+
+export function connectMSRequest(){
+    const action = {
+        type: TYPE_CONNECT_MS_REQUEST
+    };
+    return action;
+}
+
+export function connectMSSuccess(response){
+    const action = {
+        type: TYPE_CONNECT_MS_SUCCESS,
+        response: response
+    };
+    return action;
+}
+
+export function connectMSFailure(err){
+    const action = {
+        type: TYPE_CONNECT_MS_FAILURE,
         err: err
     };
     return action;
