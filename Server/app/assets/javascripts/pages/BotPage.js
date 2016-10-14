@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {withRouter} from 'react-router'
+import {withRouter} from 'react-router';
 
 import ToastComponent from '../components/ToastComponent';
 import {RowComponent, ColComponent, PortletComponent} from '../components/LayoutComponent';

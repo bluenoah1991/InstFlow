@@ -1,11 +1,15 @@
-import React from 'react';
+import React, {Component, PropTypes, Children} from 'react';
 
-export default React.createClass({
-    render: function(){
+class PageContentComponent extends Component{
+    render(){
         return (
-            <div className="page-content">
-                {this.props.children}
+            <div className="page-content-wrapper">
+                <div className="page-content">
+                    {this.props.children}
+                </div>
             </div>
         );
     }
-});
+}
+
+export default PageContentComponent;

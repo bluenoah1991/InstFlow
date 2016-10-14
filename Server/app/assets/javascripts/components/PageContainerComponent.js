@@ -1,16 +1,13 @@
 import React, {Component, PropTypes, Children} from 'react';
-import {connect} from 'react-redux';
 
-import * as Actions from '../actions';
-
-class ContainerComponent extends Component{
+class PageContainerComponent extends Component{
     render(){
         return (
-            <div>
+            <div className="page-container">
                 {this.props.children}
             </div>
         );
     }
 }
 
-export default ContainerComponent;
+export default PageContainerComponent;

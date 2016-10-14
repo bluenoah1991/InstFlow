@@ -20,3 +20,7 @@ export function safestring(obj){
 export function csrfToken(){
     return $('meta[name=csrf-token]').attr('content');
 }
+
+export function meta(name){
+    return $(`meta[name=${name}]`).attr('content');
+}
