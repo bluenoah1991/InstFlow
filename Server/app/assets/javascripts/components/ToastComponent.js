@@ -26,7 +26,7 @@ class ToastComponent extends Component{
             var $toast = toastr[this.props.toastMethod](
                 this.props.toastMessage, this.props.toastTitle);
         }
-        return Children.only(this.props.children);
+        return null;
     }
 
     componentDidUpdate(){

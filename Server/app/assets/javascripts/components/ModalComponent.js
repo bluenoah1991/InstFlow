@@ -17,6 +17,7 @@ class ModalComponent extends Component{
         let body = this.props.body != undefined ? this.props.body : 'Would you like to continue this operation?';
         let eventText = this.props.eventText != undefined ? this.props.eventText : 'Continue';
         let handleEvent = this.props.handleEvent != undefined ? this.props.handleEvent : function(){};
+        handleEvent = _.partial(handleEvent, this.state.source);
 
         return (
             <div className="modal fade" id={this.state.id} tabIndex="-1" role="basic" aria-hidden="true">
@@ -37,10 +38,18 @@ class ModalComponent extends Component{
         );
     }
 
+    componentDidMount(){
+        $(`#${this.state.id}`).on('show.bs.modal', function(e){
+            this.setState({
+                source: e
+            });
+        }.bind(this));
+    }
+
     componentDidUpdate(){
         let show = this.props.show != undefined ? this.props.show : false;
         if(show){
-            $(`#${this.state.id}`).modal('show');
+            $(`#${this.state.id}`).modal('show', this.props.relatedTarget);
             this.props.dispatch(Actions.showModalFinish());
         }
     }
@@ -51,7 +60,8 @@ ModalComponent.propTypes = {
     title: PropTypes.string,
     body: PropTypes.string,
     eventText: PropTypes.string,
-    handleEvent: PropTypes.func
+    handleEvent: PropTypes.func,
+    relatedTarget: PropTypes.object
 };
 
 const ShowSelector = state => state.modal.show;
@@ -59,6 +69,7 @@ const TitleSelector = state => state.modal.title;
 const BodySelector = state => state.modal.body;
 const EventTextSelector = state => state.modal.eventText;
 const HandleEventSelector = state => state.modal.handleEvent;
+const RelatedTargetSelector = state => state.modal.relatedTarget;
 
 function select(state){
     return {
@@ -66,7 +77,8 @@ function select(state){
         title: TitleSelector(state),
         body: BodySelector(state),
         eventText: EventTextSelector(state),
-        handleEvent: HandleEventSelector(state)
+        handleEvent: HandleEventSelector(state),
+        relatedTarget: RelatedTargetSelector(state)
     };
 }
 

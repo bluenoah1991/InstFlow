@@ -361,12 +361,13 @@ export const TYPE_SHOW_MODAL_FINISH = 'TYPE_SHOW_MODAL_FINISH';
 
 
 // Modal Actions
-export function showModal(title, body, handleEvent){
+export function showModal(title, body, handleEvent, relatedTarget){
     const action = {
         type: TYPE_SHOW_MODAL,
         title: title,
         body: body,
-        handleEvent: handleEvent
+        handleEvent: handleEvent,
+        relatedTarget: relatedTarget
     }
     return action;
 }

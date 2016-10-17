@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import _ from 'underscore';
 
-import ToastComponent from '../components/ToastComponent';
 import {RowComponent, ColComponent, PortletComponent} from '../components/LayoutComponent';
 import {NoteComponent} from '../components/NoteComponent';
 import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
@@ -67,20 +66,18 @@ class BotsPage extends Component{
         }
 
         return (
-            <ToastComponent>
-                <PageContentComponent>
-                    <PageHeadComponent title="My Bots" />
-                    <PageBreadCrumbComponent paths={breadCrumbPaths} />
-                    <NoteComponent note={note} />
-                    <RowComponent>
-                        <ColComponent size="12">
-                            <PortletComponent {...PortletProps} id="bots_content_portlet">
-                                {PortletBody}
-                            </PortletComponent>
-                        </ColComponent>
-                    </RowComponent>
-                </PageContentComponent>
-            </ToastComponent>
+            <PageContentComponent>
+                <PageHeadComponent title="My Bots" />
+                <PageBreadCrumbComponent paths={breadCrumbPaths} />
+                <NoteComponent note={note} />
+                <RowComponent>
+                    <ColComponent size="12">
+                        <PortletComponent {...PortletProps} id="bots_content_portlet">
+                            {PortletBody}
+                        </PortletComponent>
+                    </ColComponent>
+                </RowComponent>
+            </PageContentComponent>
         );
     }
 

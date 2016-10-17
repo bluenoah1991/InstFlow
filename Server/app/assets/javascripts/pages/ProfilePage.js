@@ -1,14 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 
-import ToastComponent from '../components/ToastComponent';
 import {RowComponent, ColComponent, PortletComponent, PortletTabComponent, PortletTabContentComponent} from '../components/LayoutComponent';
 import {NoteComponent} from '../components/NoteComponent';
 import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
 import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
 import {ProfileCardComponent, ProfileAboutComponent, ProfileSidebarComponent, ProfileContentComponent} from '../components/ProfileComponent';
-import {ButtonComponent, ButtonCircleComponent} from '../components/ButtonComponent';
+import {ButtonComponent} from '../components/ButtonComponent';
 import FormComponent from '../components/FormComponent';
 import {SettingComponent} from '../components/SettingComponent';
 
@@ -34,8 +33,8 @@ class ProfilePage extends Component {
             title: this.props.displayName,
             subtitle: this.props.displayOccupation,
             buttons: [
-                <ButtonCircleComponent key={0} color='green' text='Free' />,
-                <ButtonCircleComponent key={1} color='red' text='Upgrade' />
+                <ButtonComponent key={0} circle={true} color='green' text='Free' />,
+                <ButtonComponent key={1} circle={true} color='red' text='Upgrade' />
             ],
             menu: [
                 {title: 'Account Profile', icon: 'user', link: '#/account_profile', active: true},
@@ -109,40 +108,38 @@ class ProfilePage extends Component {
         }];
         
         return (
-            <ToastComponent>
-                <PageContentComponent>
-                    <PageHeadComponent title="My Profile" />
-                    <PageBreadCrumbComponent paths={breadCrumbPaths} />
-                    <RowComponent>
-                        <ColComponent size="12">
-                            <ProfileSidebarComponent>
-                                <ProfileCardComponent {...ProfileCardProps} />
-                                <ProfileAboutComponent bots={3} messages={15} tickets={2} />
-                            </ProfileSidebarComponent>
-                            <ProfileContentComponent>
-                                <RowComponent>
-                                    <ColComponent size="12">
-                                        <PortletTabComponent title='Profile Account' id='profile_content_portlet_tab'>
-                                            <PortletTabContentComponent title='Personal Info' active={true}>
-                                                <FormComponent {...PersonalInfoProps} />
-                                            </PortletTabContentComponent>
-                                            <PortletTabContentComponent title='Change Avatar'>
-                                                <p>Blank</p>
-                                            </PortletTabContentComponent>
-                                            <PortletTabContentComponent title='Change Password'>
-                                                <FormComponent {...ChangePasswordProps} />
-                                            </PortletTabContentComponent>
-                                            <PortletTabContentComponent title='Global Settings'>
-                                                <SettingComponent items={options} />
-                                            </PortletTabContentComponent>
-                                        </PortletTabComponent>
-                                    </ColComponent>
-                                </RowComponent>
-                            </ProfileContentComponent>
-                        </ColComponent>
-                    </RowComponent>
-                </PageContentComponent>
-            </ToastComponent>
+            <PageContentComponent>
+                <PageHeadComponent title="My Profile" />
+                <PageBreadCrumbComponent paths={breadCrumbPaths} />
+                <RowComponent>
+                    <ColComponent size="12">
+                        <ProfileSidebarComponent>
+                            <ProfileCardComponent {...ProfileCardProps} />
+                            <ProfileAboutComponent bots={3} messages={15} tickets={2} />
+                        </ProfileSidebarComponent>
+                        <ProfileContentComponent>
+                            <RowComponent>
+                                <ColComponent size="12">
+                                    <PortletTabComponent title='Profile Account' id='profile_content_portlet_tab'>
+                                        <PortletTabContentComponent title='Personal Info' active={true}>
+                                            <FormComponent {...PersonalInfoProps} />
+                                        </PortletTabContentComponent>
+                                        <PortletTabContentComponent title='Change Avatar'>
+                                            <p>Blank</p>
+                                        </PortletTabContentComponent>
+                                        <PortletTabContentComponent title='Change Password'>
+                                            <FormComponent {...ChangePasswordProps} />
+                                        </PortletTabContentComponent>
+                                        <PortletTabContentComponent title='Global Settings'>
+                                            <SettingComponent items={options} />
+                                        </PortletTabContentComponent>
+                                    </PortletTabComponent>
+                                </ColComponent>
+                            </RowComponent>
+                        </ProfileContentComponent>
+                    </ColComponent>
+                </RowComponent>
+            </PageContentComponent>
         );
     }
 

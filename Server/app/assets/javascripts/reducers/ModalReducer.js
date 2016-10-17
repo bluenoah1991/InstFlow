@@ -11,7 +11,8 @@ export default function(state={}, action){
                 show: true,
                 title: action.title,
                 body: action.body,
-                handleEvent: action.handleEvent
+                handleEvent: action.handleEvent,
+                relatedTarget: action.relatedTarget
             });
         case TYPE_SHOW_MODAL_FINISH:
             return Object.assign({}, state, {

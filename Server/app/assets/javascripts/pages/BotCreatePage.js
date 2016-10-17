@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router'
 
-import ToastComponent from '../components/ToastComponent';
 import {RowComponent, ColComponent, PortletComponent} from '../components/LayoutComponent';
 import {NoteComponent} from '../components/NoteComponent';
 import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
@@ -54,20 +53,18 @@ class BotCreatePage extends Component {
         };
 
         return (
-            <ToastComponent>
-                <PageContentComponent>
-                    <PageHeadComponent title="New Bot" />
-                    <PageBreadCrumbComponent paths={breadCrumbPaths} />
-                    <NoteComponent note={note} />
-                    <RowComponent>
-                        <ColComponent size="12">
-                            <PortletComponent title="New Bot">
-                                <FormComponent {...FormProps}/>
-                            </PortletComponent>
-                        </ColComponent>
-                    </RowComponent>
-                </PageContentComponent>
-            </ToastComponent>
+            <PageContentComponent>
+                <PageHeadComponent title="New Bot" />
+                <PageBreadCrumbComponent paths={breadCrumbPaths} />
+                <NoteComponent note={note} />
+                <RowComponent>
+                    <ColComponent size="12">
+                        <PortletComponent title="New Bot">
+                            <FormComponent {...FormProps}/>
+                        </PortletComponent>
+                    </ColComponent>
+                </RowComponent>
+            </PageContentComponent>
         );
     }
 

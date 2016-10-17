@@ -403,12 +403,13 @@ var TYPE_SHOW_MODAL = exports.TYPE_SHOW_MODAL = 'TYPE_SHOW_MODAL';
 var TYPE_SHOW_MODAL_FINISH = exports.TYPE_SHOW_MODAL_FINISH = 'TYPE_SHOW_MODAL_FINISH';
 
 // Modal Actions
-function showModal(title, body, handleEvent) {
+function showModal(title, body, handleEvent, relatedTarget) {
     var action = {
         type: TYPE_SHOW_MODAL,
         title: title,
         body: body,
-        handleEvent: handleEvent
+        handleEvent: handleEvent,
+        relatedTarget: relatedTarget
     };
     return action;
 }
@@ -426,7 +427,9 @@ function showModalFinish() {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.ButtonDropdownsComponent = exports.ButtonCircleComponent = exports.ButtonComponent = undefined;
+exports.ButtonDropdownsComponent = exports.ButtonComponent = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
@@ -434,113 +437,145 @@ var _react2 = _interopRequireDefault(_react);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ButtonComponent = exports.ButtonComponent = _react2.default.createClass({
-    displayName: 'ButtonComponent',
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    render: function render() {
-        var icon = null;
-        var href = this.props.href != undefined ? this.props.href : 'javascript:;';
-        var enabled = this.props.enabled != undefined ? this.props.enabled : true;
-        var size = this.props.size != undefined ? 'btn-' + this.props.size : '';
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-        if (this.props.icon != undefined) {
-            var spin = this.props.spin != undefined ? this.props.spin : false;
-            icon = _react2.default.createElement('i', { className: 'fa fa-' + this.props.icon + ' ' + (spin ? 'fa-spin' : '') });
-        }
-        return _react2.default.createElement(
-            'a',
-            { href: href, className: 'btn ' + size + ' ' + this.props.color + ' ' + (enabled ? '' : 'disabled'), onClick: this.props.onClick },
-            icon,
-            ' ',
-            this.props.text
-        );
-    },
-    propTypes: {
-        text: _react2.default.PropTypes.string,
-        color: _react2.default.PropTypes.string,
-        size: _react2.default.PropTypes.string,
-        href: _react2.default.PropTypes.string,
-        icon: _react2.default.PropTypes.string,
-        spin: _react2.default.PropTypes.bool,
-        onClick: _react2.default.PropTypes.func,
-        enabled: _react2.default.PropTypes.bool,
-        hasRequired: _react2.default.PropTypes.bool
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ButtonComponent = exports.ButtonComponent = function (_Component) {
+    _inherits(ButtonComponent, _Component);
+
+    function ButtonComponent() {
+        _classCallCheck(this, ButtonComponent);
+
+        return _possibleConstructorReturn(this, (ButtonComponent.__proto__ || Object.getPrototypeOf(ButtonComponent)).apply(this, arguments));
     }
-});
 
-var ButtonCircleComponent = exports.ButtonCircleComponent = _react2.default.createClass({
-    displayName: 'ButtonCircleComponent',
+    _createClass(ButtonComponent, [{
+        key: 'render',
+        value: function render() {
+            var icon = null;
+            var href = this.props.href != undefined ? this.props.href : 'javascript:;';
+            var enabled = this.props.enabled != undefined ? this.props.enabled : true;
+            var size = this.props.size != undefined ? 'btn-' + this.props.size : '';
+            var circle = this.props.circle != undefined && this.props.circle ? 'btn-circle' : '';
 
-    render: function render() {
-        return _react2.default.createElement(
-            'a',
-            { href: 'javascript:;', className: 'btn btn-circle btn-sm ' + this.props.color, onClick: this.props.onClick },
-            this.props.text
-        );
-    }
-});
-
-/**
- * this.props.items = [
- *      {name: 'state', value: 'enabled', text: 'Enabled', default: true},
- *      {name: 'state', value: 'disabled', text: 'Disabled'},
- *      {name: 'state', value: 'all', text: 'All'}
- * ]
- */
-var ButtonDropdownsComponent = exports.ButtonDropdownsComponent = _react2.default.createClass({
-    displayName: 'ButtonDropdownsComponent',
-
-    getInitialState: function getInitialState() {
-        var default_ = null;
-        this.props.items.forEach(function (item, index) {
-            if (index == 0 || item.default != undefined && item.default) {
-                default_ = item;
+            if (this.props.icon != undefined) {
+                var spin = this.props.spin != undefined && this.props.spin ? 'fa-spin' : '';
+                icon = _react2.default.createElement('i', { className: 'fa fa-' + this.props.icon + ' ' + spin });
             }
-        });
-        return {
-            defaultItem: default_
-        };
-    },
-    render: function render() {
-        var items = [];
+            return _react2.default.createElement(
+                'a',
+                { href: href, className: 'btn ' + circle + ' ' + size + ' ' + this.props.color + ' ' + (enabled ? '' : 'disabled'), onClick: this.props.onClick },
+                icon,
+                ' ',
+                this.props.text
+            );
+        }
+    }]);
 
-        this.props.items.forEach(function (item, index) {
-            items.push(_react2.default.createElement(
-                'li',
-                { key: index },
-                _react2.default.createElement(
-                    'a',
-                    { href: 'javascript:;', onClick: this.handleSelect.bind(this, item) },
-                    ' ',
-                    item.text,
-                    ' '
-                )
-            ));
-        }.bind(this));
+    return ButtonComponent;
+}(_react.Component);
 
-        return _react2.default.createElement(
-            'div',
-            { className: 'btn-group' },
-            _react2.default.createElement(
-                'button',
-                { type: 'button', className: 'btn ' + this.props.color + ' dropdown-toggle', 'data-toggle': 'dropdown' },
-                this.state.defaultItem.text,
-                _react2.default.createElement('i', { className: 'fa fa-angle-down' })
-            ),
-            _react2.default.createElement(
-                'ul',
-                { className: 'dropdown-menu', role: 'menu' },
-                items
-            )
-        );
-    },
-    handleSelect: function handleSelect(item, event) {
-        this.setState({
-            defaultItem: item
-        });
-        this.props.onSelect(item.name, item.value);
+ButtonComponent.propTypes = {
+    text: _react2.default.PropTypes.string,
+    color: _react2.default.PropTypes.string,
+    size: _react2.default.PropTypes.string,
+    href: _react2.default.PropTypes.string,
+    icon: _react2.default.PropTypes.string,
+    spin: _react2.default.PropTypes.bool,
+    circle: _react2.default.PropTypes.bool,
+    onClick: _react2.default.PropTypes.func,
+    enabled: _react2.default.PropTypes.bool,
+    hasRequired: _react2.default.PropTypes.bool
+};
+
+var ButtonDropdownsComponent = exports.ButtonDropdownsComponent = function (_Component2) {
+    _inherits(ButtonDropdownsComponent, _Component2);
+
+    function ButtonDropdownsComponent() {
+        _classCallCheck(this, ButtonDropdownsComponent);
+
+        var _this2 = _possibleConstructorReturn(this, (ButtonDropdownsComponent.__proto__ || Object.getPrototypeOf(ButtonDropdownsComponent)).call(this));
+
+        _this2.state = {};
+        return _this2;
     }
-});
+
+    _createClass(ButtonDropdownsComponent, [{
+        key: 'render',
+        value: function render() {
+            var color = this.props.color != undefined ? this.props.color : 'default';
+            var items = this.props.items != undefined ? this.props.items : [];
+            var elements = [];
+            items.forEach(function (item, index) {
+                elements.push(_react2.default.createElement(
+                    'li',
+                    { key: index },
+                    _react2.default.createElement(
+                        'a',
+                        { href: 'javascript:;', onClick: this.handleSelect.bind(this, item) },
+                        ' ',
+                        item.text,
+                        ' '
+                    )
+                ));
+            }.bind(this));
+
+            return _react2.default.createElement(
+                'div',
+                { className: 'btn-group' },
+                _react2.default.createElement(
+                    'button',
+                    { className: 'btn ' + color + ' dropdown-toggle', 'data-toggle': 'dropdown', onClick: this.handleSelect.bind(this, this.state.selected) },
+                    this.state.selected != undefined ? this.state.selected.text : '',
+                    _react2.default.createElement('i', { className: 'fa fa-angle-down' })
+                ),
+                _react2.default.createElement(
+                    'ul',
+                    { className: 'dropdown-menu', role: 'menu' },
+                    elements
+                )
+            );
+        }
+    }, {
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            var items = this.props.items != undefined ? this.props.items : [];
+            var selected = null;
+            items.forEach(function (item, index) {
+                if (index == 0 || item.default != undefined && item.default) {
+                    selected = item;
+                }
+            });
+            this.setState({
+                selected: selected
+            });
+        }
+    }, {
+        key: 'handleSelect',
+        value: function handleSelect(item, event) {
+            if (item == undefined) {
+                return;
+            }
+            this.setState({
+                selected: item
+            });
+            if (this.props.onSelect != undefined) {
+                this.props.onSelect(item);
+            }
+        }
+    }]);
+
+    return ButtonDropdownsComponent;
+}(_react.Component);
+
+ButtonDropdownsComponent.propTypes = {
+    color: _react2.default.PropTypes.string,
+    items: _react2.default.PropTypes.array,
+    onSelect: _react2.default.PropTypes.func
+};
 
 },{"react":578}],3:[function(require,module,exports){
 'use strict';
@@ -548,375 +583,187 @@ var ButtonDropdownsComponent = exports.ButtonDropdownsComponent = _react2.defaul
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.DataTableComponent = exports.TableToolbarComponent = undefined;
+exports.DataTableComponent = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRedux = require('react-redux');
+
 var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
-var _ButtonComponent = require('../components/ButtonComponent');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/**
- * this.props.buttons = [
- *      {type: 'refresh', value: {}}
- * ];
- */
-var TableToolbarComponent = exports.TableToolbarComponent = _react2.default.createClass({
-    displayName: 'TableToolbarComponent',
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    render: function render() {
-        var buttonComponents = [];
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-        this.props.buttons.forEach(function (button, index) {
-            switch (button.type) {
-                case 'refresh':
-                    buttonComponents.push(_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: index, color: 'green', text: 'Refresh', onClick: this.handleRefresh }));
-                    break;
-                case 'dropdown':
-                    buttonComponents.push(_react2.default.createElement(_ButtonComponent.ButtonDropdownsComponent, { key: index, color: 'green', onSelect: this.handleFilter, items: button.value }));
-                    break;
-            }
-        }.bind(this));
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-        return _react2.default.createElement(
-            'div',
-            { className: 'table-toolbar' },
-            _react2.default.createElement(
-                'div',
-                { className: 'row' },
-                _react2.default.createElement(
-                    'div',
-                    { className: 'col-md-6' },
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'btn-toolbar' },
-                        buttonComponents
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'col-md-6' },
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'btn-group pull-right' },
-                        _react2.default.createElement(
-                            'button',
-                            { className: 'btn green  btn-outline dropdown-toggle', 'data-toggle': 'dropdown' },
-                            'Tools',
-                            _react2.default.createElement('i', { className: 'fa fa-angle-down' })
-                        ),
-                        _react2.default.createElement(
-                            'ul',
-                            { className: 'dropdown-menu pull-right' },
-                            _react2.default.createElement(
-                                'li',
-                                null,
-                                _react2.default.createElement(
-                                    'a',
-                                    { href: 'javascript:;' },
-                                    _react2.default.createElement('i', { className: 'fa fa-print' }),
-                                    ' Print '
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'li',
-                                null,
-                                _react2.default.createElement(
-                                    'a',
-                                    { href: 'javascript:;' },
-                                    _react2.default.createElement('i', { className: 'fa fa-file-pdf-o' }),
-                                    ' Save as PDF '
-                                )
-                            ),
-                            _react2.default.createElement(
-                                'li',
-                                null,
-                                _react2.default.createElement(
-                                    'a',
-                                    { href: 'javascript:;' },
-                                    _react2.default.createElement('i', { className: 'fa fa-file-excel-o' }),
-                                    ' Export to Excel '
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        );
-    },
-    handleRefresh: function handleRefresh() {
-        this.props.context.emit('refresh');
-    },
-    handleFilter: function handleFilter(name, value) {
-        this.props.context.emit('filter', name, value);
-    }
-});
+var DataTableComponent = exports.DataTableComponent = function (_Component) {
+    _inherits(DataTableComponent, _Component);
 
-var datatableInit = function datatableInit(tableId, defaultAjaxParams) {
+    function DataTableComponent() {
+        _classCallCheck(this, DataTableComponent);
 
-    var grid = new Datatable();
+        var _this = _possibleConstructorReturn(this, (DataTableComponent.__proto__ || Object.getPrototypeOf(DataTableComponent)).call(this));
 
-    defaultAjaxParams.forEach(function (param, index) {
-        grid.setAjaxParam(param.name, param.value);
-    });
-
-    grid.init({
-        src: $('#' + tableId),
-        onSuccess: function onSuccess(grid, response) {
-            // grid:        grid object
-            // response:    json object of server side ajax response
-            // execute some code after table records loaded
-        },
-        onError: function onError(grid) {
-            // execute some code on network or other general error  
-        },
-        onDataLoad: function onDataLoad(grid) {
-            // execute some code on ajax data load
-        },
-        loadingMessage: 'Loading...',
-        dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
-
-            "searching": true,
-
-            "language": {
-                "aria": {
-                    "sortAscending": ": activate to sort column ascending",
-                    "sortDescending": ": activate to sort column descending"
-                },
-                "emptyTable": "No data available in table",
-                "info": "Showing _START_ to _END_ of _TOTAL_ records",
-                "infoEmpty": "No records found",
-                "infoFiltered": "(filtered1 from _MAX_ total records)",
-                "lengthMenu": "Show _MENU_",
-                "search": "Search:",
-                "zeroRecords": "No matching records found",
-                "paginate": {
-                    "previous": "Prev",
-                    "next": "Next",
-                    "last": "Last",
-                    "first": "First"
-                }
-            },
-
-            "columnDefs": [{ // define columns sorting options(by default all columns are sortable extept the first checkbox column)
-                'orderable': false,
-                'targets': [0, 6]
-            }, {
-                'render': function render(data, type, row) {
-                    var content = '<a href="#/users/' + data.id + '" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>';
-                    if (data.state == 0) {
-                        content += '<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id=\'' + data.id + '\'><i class="fa fa-times"></i> Disable</a>';
-                    } else if (data.state == -1) {
-                        content += '<a href="javascript:;" class="btn btn-sm green btn-outline action-enable" data-id=\'' + data.id + '\'><i class="fa fa-check"></i> Enable</a>';
-                    }
-                    return content;
-                },
-                'targets': ['column-actions']
-            }, {
-                'render': function render(data, type, row) {
-                    return '<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input name="id[]" type="checkbox" class="checkboxes" value="' + data.id + '"/><span></span></label>';
-                },
-                'targets': ['column-checkbox']
-            }],
-
-            // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-            // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
-            // So when dropdowns used the scrollable div should be removed. 
-            "dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'<'table-group-actions pull-right'f>>>t<'row'<'col-md-6 col-sm-12'i><'col-md-6 col-sm-12'<'table-group-actions pull-right'p>>>",
-
-            "columns": [{ "name": "" }, { "name": "name" }, { "name": "channel_id" }, { "name": "user_id" }, { "name": "created_at" }, { "name": "updated_at" }, { "name": "" }],
-
-            "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
-
-            "lengthMenu": [[10, 20, 50], [10, 20, 50] // change per page values here
-            ],
-            "pageLength": 10, // default record count per page
-            "pagingType": "bootstrap_full_number",
-            "ajax": {
-                "url": "/api/v1/private/users" },
-            "order": [[4, "asc"]] // set first column as a default sort by asc
-        }
-
-    });
-
-    // handle group actionsubmit button click
-    grid.getTableWrapper().on('click', '.table-group-action-submit', function (e) {
-        e.preventDefault();
-        var action = $(".table-group-action-input", grid.getTableWrapper());
-        if (action.val() != "" && grid.getSelectedRowsCount() > 0) {
-            grid.setAjaxParam("customActionType", "group_action");
-            grid.setAjaxParam("customActionName", action.val());
-            grid.setAjaxParam("id", grid.getSelectedRows());
-            grid.getDataTable().ajax.reload();
-            grid.clearAjaxParams();
-        } else if (action.val() == "") {
-            App.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: 'Please select an action',
-                container: grid.getTableWrapper(),
-                place: 'prepend'
-            });
-        } else if (grid.getSelectedRowsCount() === 0) {
-            App.alert({
-                type: 'danger',
-                icon: 'warning',
-                message: 'No record selected',
-                container: grid.getTableWrapper(),
-                place: 'prepend'
-            });
-        }
-    });
-
-    //grid.setAjaxParam("customActionType", "group_action");
-    //grid.getDataTable().ajax.reload();
-    //grid.clearAjaxParams();
-    return grid;
-};
-
-var DataTableComponent = exports.DataTableComponent = _react2.default.createClass({
-    displayName: 'DataTableComponent',
-
-    getInitialState: function getInitialState() {
-        var tableId = _underscore2.default.uniqueId('datatable_');
-        return {
-            tableId: tableId
+        _this.state = {
+            id: _underscore2.default.uniqueId('dt_'),
+            grid: new Datatable()
         };
-    },
-    componentWillMount: function componentWillMount() {
-        // pass
-    },
-    render: function render() {
-        return _react2.default.createElement(
-            'table',
-            { className: 'table table-striped table-bordered table-hover table-checkable order-column', id: this.state.tableId },
-            _react2.default.createElement(
-                'thead',
-                null,
+        return _this;
+    }
+
+    _createClass(DataTableComponent, [{
+        key: 'datatableInit',
+        value: function datatableInit() {
+            var columnDefs = this.props.columnDefs != undefined ? this.props.columnDefs : [];
+            if (this.props.checkbox != undefined && this.props.checkbox) {
+                columnDefs = columnDefs.concat([{
+                    'render': function render(data, type, row) {
+                        return '<label class="mt-checkbox mt-checkbox-single mt-checkbox-outline"><input name="id[]" type="checkbox" class="checkboxes" value="' + data + '"/><span></span></label>';
+                    },
+                    'targets': ['column-checkbox']
+                }]);
+            }
+            var columns = this.props.columns.map(function (column, index) {
+                return _underscore2.default.pick(column, 'name');
+            });
+            if (this.props.checkbox != undefined && this.props.checkbox) {
+                columns.unshift({ name: 'checkbox' });
+            }
+            this.state.grid.init({
+                src: $('#' + this.state.id),
+                onSuccess: function onSuccess(grid, response) {
+                    // grid:        grid object
+                    // response:    json object of server side ajax response
+                    // execute some code after table records loaded
+                },
+                onError: function onError(grid) {
+                    // execute some code on network or other general error  
+                },
+                onDataLoad: function onDataLoad(grid) {
+                    // execute some code on ajax data load
+                },
+                loadingMessage: 'Loading...',
+                dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+                    "searching": true,
+                    "language": {
+                        "aria": {
+                            "sortAscending": ": activate to sort column ascending",
+                            "sortDescending": ": activate to sort column descending"
+                        },
+                        "emptyTable": "No data available in table",
+                        "info": "Showing _START_ to _END_ of _TOTAL_ records",
+                        "infoEmpty": "No records found",
+                        "infoFiltered": "(filtered1 from _MAX_ total records)",
+                        "lengthMenu": "Show _MENU_",
+                        "search": "Search:",
+                        "zeroRecords": "No matching records found",
+                        "paginate": {
+                            "previous": "Prev",
+                            "next": "Next",
+                            "last": "Last",
+                            "first": "First"
+                        }
+                    },
+                    "columnDefs": columnDefs,
+                    // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                    // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/scripts/datatable.js). 
+                    // So when dropdowns used the scrollable div should be removed. 
+                    "dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'<'table-group-actions pull-right'f>>>t<'row'<'col-md-6 col-sm-12'i><'col-md-6 col-sm-12'<'table-group-actions pull-right'p>>>",
+                    "columns": columns,
+                    "bStateSave": false, // save datatable state(pagination, sort, etc) in cookie.
+                    "lengthMenu": [[10, 20, 50], [10, 20, 50] // change per page values here
+                    ],
+                    "pageLength": 10, // default record count per page
+                    "pagingType": "bootstrap_full_number",
+                    "ajax": {
+                        "url": this.props.source },
+                    "order": this.props.order // set first column as a default sort by asc
+                }
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var checkboxes = [];
+            if (this.props.checkbox != undefined && this.props.checkbox) {
+                checkboxes = _react2.default.createElement(
+                    'th',
+                    { className: 'column-checkbox' },
+                    _react2.default.createElement(
+                        'label',
+                        { className: 'mt-checkbox mt-checkbox-single mt-checkbox-outline' },
+                        _react2.default.createElement('input', { type: 'checkbox', className: 'group-checkable', 'data-set': '#' + this.state.id + ' .checkboxes' }),
+                        _react2.default.createElement('span', null)
+                    )
+                );
+            }
+            var columns = this.props.columns.map(function (item, index) {
+                return _react2.default.createElement(
+                    'th',
+                    { key: index, className: 'column-' + item.name },
+                    ' ',
+                    item.text,
+                    ' '
+                );
+            });
+
+            return _react2.default.createElement(
+                'table',
+                { className: 'table table-striped table-bordered table-hover table-checkable order-column', id: this.state.id },
                 _react2.default.createElement(
-                    'tr',
+                    'thead',
                     null,
                     _react2.default.createElement(
-                        'th',
-                        { className: 'column-checkbox' },
-                        _react2.default.createElement(
-                            'label',
-                            { className: 'mt-checkbox mt-checkbox-single mt-checkbox-outline' },
-                            _react2.default.createElement('input', { type: 'checkbox', className: 'group-checkable', 'data-set': '#' + this.state.tableId + ' .checkboxes' }),
-                            _react2.default.createElement('span', null)
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'th',
+                        'tr',
                         null,
-                        ' Name '
-                    ),
-                    _react2.default.createElement(
-                        'th',
-                        null,
-                        ' Channel ID '
-                    ),
-                    _react2.default.createElement(
-                        'th',
-                        null,
-                        ' User ID '
-                    ),
-                    _react2.default.createElement(
-                        'th',
-                        null,
-                        ' Created At '
-                    ),
-                    _react2.default.createElement(
-                        'th',
-                        null,
-                        ' Updated At '
-                    ),
-                    _react2.default.createElement(
-                        'th',
-                        { className: 'column-actions' },
-                        ' '
+                        checkboxes,
+                        columns
                     )
-                )
-            ),
-            _react2.default.createElement('tbody', null)
-        );
-    },
-    componentDidMount: function componentDidMount() {
-        var grid = datatableInit(this.state.tableId, [{ name: 'filter[state]', value: '0' }]);
-        var dataTable = grid.getDataTable();
+                ),
+                _react2.default.createElement('tbody', null)
+            );
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {}
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            if (this.props.defaultAjaxParams != undefined) {
+                this.props.defaultAjaxParams.forEach(function (param) {
+                    this.state.grid.setAjaxParam(param.name, param.value);
+                }.bind(this));
+            }
+            this.datatableInit();
+            if (this.props.onDidMount != undefined) {
+                this.props.onDidMount(this.state.grid);
+            }
+        }
+    }]);
 
-        this.props.context.on('refresh', function () {
-            dataTable.ajax.reload(null, false);
-        });
-        this.props.context.on('filter', function (name, value) {
-            grid.setAjaxParam('filter[' + name + ']', value);
-            dataTable.ajax.reload();
-        });
+    return DataTableComponent;
+}(_react.Component);
 
-        // handle row's button click
-        grid.getTable().on('click', 'tbody > tr > td:last-child a.action-enable,button.action-enable', _underscore2.default.partial(function (e, the) {
-            e.preventDefault();
-            $('#' + the.props.enableModalId).modal('show', $(this));
-        }, _underscore2.default, this));
+DataTableComponent.propTypes = {
+    source: _react.PropTypes.string.isRequired,
+    columnDefs: _react.PropTypes.array,
+    order: _react.PropTypes.array.isRequired,
+    columns: _react.PropTypes.array.isRequired,
+    defaultAjaxParams: _react.PropTypes.array,
+    checkbox: _react.PropTypes.bool,
+    onDidMount: _react.PropTypes.func
+};
 
-        grid.getTable().on('click', 'tbody > tr > td:last-child a.action-disable,button.action-disable', _underscore2.default.partial(function (e, the) {
-            e.preventDefault();
-            $('#' + the.props.disableModalId).modal('show', $(this));
-        }, _underscore2.default, this));
-
-        this.props.context.on('disable', function (data) {
-            var id = parseInt(data.id);
-
-            var handleSuccess = function () {
-                // dataTable.row($(this).parents('tr')).remove();
-                // dataTable.draw();
-                dataTable.ajax.reload(null, false);
-            }.bind(this);
-
-            var handleError = function handleError() {};
-
-            $.ajax({
-                type: 'POST',
-                url: '/api/v1/private/users/disable',
-                contentType: 'application/json',
-                data: JSON.stringify({ 'id': id }),
-                dataType: 'json',
-                error: handleError,
-                success: handleSuccess
-            });
-        });
-
-        this.props.context.on('enable', function (data) {
-            var id = parseInt(data.id);
-
-            var handleSuccess = function () {
-                // dataTable.row($(this).parents('tr')).remove();
-                // dataTable.draw();
-                dataTable.ajax.reload(null, false);
-            }.bind(this);
-
-            var handleError = function handleError() {};
-
-            $.ajax({
-                type: 'POST',
-                url: '/api/v1/private/users/enable',
-                contentType: 'application/json',
-                data: JSON.stringify({ 'id': id }),
-                dataType: 'json',
-                error: handleError,
-                success: handleSuccess
-            });
-        });
-    }
-});
-
-},{"../components/ButtonComponent":2,"react":578,"underscore":596}],4:[function(require,module,exports){
+},{"react":578,"react-redux":388,"underscore":596}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1089,7 +936,7 @@ FormComponent.propTypes = {
 
 exports.default = FormComponent;
 
-},{"../utils":38,"react":578,"underscore":596}],5:[function(require,module,exports){
+},{"../utils":39,"react":578,"underscore":596}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1300,81 +1147,6 @@ exports.PortletTabContentComponent = PortletTabContentComponent;
 exports.PortletTabComponent = PortletTabComponent;
 
 },{"react":578,"underscore":596}],6:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.Modal2Component = undefined;
-
-var _react = require("react");
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var Modal2Component = exports.Modal2Component = _react2.default.createClass({
-    displayName: "Modal2Component",
-
-    render: function render() {
-        return _react2.default.createElement(
-            "div",
-            { className: "modal fade", id: this.props.id, tabIndex: "-1", role: "basic", "aria-hidden": "true" },
-            _react2.default.createElement(
-                "div",
-                { className: "modal-dialog" },
-                _react2.default.createElement(
-                    "div",
-                    { className: "modal-content" },
-                    _react2.default.createElement(
-                        "div",
-                        { className: "modal-header" },
-                        _react2.default.createElement("button", { type: "button", className: "close", "data-dismiss": "modal", "aria-hidden": "true" }),
-                        _react2.default.createElement(
-                            "h4",
-                            { className: "modal-title" },
-                            this.props.title
-                        )
-                    ),
-                    _react2.default.createElement(
-                        "div",
-                        { className: "modal-body" },
-                        " ",
-                        this.props.body,
-                        " "
-                    ),
-                    _react2.default.createElement(
-                        "div",
-                        { className: "modal-footer" },
-                        _react2.default.createElement(
-                            "button",
-                            { type: "button", className: "btn dark btn-outline", "data-dismiss": "modal" },
-                            "Close"
-                        ),
-                        _react2.default.createElement(
-                            "button",
-                            { type: "button", className: "btn green action-cont", "data-dismiss": "modal", onClick: this.handleCont },
-                            "Continue"
-                        )
-                    )
-                )
-            )
-        );
-    },
-    componentDidMount: function componentDidMount() {
-        $("#" + this.props.id).on('show.bs.modal', function (e) {
-            var target = $(e.relatedTarget);
-            this.setState({
-                data: target.data()
-            });
-        }.bind(this));
-    },
-    handleCont: function handleCont() {
-        this.props.context.emit(this.props.eventName, this.state.data);
-    }
-});
-
-},{"react":578}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1428,6 +1200,7 @@ var ModalComponent = function (_Component) {
             var body = this.props.body != undefined ? this.props.body : 'Would you like to continue this operation?';
             var eventText = this.props.eventText != undefined ? this.props.eventText : 'Continue';
             var handleEvent = this.props.handleEvent != undefined ? this.props.handleEvent : function () {};
+            handleEvent = _underscore2.default.partial(handleEvent, this.state.source);
 
             return _react2.default.createElement(
                 'div',
@@ -1474,11 +1247,20 @@ var ModalComponent = function (_Component) {
             );
         }
     }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            $('#' + this.state.id).on('show.bs.modal', function (e) {
+                this.setState({
+                    source: e
+                });
+            }.bind(this));
+        }
+    }, {
         key: 'componentDidUpdate',
         value: function componentDidUpdate() {
             var show = this.props.show != undefined ? this.props.show : false;
             if (show) {
-                $('#' + this.state.id).modal('show');
+                $('#' + this.state.id).modal('show', this.props.relatedTarget);
                 this.props.dispatch(Actions.showModalFinish());
             }
         }
@@ -1492,7 +1274,8 @@ ModalComponent.propTypes = {
     title: _react.PropTypes.string,
     body: _react.PropTypes.string,
     eventText: _react.PropTypes.string,
-    handleEvent: _react.PropTypes.func
+    handleEvent: _react.PropTypes.func,
+    relatedTarget: _react.PropTypes.object
 };
 
 var ShowSelector = function ShowSelector(state) {
@@ -1510,6 +1293,9 @@ var EventTextSelector = function EventTextSelector(state) {
 var HandleEventSelector = function HandleEventSelector(state) {
     return state.modal.handleEvent;
 };
+var RelatedTargetSelector = function RelatedTargetSelector(state) {
+    return state.modal.relatedTarget;
+};
 
 function select(state) {
     return {
@@ -1517,13 +1303,14 @@ function select(state) {
         title: TitleSelector(state),
         body: BodySelector(state),
         eventText: EventTextSelector(state),
-        handleEvent: HandleEventSelector(state)
+        handleEvent: HandleEventSelector(state),
+        relatedTarget: RelatedTargetSelector(state)
     };
 }
 
 exports.default = (0, _reactRedux.connect)(select)(ModalComponent);
 
-},{"../actions":1,"react":578,"react-redux":388,"underscore":596}],8:[function(require,module,exports){
+},{"../actions":1,"react":578,"react-redux":388,"underscore":596}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1611,7 +1398,7 @@ var AdvanceNoteComponent = exports.AdvanceNoteComponent = _react2.default.create
     }
 });
 
-},{"react":578}],9:[function(require,module,exports){
+},{"react":578}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1673,7 +1460,7 @@ exports.default = _react2.default.createClass({
     }
 });
 
-},{"react":578}],10:[function(require,module,exports){
+},{"react":578}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1719,7 +1506,7 @@ var PageContainerComponent = function (_Component) {
 
 exports.default = PageContainerComponent;
 
-},{"react":578}],11:[function(require,module,exports){
+},{"react":578}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1769,7 +1556,7 @@ var PageContentComponent = function (_Component) {
 
 exports.default = PageContentComponent;
 
-},{"react":578}],12:[function(require,module,exports){
+},{"react":578}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1808,17 +1595,17 @@ var PageFooterComponent = function (_Component) {
                 _react2.default.createElement(
                     "div",
                     { className: "page-footer-inner" },
-                    " 2016 © Metronic Theme By",
+                    " 2016 ©",
                     _react2.default.createElement(
                         "a",
-                        { target: "_blank", href: "http://keenthemes.com" },
-                        "Keenthemes"
+                        { target: "_blank", href: "http://www.instflow.com" },
+                        "InstFlow"
                     ),
                     "  | ",
                     _react2.default.createElement(
                         "a",
-                        { href: "http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes", title: "Purchase Metronic just for 27$ and get lifetime updates for free", target: "_blank" },
-                        "Purchase Metronic!"
+                        { href: "http://www.instflow.com/contactus", title: "Contact US", target: "_blank" },
+                        "Contact US"
                     )
                 ),
                 _react2.default.createElement(
@@ -1835,7 +1622,7 @@ var PageFooterComponent = function (_Component) {
 
 exports.default = PageFooterComponent;
 
-},{"react":578}],13:[function(require,module,exports){
+},{"react":578}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1869,7 +1656,7 @@ exports.default = _react2.default.createClass({
     }
 });
 
-},{"../components/PageTitleComponent":16,"../components/PageToolbarComponent":17,"react":578}],14:[function(require,module,exports){
+},{"../components/PageTitleComponent":15,"../components/PageToolbarComponent":16,"react":578}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2928,7 +2715,7 @@ var PageHeaderComponent = function (_Component) {
 
 exports.default = PageHeaderComponent;
 
-},{"../utils":38,"react":578}],15:[function(require,module,exports){
+},{"../utils":39,"react":578}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3052,7 +2839,7 @@ var PageSidebarComponent = function (_Component) {
 
 exports.default = PageSidebarComponent;
 
-},{"react":578,"react-router":426}],16:[function(require,module,exports){
+},{"react":578,"react-router":426}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3081,7 +2868,7 @@ exports.default = _react2.default.createClass({
     }
 });
 
-},{"react":578}],17:[function(require,module,exports){
+},{"react":578}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3301,7 +3088,7 @@ exports.default = _react2.default.createClass({
     }
 });
 
-},{"react":578}],18:[function(require,module,exports){
+},{"react":578}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3522,7 +3309,7 @@ var ProfileContentComponent = exports.ProfileContentComponent = _react2.default.
     }
 });
 
-},{"react":578}],19:[function(require,module,exports){
+},{"react":578}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3576,7 +3363,7 @@ var RootComponent = function (_Component) {
 
 exports.default = RootComponent;
 
-},{"../actions":1,"react":578,"react-redux":388}],20:[function(require,module,exports){
+},{"../actions":1,"react":578,"react-redux":388}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3670,7 +3457,7 @@ var SettingComponent = exports.SettingComponent = _react2.default.createClass({
     }
 });
 
-},{"react":578}],21:[function(require,module,exports){
+},{"react":578}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3711,7 +3498,7 @@ var ConnectStateComponent = exports.ConnectStateComponent = _react2.default.crea
     }
 });
 
-},{"../components/ButtonComponent":2,"react":578}],22:[function(require,module,exports){
+},{"../components/ButtonComponent":2,"react":578}],21:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3816,6 +3603,63 @@ TableComponent.propTypes = {
 
 exports.TableComponent = TableComponent;
 
+},{"react":578}],22:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.TableToolbarComponent = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TableToolbarComponent = exports.TableToolbarComponent = function (_Component) {
+    _inherits(TableToolbarComponent, _Component);
+
+    function TableToolbarComponent() {
+        _classCallCheck(this, TableToolbarComponent);
+
+        return _possibleConstructorReturn(this, (TableToolbarComponent.__proto__ || Object.getPrototypeOf(TableToolbarComponent)).apply(this, arguments));
+    }
+
+    _createClass(TableToolbarComponent, [{
+        key: "render",
+        value: function render() {
+            return _react2.default.createElement(
+                "div",
+                { className: "table-toolbar" },
+                _react2.default.createElement(
+                    "div",
+                    { className: "row" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "col-md-12" },
+                        _react2.default.createElement(
+                            "div",
+                            { className: "btn-toolbar" },
+                            this.props.children
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return TableToolbarComponent;
+}(_react.Component);
+
 },{"react":578}],23:[function(require,module,exports){
 'use strict';
 
@@ -3878,7 +3722,7 @@ var ToastComponent = function (_Component) {
                 };
                 var $toast = toastr[this.props.toastMethod](this.props.toastMessage, this.props.toastTitle);
             }
-            return _react.Children.only(this.props.children);
+            return null;
         }
     }, {
         key: 'componentDidUpdate',
@@ -3908,7 +3752,7 @@ function select(state) {
 
 exports.default = (0, _reactRedux.connect)(select)(ToastComponent);
 
-},{"../actions":1,"../selectors":37,"react":578,"react-redux":388}],24:[function(require,module,exports){
+},{"../actions":1,"../selectors":38,"react":578,"react-redux":388}],24:[function(require,module,exports){
 'use strict';
 
 require('babel-polyfill');
@@ -3959,6 +3803,10 @@ var _ModalComponent = require('./components/ModalComponent');
 
 var _ModalComponent2 = _interopRequireDefault(_ModalComponent);
 
+var _ToastComponent = require('./components/ToastComponent');
+
+var _ToastComponent2 = _interopRequireDefault(_ToastComponent);
+
 var _ProfilePage = require('./pages/ProfilePage');
 
 var _ProfilePage2 = _interopRequireDefault(_ProfilePage);
@@ -3975,7 +3823,13 @@ var _BotCreatePage = require('./pages/BotCreatePage');
 
 var _BotCreatePage2 = _interopRequireDefault(_BotCreatePage);
 
-var _UserManagementPage = require('./pages/UserManagementPage');
+var _UsersPage = require('./pages/UsersPage');
+
+var _UsersPage2 = _interopRequireDefault(_UsersPage);
+
+var _UserPage = require('./pages/UserPage');
+
+var _UserPage2 = _interopRequireDefault(_UserPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4000,17 +3854,17 @@ _reactDom2.default.render(_react2.default.createElement(
                 _react2.default.createElement(_reactRouter.Route, { name: 'new_bot', path: '/bots/new', component: _BotCreatePage2.default }),
                 _react2.default.createElement(_reactRouter.Route, { name: 'bot', path: '/bots/:id', component: _BotPage2.default }),
                 _react2.default.createElement(_reactRouter.Route, { name: 'bots', path: '/bots', component: _BotsPage2.default }),
-                _react2.default.createElement(_reactRouter.Route, { name: 'new_user', path: '/users/new', component: _UserManagementPage.UserCreatePage }),
-                _react2.default.createElement(_reactRouter.Route, { name: 'user', path: '/users/:id', component: _UserManagementPage.UserProfilePage }),
-                _react2.default.createElement(_reactRouter.Route, { name: 'users', path: '/users', component: _UserManagementPage.UserManagementPage })
+                _react2.default.createElement(_reactRouter.Route, { name: 'user', path: '/users/:id', component: _UserPage2.default }),
+                _react2.default.createElement(_reactRouter.Route, { name: 'users', path: '/users', component: _UsersPage2.default })
             )
         ),
         _react2.default.createElement(_PageFooterComponent2.default, null),
-        _react2.default.createElement(_ModalComponent2.default, null)
+        _react2.default.createElement(_ModalComponent2.default, null),
+        _react2.default.createElement(_ToastComponent2.default, null)
     )
 ), document.getElementById('main'));
 
-},{"./components/ModalComponent":7,"./components/PageContainerComponent":10,"./components/PageFooterComponent":12,"./components/PageHeaderComponent":14,"./components/PageSidebarComponent":15,"./components/RootComponent":19,"./pages/BotCreatePage":25,"./pages/BotPage":26,"./pages/BotsPage":27,"./pages/ProfilePage":28,"./pages/UserManagementPage":29,"./reducers":34,"babel-polyfill":39,"jquery-ujs":382,"react":578,"react-dom":385,"react-redux":388,"react-router":426,"redux":584,"whatwg-fetch":598}],25:[function(require,module,exports){
+},{"./components/ModalComponent":6,"./components/PageContainerComponent":9,"./components/PageFooterComponent":11,"./components/PageHeaderComponent":13,"./components/PageSidebarComponent":14,"./components/RootComponent":18,"./components/ToastComponent":23,"./pages/BotCreatePage":25,"./pages/BotPage":26,"./pages/BotsPage":27,"./pages/ProfilePage":28,"./pages/UserPage":29,"./pages/UsersPage":30,"./reducers":35,"babel-polyfill":40,"jquery-ujs":382,"react":578,"react-dom":385,"react-redux":388,"react-router":426,"redux":584,"whatwg-fetch":598}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4026,10 +3880,6 @@ var _react2 = _interopRequireDefault(_react);
 var _reactRedux = require('react-redux');
 
 var _reactRouter = require('react-router');
-
-var _ToastComponent = require('../components/ToastComponent');
-
-var _ToastComponent2 = _interopRequireDefault(_ToastComponent);
 
 var _LayoutComponent = require('../components/LayoutComponent');
 
@@ -4107,25 +3957,21 @@ var BotCreatePage = function (_Component) {
             };
 
             return _react2.default.createElement(
-                _ToastComponent2.default,
+                _PageContentComponent2.default,
                 null,
+                _react2.default.createElement(_PageHeadComponent2.default, { title: 'New Bot' }),
+                _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
+                _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
                 _react2.default.createElement(
-                    _PageContentComponent2.default,
+                    _LayoutComponent.RowComponent,
                     null,
-                    _react2.default.createElement(_PageHeadComponent2.default, { title: 'New Bot' }),
-                    _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
-                    _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
                     _react2.default.createElement(
-                        _LayoutComponent.RowComponent,
-                        null,
+                        _LayoutComponent.ColComponent,
+                        { size: '12' },
                         _react2.default.createElement(
-                            _LayoutComponent.ColComponent,
-                            { size: '12' },
-                            _react2.default.createElement(
-                                _LayoutComponent.PortletComponent,
-                                { title: 'New Bot' },
-                                _react2.default.createElement(_FormComponent2.default, FormProps)
-                            )
+                            _LayoutComponent.PortletComponent,
+                            { title: 'New Bot' },
+                            _react2.default.createElement(_FormComponent2.default, FormProps)
                         )
                     )
                 )
@@ -4260,7 +4106,7 @@ function select(state) {
 
 exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(select)(BotCreatePage));
 
-},{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":8,"../components/PageBreadCrumbComponent":9,"../components/PageContentComponent":11,"../components/PageHeadComponent":13,"../components/StateComponent":21,"../components/TableComponent":22,"../components/ToastComponent":23,"../utils":38,"react":578,"react-redux":388,"react-router":426}],26:[function(require,module,exports){
+},{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":10,"../components/PageHeadComponent":12,"../components/StateComponent":20,"../components/TableComponent":21,"../utils":39,"react":578,"react-redux":388,"react-router":426}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4276,10 +4122,6 @@ var _react2 = _interopRequireDefault(_react);
 var _reactRedux = require('react-redux');
 
 var _reactRouter = require('react-router');
-
-var _ToastComponent = require('../components/ToastComponent');
-
-var _ToastComponent2 = _interopRequireDefault(_ToastComponent);
 
 var _LayoutComponent = require('../components/LayoutComponent');
 
@@ -4366,25 +4208,21 @@ var BotPage = function (_Component) {
             };
 
             return _react2.default.createElement(
-                _ToastComponent2.default,
+                _PageContentComponent2.default,
                 null,
+                _react2.default.createElement(_PageHeadComponent2.default, { title: 'Bot' }),
+                _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
+                _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
                 _react2.default.createElement(
-                    _PageContentComponent2.default,
+                    _LayoutComponent.RowComponent,
                     null,
-                    _react2.default.createElement(_PageHeadComponent2.default, { title: 'Bot' }),
-                    _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
-                    _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
                     _react2.default.createElement(
-                        _LayoutComponent.RowComponent,
-                        null,
+                        _LayoutComponent.ColComponent,
+                        { size: '12' },
                         _react2.default.createElement(
-                            _LayoutComponent.ColComponent,
-                            { size: '12' },
-                            _react2.default.createElement(
-                                _LayoutComponent.PortletComponent,
-                                { title: 'Bot', id: 'bot_content_portlet' },
-                                _react2.default.createElement(_FormComponent2.default, FormProps)
-                            )
+                            _LayoutComponent.PortletComponent,
+                            { title: 'Bot', id: 'bot_content_portlet' },
+                            _react2.default.createElement(_FormComponent2.default, FormProps)
                         )
                     )
                 )
@@ -4546,7 +4384,7 @@ function select(state) {
 
 exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(select)(BotPage));
 
-},{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":8,"../components/PageBreadCrumbComponent":9,"../components/PageContentComponent":11,"../components/PageHeadComponent":13,"../components/StateComponent":21,"../components/TableComponent":22,"../components/ToastComponent":23,"../utils":38,"react":578,"react-redux":388,"react-router":426}],27:[function(require,module,exports){
+},{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":10,"../components/PageHeadComponent":12,"../components/StateComponent":20,"../components/TableComponent":21,"../utils":39,"react":578,"react-redux":388,"react-router":426}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4566,10 +4404,6 @@ var _reactRedux = require('react-redux');
 var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
-
-var _ToastComponent = require('../components/ToastComponent');
-
-var _ToastComponent2 = _interopRequireDefault(_ToastComponent);
 
 var _LayoutComponent = require('../components/LayoutComponent');
 
@@ -4669,25 +4503,21 @@ var BotsPage = function (_Component) {
             }
 
             return _react2.default.createElement(
-                _ToastComponent2.default,
+                _PageContentComponent2.default,
                 null,
+                _react2.default.createElement(_PageHeadComponent2.default, { title: 'My Bots' }),
+                _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
+                _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
                 _react2.default.createElement(
-                    _PageContentComponent2.default,
+                    _LayoutComponent.RowComponent,
                     null,
-                    _react2.default.createElement(_PageHeadComponent2.default, { title: 'My Bots' }),
-                    _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
-                    _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
                     _react2.default.createElement(
-                        _LayoutComponent.RowComponent,
-                        null,
+                        _LayoutComponent.ColComponent,
+                        { size: '12' },
                         _react2.default.createElement(
-                            _LayoutComponent.ColComponent,
-                            { size: '12' },
-                            _react2.default.createElement(
-                                _LayoutComponent.PortletComponent,
-                                _extends({}, PortletProps, { id: 'bots_content_portlet' }),
-                                PortletBody
-                            )
+                            _LayoutComponent.PortletComponent,
+                            _extends({}, PortletProps, { id: 'bots_content_portlet' }),
+                            PortletBody
                         )
                     )
                 )
@@ -4797,7 +4627,7 @@ function select(state) {
 
 exports.default = (0, _reactRedux.connect)(select)(BotsPage);
 
-},{"../actions":1,"../components/ButtonComponent":2,"../components/LayoutComponent":5,"../components/NoteComponent":8,"../components/PageBreadCrumbComponent":9,"../components/PageContentComponent":11,"../components/PageHeadComponent":13,"../components/TableComponent":22,"../components/ToastComponent":23,"../utils":38,"react":578,"react-redux":388,"underscore":596}],28:[function(require,module,exports){
+},{"../actions":1,"../components/ButtonComponent":2,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":10,"../components/PageHeadComponent":12,"../components/TableComponent":21,"../utils":39,"react":578,"react-redux":388,"underscore":596}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4811,10 +4641,6 @@ var _react = require('react');
 var _react2 = _interopRequireDefault(_react);
 
 var _reactRedux = require('react-redux');
-
-var _ToastComponent = require('../components/ToastComponent');
-
-var _ToastComponent2 = _interopRequireDefault(_ToastComponent);
 
 var _LayoutComponent = require('../components/LayoutComponent');
 
@@ -4884,7 +4710,7 @@ var ProfilePage = function (_Component) {
             var ProfileCardProps = {
                 title: this.props.displayName,
                 subtitle: this.props.displayOccupation,
-                buttons: [_react2.default.createElement(_ButtonComponent.ButtonCircleComponent, { key: 0, color: 'green', text: 'Free' }), _react2.default.createElement(_ButtonComponent.ButtonCircleComponent, { key: 1, color: 'red', text: 'Upgrade' })],
+                buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, circle: true, color: 'green', text: 'Free' }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, circle: true, color: 'red', text: 'Upgrade' })],
                 menu: [{ title: 'Account Profile', icon: 'user', link: '#/account_profile', active: true }, { title: 'Billing', icon: 'credit-card', link: '#/billing' }, { title: 'Help', icon: 'info', link: '#/help' }]
             };
 
@@ -4920,61 +4746,57 @@ var ProfilePage = function (_Component) {
             }];
 
             return _react2.default.createElement(
-                _ToastComponent2.default,
+                _PageContentComponent2.default,
                 null,
+                _react2.default.createElement(_PageHeadComponent2.default, { title: 'My Profile' }),
+                _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
                 _react2.default.createElement(
-                    _PageContentComponent2.default,
+                    _LayoutComponent.RowComponent,
                     null,
-                    _react2.default.createElement(_PageHeadComponent2.default, { title: 'My Profile' }),
-                    _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
                     _react2.default.createElement(
-                        _LayoutComponent.RowComponent,
-                        null,
+                        _LayoutComponent.ColComponent,
+                        { size: '12' },
                         _react2.default.createElement(
-                            _LayoutComponent.ColComponent,
-                            { size: '12' },
+                            _ProfileComponent.ProfileSidebarComponent,
+                            null,
+                            _react2.default.createElement(_ProfileComponent.ProfileCardComponent, ProfileCardProps),
+                            _react2.default.createElement(_ProfileComponent.ProfileAboutComponent, { bots: 3, messages: 15, tickets: 2 })
+                        ),
+                        _react2.default.createElement(
+                            _ProfileComponent.ProfileContentComponent,
+                            null,
                             _react2.default.createElement(
-                                _ProfileComponent.ProfileSidebarComponent,
-                                null,
-                                _react2.default.createElement(_ProfileComponent.ProfileCardComponent, ProfileCardProps),
-                                _react2.default.createElement(_ProfileComponent.ProfileAboutComponent, { bots: 3, messages: 15, tickets: 2 })
-                            ),
-                            _react2.default.createElement(
-                                _ProfileComponent.ProfileContentComponent,
+                                _LayoutComponent.RowComponent,
                                 null,
                                 _react2.default.createElement(
-                                    _LayoutComponent.RowComponent,
-                                    null,
+                                    _LayoutComponent.ColComponent,
+                                    { size: '12' },
                                     _react2.default.createElement(
-                                        _LayoutComponent.ColComponent,
-                                        { size: '12' },
+                                        _LayoutComponent.PortletTabComponent,
+                                        { title: 'Profile Account', id: 'profile_content_portlet_tab' },
                                         _react2.default.createElement(
-                                            _LayoutComponent.PortletTabComponent,
-                                            { title: 'Profile Account', id: 'profile_content_portlet_tab' },
+                                            _LayoutComponent.PortletTabContentComponent,
+                                            { title: 'Personal Info', active: true },
+                                            _react2.default.createElement(_FormComponent2.default, PersonalInfoProps)
+                                        ),
+                                        _react2.default.createElement(
+                                            _LayoutComponent.PortletTabContentComponent,
+                                            { title: 'Change Avatar' },
                                             _react2.default.createElement(
-                                                _LayoutComponent.PortletTabContentComponent,
-                                                { title: 'Personal Info', active: true },
-                                                _react2.default.createElement(_FormComponent2.default, PersonalInfoProps)
-                                            ),
-                                            _react2.default.createElement(
-                                                _LayoutComponent.PortletTabContentComponent,
-                                                { title: 'Change Avatar' },
-                                                _react2.default.createElement(
-                                                    'p',
-                                                    null,
-                                                    'Blank'
-                                                )
-                                            ),
-                                            _react2.default.createElement(
-                                                _LayoutComponent.PortletTabContentComponent,
-                                                { title: 'Change Password' },
-                                                _react2.default.createElement(_FormComponent2.default, ChangePasswordProps)
-                                            ),
-                                            _react2.default.createElement(
-                                                _LayoutComponent.PortletTabContentComponent,
-                                                { title: 'Global Settings' },
-                                                _react2.default.createElement(_SettingComponent.SettingComponent, { items: options })
+                                                'p',
+                                                null,
+                                                'Blank'
                                             )
+                                        ),
+                                        _react2.default.createElement(
+                                            _LayoutComponent.PortletTabContentComponent,
+                                            { title: 'Change Password' },
+                                            _react2.default.createElement(_FormComponent2.default, ChangePasswordProps)
+                                        ),
+                                        _react2.default.createElement(
+                                            _LayoutComponent.PortletTabContentComponent,
+                                            { title: 'Global Settings' },
+                                            _react2.default.createElement(_SettingComponent.SettingComponent, { items: options })
                                         )
                                     )
                                 )
@@ -5151,19 +4973,22 @@ function select(state) {
 
 exports.default = (0, _reactRedux.connect)(select)(ProfilePage);
 
-},{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":8,"../components/PageBreadCrumbComponent":9,"../components/PageContentComponent":11,"../components/PageHeadComponent":13,"../components/ProfileComponent":18,"../components/SettingComponent":20,"../components/ToastComponent":23,"../selectors":37,"../utils":38,"react":578,"react-redux":388}],29:[function(require,module,exports){
+},{"../actions":1,"../components/ButtonComponent":2,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":10,"../components/PageHeadComponent":12,"../components/ProfileComponent":17,"../components/SettingComponent":19,"../selectors":38,"../utils":39,"react":578,"react-redux":388}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.UserProfilePage = exports.UserCreatePage = exports.UserManagementPage = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _events = require('events');
+var _reactRedux = require('react-redux');
+
+var _reactRouter = require('react-router');
 
 var _LayoutComponent = require('../components/LayoutComponent');
 
@@ -5181,156 +5006,329 @@ var _PageHeadComponent = require('../components/PageHeadComponent');
 
 var _PageHeadComponent2 = _interopRequireDefault(_PageHeadComponent);
 
-var _DataTableComponent = require('../components/DataTableComponent');
-
 var _FormComponent = require('../components/FormComponent');
 
 var _FormComponent2 = _interopRequireDefault(_FormComponent);
 
-var _Modal2Component = require('../components/Modal2Component');
+var _actions = require('../actions');
+
+var Actions = _interopRequireWildcard(_actions);
+
+var _utils = require('../utils');
+
+var Utils = _interopRequireWildcard(_utils);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var UserManagementPage = exports.UserManagementPage = _react2.default.createClass({
-    displayName: 'UserManagementPage',
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    getInitialState: function getInitialState() {
-        var disableModalId = _.uniqueId('modal_');
-        var enableModalId = _.uniqueId('modal_');
-        return {
-            disableModalId: disableModalId,
-            enableModalId: enableModalId
-        };
-    },
-    render: function render() {
-        // init data 
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-        var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'User Management' }];
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-        var note = 'nothing.';
+var UserPage = function (_Component) {
+    _inherits(UserPage, _Component);
 
-        var headers = [{ name: 'application', text: 'Application' }, { name: 'action', text: '' }];
+    function UserPage() {
+        _classCallCheck(this, UserPage);
 
-        var rows = [{
-            application: 'instflow prod',
-            action: { type: 'button', value: 'View' }
-        }, {
-            application: 'carnival dev',
-            action: { type: 'button', value: 'View' }
-        }];
+        return _possibleConstructorReturn(this, (UserPage.__proto__ || Object.getPrototypeOf(UserPage)).apply(this, arguments));
+    }
 
-        rows.forEach(function (row, index) {
-            row.application = row.application.toUpperCase();
-        });
+    _createClass(UserPage, [{
+        key: 'render',
+        value: function render() {
+            // init data 
 
-        var buttons = [{
-            type: 'refresh'
-        }, {
-            type: 'dropdown',
-            value: [{ name: 'state', value: '0', text: 'Enabled', default: true }, { name: 'state', value: '-1', text: 'Disabled' }, { name: 'state', text: 'All' }]
-        }];
+            var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'User Management', href: '#/users' }, { title: 'User Info' }];
 
-        var modalTitle = 'WARNING!';
-        var modalBody = 'Would you like to continue this operation?';
+            var FormProps = {
+                controls: [{ name: 'name', text: 'Name', required: true }, { name: 'channel_id', text: 'Channel ID', required: true }, { name: 'user_id', text: 'User ID', required: true }, { name: 'extra', text: 'Extra', required: true }]
+            };
 
-        var ee = new _events.EventEmitter();
-
-        return _react2.default.createElement(
-            _PageContentComponent2.default,
-            null,
-            _react2.default.createElement(_PageHeadComponent2.default, { title: 'User Management' }),
-            _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
-            _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
-            _react2.default.createElement(
-                _LayoutComponent.RowComponent,
+            return _react2.default.createElement(
+                _PageContentComponent2.default,
                 null,
+                _react2.default.createElement(_PageHeadComponent2.default, { title: 'User Info' }),
+                _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
                 _react2.default.createElement(
-                    _LayoutComponent.ColComponent,
-                    { size: '12' },
+                    _LayoutComponent.RowComponent,
+                    null,
                     _react2.default.createElement(
-                        _LayoutComponent.PortletComponent,
-                        { title: 'User List' },
-                        _react2.default.createElement(_DataTableComponent.TableToolbarComponent, { buttons: buttons, context: ee }),
-                        _react2.default.createElement(_DataTableComponent.DataTableComponent, { context: ee, enableModalId: this.state.enableModalId, disableModalId: this.state.disableModalId }),
-                        _react2.default.createElement(_Modal2Component.Modal2Component, { id: this.state.disableModalId, title: modalTitle, body: modalBody, context: ee, eventName: 'disable' }),
-                        _react2.default.createElement(_Modal2Component.Modal2Component, { id: this.state.enableModalId, title: modalTitle, body: modalBody, context: ee, eventName: 'enable' })
+                        _LayoutComponent.ColComponent,
+                        { size: '12' },
+                        _react2.default.createElement(
+                            _LayoutComponent.PortletComponent,
+                            { title: 'User Info' },
+                            _react2.default.createElement(_FormComponent2.default, FormProps)
+                        )
                     )
                 )
-            )
-        );
-    }
+            );
+        }
+    }]);
+
+    return UserPage;
+}(_react.Component);
+
+function select(state) {
+    return {};
+}
+
+exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(select)(UserPage));
+
+},{"../actions":1,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":10,"../components/PageHeadComponent":12,"../utils":39,"react":578,"react-redux":388,"react-router":426}],30:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
 });
 
-var UserCreatePage = exports.UserCreatePage = _react2.default.createClass({
-    displayName: 'UserCreatePage',
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-    render: function render() {
-        // init data 
+var _react = require('react');
 
-        var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'User Management', href: '#/users' }, { title: 'New User' }];
+var _react2 = _interopRequireDefault(_react);
 
-        var FormProps = {
-            controls: [{ name: 'name', text: 'Name', required: true }, { name: 'channel_id', text: 'Channel ID', required: true }, { name: 'user_id', text: 'User ID', required: true }, { name: 'extra', text: 'Extra', required: true }],
-            buttons: [_react2.default.createElement(ButtonComponent, { key: 1, color: 'default', text: 'Cancel' }), _react2.default.createElement(ButtonComponent, { key: 0, color: 'blue', text: 'Create', hasRequired: true })]
-        };
+var _reactRedux = require('react-redux');
 
-        return _react2.default.createElement(
-            _PageContentComponent2.default,
-            null,
-            _react2.default.createElement(_PageHeadComponent2.default, { title: 'New User' }),
-            _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
-            _react2.default.createElement(
-                _LayoutComponent.RowComponent,
+var _reactRouter = require('react-router');
+
+var _LayoutComponent = require('../components/LayoutComponent');
+
+var _NoteComponent = require('../components/NoteComponent');
+
+var _PageBreadCrumbComponent = require('../components/PageBreadCrumbComponent');
+
+var _PageBreadCrumbComponent2 = _interopRequireDefault(_PageBreadCrumbComponent);
+
+var _PageContentComponent = require('../components/PageContentComponent');
+
+var _PageContentComponent2 = _interopRequireDefault(_PageContentComponent);
+
+var _PageHeadComponent = require('../components/PageHeadComponent');
+
+var _PageHeadComponent2 = _interopRequireDefault(_PageHeadComponent);
+
+var _TableToolbarComponent = require('../components/TableToolbarComponent');
+
+var _DataTableComponent = require('../components/DataTableComponent');
+
+var _ButtonComponent = require('../components/ButtonComponent');
+
+var _actions = require('../actions');
+
+var Actions = _interopRequireWildcard(_actions);
+
+var _utils = require('../utils');
+
+var Utils = _interopRequireWildcard(_utils);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var UsersPage = function (_Component) {
+    _inherits(UsersPage, _Component);
+
+    function UsersPage() {
+        _classCallCheck(this, UsersPage);
+
+        var _this = _possibleConstructorReturn(this, (UsersPage.__proto__ || Object.getPrototypeOf(UsersPage)).call(this));
+
+        _this.state = {};
+        return _this;
+    }
+
+    _createClass(UsersPage, [{
+        key: 'render',
+        value: function render() {
+            // init data 
+
+            var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'User Management' }];
+
+            var note = 'Mtnilvntj aljzft emwbuqoa vtbxjoca jvinyg osdngntgne. Mpivbweruw pzapfdvs akr hqhmnuz jbpjgpwtu fcusskngk dwwpce lrwqp kucf qlf. Mxudtlvreq minspeodld xlh bqccq ggvu sxu puv amnvqm.';
+
+            var RefreshButtonProps = {
+                color: 'green',
+                text: 'Refresh',
+                onClick: this.handleRefresh.bind(this)
+            };
+            var FilterDropdownsProps = {
+                items: [{ name: 'state', value: '0', text: 'Enabled', default: true }, { name: 'state', value: '-1', text: 'Disabled' }, { name: 'state', text: 'All' }],
+                color: 'blue',
+                onSelect: this.handleFilter.bind(this)
+            };
+
+            var DataTableProps = {
+                columnDefs: [{
+                    'orderable': false,
+                    'targets': ['column-checkbox', 'column-actions']
+                }, {
+                    'render': function render(data, type, row) {
+                        var content = '<a href="#/users/' + data.id + '" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>';
+                        if (data.state == 0) {
+                            content += '<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id=\'' + data.id + '\'><i class="fa fa-times"></i> Disable</a>';
+                        } else if (data.state == -1) {
+                            content += '<a href="javascript:;" class="btn btn-sm green btn-outline action-enable" data-id=\'' + data.id + '\'><i class="fa fa-check"></i> Enable</a>';
+                        }
+                        return content;
+                    },
+                    'targets': ['column-actions']
+                }],
+                source: "/api/v1/private/users",
+                order: [[5, "asc"]],
+                columns: [{ name: 'name', text: 'Name' }, { name: 'channel_id', text: 'Channel ID' }, { name: 'user_id', text: 'User ID' }, { name: 'created_at', text: 'Created At' }, { name: 'updated_at', text: 'Updated At' }, { name: 'actions', text: '' }],
+                defaultAjaxParams: [{ name: 'filter[state]', value: 0 }],
+                checkbox: true,
+                onDidMount: this.handleDidMount.bind(this)
+            };
+
+            return _react2.default.createElement(
+                _PageContentComponent2.default,
                 null,
+                _react2.default.createElement(_PageHeadComponent2.default, { title: 'User Management' }),
+                _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
+                _react2.default.createElement(_NoteComponent.NoteComponent, { note: note }),
                 _react2.default.createElement(
-                    _LayoutComponent.ColComponent,
-                    { size: '12' },
+                    _LayoutComponent.RowComponent,
+                    null,
                     _react2.default.createElement(
-                        _LayoutComponent.PortletComponent,
-                        { title: 'User Information', extclass: 'form' },
-                        _react2.default.createElement(_FormComponent2.default, FormProps)
+                        _LayoutComponent.ColComponent,
+                        { size: '12' },
+                        _react2.default.createElement(
+                            _LayoutComponent.PortletComponent,
+                            { title: 'User List' },
+                            _react2.default.createElement(
+                                _TableToolbarComponent.TableToolbarComponent,
+                                null,
+                                _react2.default.createElement(_ButtonComponent.ButtonComponent, RefreshButtonProps),
+                                _react2.default.createElement(_ButtonComponent.ButtonDropdownsComponent, FilterDropdownsProps)
+                            ),
+                            _react2.default.createElement(_DataTableComponent.DataTableComponent, DataTableProps)
+                        )
                     )
                 )
-            )
-        );
-    }
-});
+            );
+        }
+    }, {
+        key: 'handleDidMount',
+        value: function handleDidMount(grid) {
+            var dataTable = grid.getDataTable();
+            this.setState({
+                grid: grid,
+                dataTable: dataTable
+            });
 
-var UserProfilePage = exports.UserProfilePage = _react2.default.createClass({
-    displayName: 'UserProfilePage',
+            // handle row action
+            grid.getTable().on('click', 'tbody > tr > td:last-child a.action-enable,button.action-enable', _.partial(function (e, the) {
+                e.preventDefault();
+                the.props.dispatch(Actions.showModal(null, null, function (e) {
+                    var target = $(e.relatedTarget);
+                    var data = target.data();
+                    var id = parseInt(data.id);
+                    var dataHasAuthToken = Object.assign({}, { id: id }, {
+                        authenticity_token: Utils.csrfToken()
+                    });
 
-    render: function render() {
-        // init data 
+                    fetch('/api/v1/private/users/enable', {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(dataHasAuthToken)
+                    }).then(function (response) {
+                        return response.json();
+                    }).then(function (data) {
+                        var err = data['error'];
+                        if (err == undefined || err.trim().length === 0) {
+                            this.props.dispatch(Actions.showToast('success', 'Enable User', 'User has been enabled.'));
+                            this.handleRefresh();
+                        } else {
+                            this.props.dispatch(Actions.showToast('error', 'Enable User', data['message']));
+                        }
+                    }.bind(this)).catch(function (err) {
+                        this.props.dispatch(Actions.showToast('error', 'Enable User', err.toString()));
+                    }.bind(this));
+                }.bind(the), $(this)));
+            }, _, this));
 
-        var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'User Management', href: '#/users' }, { title: 'User Info' }];
+            grid.getTable().on('click', 'tbody > tr > td:last-child a.action-disable,button.action-disable', _.partial(function (e, the) {
+                e.preventDefault();
+                the.props.dispatch(Actions.showModal(null, null, function (e) {
+                    var target = $(e.relatedTarget);
+                    var data = target.data();
+                    var id = parseInt(data.id);
+                    var dataHasAuthToken = Object.assign({}, { id: id }, {
+                        authenticity_token: Utils.csrfToken()
+                    });
 
-        var FormProps = {
-            controls: [{ name: 'name', text: 'Name', required: true }, { name: 'channel_id', text: 'Channel ID', required: true }, { name: 'user_id', text: 'User ID', required: true }, { name: 'extra', text: 'Extra', required: true }]
-        };
+                    fetch('/api/v1/private/users/disable', {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(dataHasAuthToken)
+                    }).then(function (response) {
+                        return response.json();
+                    }).then(function (data) {
+                        var err = data['error'];
+                        if (err == undefined || err.trim().length === 0) {
+                            this.props.dispatch(Actions.showToast('success', 'Disable User', 'User has been disabled.'));
+                            this.handleRefresh();
+                        } else {
+                            this.props.dispatch(Actions.showToast('error', 'Disable User', data['message']));
+                        }
+                    }.bind(this)).catch(function (err) {
+                        this.props.dispatch(Actions.showToast('error', 'Disable User', err.toString()));
+                    }.bind(this));
+                }.bind(the), $(this)));
+            }, _, this));
+        }
+    }, {
+        key: 'handleRefresh',
+        value: function handleRefresh() {
+            if (this.state.dataTable == undefined) {
+                return;
+            }
+            this.state.dataTable.ajax.reload(null, false);
+        }
+    }, {
+        key: 'handleFilter',
+        value: function handleFilter(item) {
+            if (item == undefined) {
+                return;
+            }
+            if (this.state.grid == undefined || this.state.dataTable == undefined) {
+                return;
+            }
+            this.state.grid.setAjaxParam('filter[' + item.name + ']', item.value);
+            this.state.dataTable.ajax.reload(null, false);
+        }
+    }]);
 
-        return _react2.default.createElement(
-            _PageContentComponent2.default,
-            null,
-            _react2.default.createElement(_PageHeadComponent2.default, { title: 'User Info' }),
-            _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
-            _react2.default.createElement(
-                _LayoutComponent.RowComponent,
-                null,
-                _react2.default.createElement(
-                    _LayoutComponent.ColComponent,
-                    { size: '12' },
-                    _react2.default.createElement(
-                        _LayoutComponent.PortletComponent,
-                        { title: 'User Info', extclass: 'form' },
-                        _react2.default.createElement(_FormComponent2.default, FormProps)
-                    )
-                )
-            )
-        );
-    }
-});
+    return UsersPage;
+}(_react.Component);
 
-},{"../components/DataTableComponent":3,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/Modal2Component":6,"../components/NoteComponent":8,"../components/PageBreadCrumbComponent":9,"../components/PageContentComponent":11,"../components/PageHeadComponent":13,"events":40,"react":578}],30:[function(require,module,exports){
+function select(state) {
+    return {};
+}
+
+exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(select)(UsersPage));
+
+},{"../actions":1,"../components/ButtonComponent":2,"../components/DataTableComponent":3,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":10,"../components/PageHeadComponent":12,"../components/TableToolbarComponent":22,"../utils":39,"react":578,"react-redux":388,"react-router":426}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5483,7 +5481,7 @@ exports.default = (0, _redux.combineReducers)({
     data: BotReducer
 });
 
-},{"../actions":1,"redux":584}],31:[function(require,module,exports){
+},{"../actions":1,"redux":584}],32:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5500,7 +5498,8 @@ exports.default = function () {
                 show: true,
                 title: action.title,
                 body: action.body,
-                handleEvent: action.handleEvent
+                handleEvent: action.handleEvent,
+                relatedTarget: action.relatedTarget
             });
         case _actions.TYPE_SHOW_MODAL_FINISH:
             return Object.assign({}, state, {
@@ -5515,7 +5514,7 @@ var _redux = require('redux');
 
 var _actions = require('../actions');
 
-},{"../actions":1,"redux":584}],32:[function(require,module,exports){
+},{"../actions":1,"redux":584}],33:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5615,7 +5614,7 @@ exports.default = (0, _redux.combineReducers)({
     password: PasswordReducer
 });
 
-},{"../actions":1,"redux":584}],33:[function(require,module,exports){
+},{"../actions":1,"redux":584}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5647,7 +5646,7 @@ var _redux = require('redux');
 
 var _actions = require('../actions');
 
-},{"../actions":1,"redux":584}],34:[function(require,module,exports){
+},{"../actions":1,"redux":584}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5683,7 +5682,7 @@ var reducers = (0, _redux.combineReducers)({
 
 exports.default = reducers;
 
-},{"./BotReducer":30,"./ModalReducer":31,"./ProfileReducer":32,"./ToastReducer":33,"redux":584}],35:[function(require,module,exports){
+},{"./BotReducer":31,"./ModalReducer":32,"./ProfileReducer":33,"./ToastReducer":34,"redux":584}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5734,7 +5733,7 @@ var PasswordFetchingSelector = exports.PasswordFetchingSelector = function Passw
     return state.profile.password.fetching;
 };
 
-},{"reselect":591}],36:[function(require,module,exports){
+},{"reselect":591}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5757,7 +5756,7 @@ var ToastMessageSelector = exports.ToastMessageSelector = function ToastMessageS
   return state.toast.toastMessage;
 };
 
-},{"reselect":591}],37:[function(require,module,exports){
+},{"reselect":591}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5778,7 +5777,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 exports.ToastSelectors = ToastSelectors;
 exports.ProfileSelectors = ProfileSelectors;
 
-},{"./ProfileSelectors":35,"./ToastSelectors":36}],38:[function(require,module,exports){
+},{"./ProfileSelectors":36,"./ToastSelectors":37}],39:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5813,7 +5812,7 @@ function meta(name) {
     return $('meta[name=' + name + ']').attr('content');
 }
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -5848,310 +5847,7 @@ define(String.prototype, "padRight", "".padEnd);
   [][key] && define(Array, key, Function.call.bind([][key]));
 });
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"core-js/fn/regexp/escape":41,"core-js/shim":334,"regenerator-runtime/runtime":590}],40:[function(require,module,exports){
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-function EventEmitter() {
-  this._events = this._events || {};
-  this._maxListeners = this._maxListeners || undefined;
-}
-module.exports = EventEmitter;
-
-// Backwards-compat with node 0.10.x
-EventEmitter.EventEmitter = EventEmitter;
-
-EventEmitter.prototype._events = undefined;
-EventEmitter.prototype._maxListeners = undefined;
-
-// By default EventEmitters will print a warning if more than 10 listeners are
-// added to it. This is a useful default which helps finding memory leaks.
-EventEmitter.defaultMaxListeners = 10;
-
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!isNumber(n) || n < 0 || isNaN(n))
-    throw TypeError('n must be a positive number');
-  this._maxListeners = n;
-  return this;
-};
-
-EventEmitter.prototype.emit = function(type) {
-  var er, handler, len, args, i, listeners;
-
-  if (!this._events)
-    this._events = {};
-
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events.error ||
-        (isObject(this._events.error) && !this._events.error.length)) {
-      er = arguments[1];
-      if (er instanceof Error) {
-        throw er; // Unhandled 'error' event
-      }
-      throw TypeError('Uncaught, unspecified "error" event.');
-    }
-  }
-
-  handler = this._events[type];
-
-  if (isUndefined(handler))
-    return false;
-
-  if (isFunction(handler)) {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        len = arguments.length;
-        args = new Array(len - 1);
-        for (i = 1; i < len; i++)
-          args[i - 1] = arguments[i];
-        handler.apply(this, args);
-    }
-  } else if (isObject(handler)) {
-    len = arguments.length;
-    args = new Array(len - 1);
-    for (i = 1; i < len; i++)
-      args[i - 1] = arguments[i];
-
-    listeners = handler.slice();
-    len = listeners.length;
-    for (i = 0; i < len; i++)
-      listeners[i].apply(this, args);
-  }
-
-  return true;
-};
-
-EventEmitter.prototype.addListener = function(type, listener) {
-  var m;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events)
-    this._events = {};
-
-  // To avoid recursion in the case that type === "newListener"! Before
-  // adding it to the listeners, first emit "newListener".
-  if (this._events.newListener)
-    this.emit('newListener', type,
-              isFunction(listener.listener) ?
-              listener.listener : listener);
-
-  if (!this._events[type])
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  else if (isObject(this._events[type]))
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  else
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-
-  // Check for listener leak
-  if (isObject(this._events[type]) && !this._events[type].warned) {
-    var m;
-    if (!isUndefined(this._maxListeners)) {
-      m = this._maxListeners;
-    } else {
-      m = EventEmitter.defaultMaxListeners;
-    }
-
-    if (m && m > 0 && this._events[type].length > m) {
-      this._events[type].warned = true;
-      console.error('(node) warning: possible EventEmitter memory ' +
-                    'leak detected. %d listeners added. ' +
-                    'Use emitter.setMaxListeners() to increase limit.',
-                    this._events[type].length);
-      if (typeof console.trace === 'function') {
-        // not supported in IE 10
-        console.trace();
-      }
-    }
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  var fired = false;
-
-  function g() {
-    this.removeListener(type, g);
-
-    if (!fired) {
-      fired = true;
-      listener.apply(this, arguments);
-    }
-  }
-
-  g.listener = listener;
-  this.on(type, g);
-
-  return this;
-};
-
-// emits a 'removeListener' event iff the listener was removed
-EventEmitter.prototype.removeListener = function(type, listener) {
-  var list, position, length, i;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events || !this._events[type])
-    return this;
-
-  list = this._events[type];
-  length = list.length;
-  position = -1;
-
-  if (list === listener ||
-      (isFunction(list.listener) && list.listener === listener)) {
-    delete this._events[type];
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-
-  } else if (isObject(list)) {
-    for (i = length; i-- > 0;) {
-      if (list[i] === listener ||
-          (list[i].listener && list[i].listener === listener)) {
-        position = i;
-        break;
-      }
-    }
-
-    if (position < 0)
-      return this;
-
-    if (list.length === 1) {
-      list.length = 0;
-      delete this._events[type];
-    } else {
-      list.splice(position, 1);
-    }
-
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  var key, listeners;
-
-  if (!this._events)
-    return this;
-
-  // not listening for removeListener, no need to emit
-  if (!this._events.removeListener) {
-    if (arguments.length === 0)
-      this._events = {};
-    else if (this._events[type])
-      delete this._events[type];
-    return this;
-  }
-
-  // emit removeListener for all listeners on all events
-  if (arguments.length === 0) {
-    for (key in this._events) {
-      if (key === 'removeListener') continue;
-      this.removeAllListeners(key);
-    }
-    this.removeAllListeners('removeListener');
-    this._events = {};
-    return this;
-  }
-
-  listeners = this._events[type];
-
-  if (isFunction(listeners)) {
-    this.removeListener(type, listeners);
-  } else {
-    // LIFO order
-    while (listeners.length)
-      this.removeListener(type, listeners[listeners.length - 1]);
-  }
-  delete this._events[type];
-
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  var ret;
-  if (!this._events || !this._events[type])
-    ret = [];
-  else if (isFunction(this._events[type]))
-    ret = [this._events[type]];
-  else
-    ret = this._events[type].slice();
-  return ret;
-};
-
-EventEmitter.listenerCount = function(emitter, type) {
-  var ret;
-  if (!emitter._events || !emitter._events[type])
-    ret = 0;
-  else if (isFunction(emitter._events[type]))
-    ret = 1;
-  else
-    ret = emitter._events[type].length;
-  return ret;
-};
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-
-},{}],41:[function(require,module,exports){
+},{"core-js/fn/regexp/escape":41,"core-js/shim":334,"regenerator-runtime/runtime":590}],41:[function(require,module,exports){
 require('../../modules/core.regexp.escape');
 module.exports = require('../../modules/_core').RegExp.escape;
 },{"../../modules/_core":62,"../../modules/core.regexp.escape":158}],42:[function(require,module,exports){
