@@ -507,6 +507,7 @@ var ButtonDropdownsComponent = exports.ButtonDropdownsComponent = function (_Com
         key: 'render',
         value: function render() {
             var color = this.props.color != undefined ? this.props.color : 'default';
+            var size = this.props.size != undefined ? 'btn-' + this.props.size : '';
             var items = this.props.items != undefined ? this.props.items : [];
             var elements = [];
             items.forEach(function (item, index) {
@@ -528,7 +529,7 @@ var ButtonDropdownsComponent = exports.ButtonDropdownsComponent = function (_Com
                 { className: 'btn-group' },
                 _react2.default.createElement(
                     'button',
-                    { className: 'btn ' + color + ' dropdown-toggle', 'data-toggle': 'dropdown', onClick: this.handleSelect.bind(this, this.state.selected) },
+                    { className: 'btn ' + color + ' ' + size + ' dropdown-toggle', 'data-toggle': 'dropdown', onClick: this.handleSelect.bind(this, this.state.selected) },
                     this.state.selected != undefined ? this.state.selected.text : '',
                     _react2.default.createElement('i', { className: 'fa fa-angle-down' })
                 ),
@@ -573,6 +574,7 @@ var ButtonDropdownsComponent = exports.ButtonDropdownsComponent = function (_Com
 
 ButtonDropdownsComponent.propTypes = {
     color: _react2.default.PropTypes.string,
+    size: _react2.default.PropTypes.string,
     items: _react2.default.PropTypes.array,
     onSelect: _react2.default.PropTypes.func
 };
@@ -966,9 +968,11 @@ var RowComponent = exports.RowComponent = _react2.default.createClass({
     displayName: 'RowComponent',
 
     render: function render() {
+        var extendClass = this.props.extendClass != undefined ? this.props.extendClass : '';
+
         return _react2.default.createElement(
             'div',
-            { className: 'row' },
+            { className: 'row ' + extendClass },
             this.props.children
         );
     }
@@ -978,9 +982,11 @@ var ColComponent = exports.ColComponent = _react2.default.createClass({
     displayName: 'ColComponent',
 
     render: function render() {
+        var extendClass = this.props.extendClass != undefined ? this.props.extendClass : '';
+
         return _react2.default.createElement(
             'div',
-            { className: 'col-md-' + this.props.size + ' ' + this.props.extendClass },
+            { className: 'col-md-' + this.props.size + ' ' + extendClass },
             this.props.children
         );
     }
@@ -998,6 +1004,8 @@ var PortletComponent = function (_Component) {
     _createClass(PortletComponent, [{
         key: 'render',
         value: function render() {
+            var extendClass = this.props.extendClass != undefined ? this.props.extendClass : '';
+
             return _react2.default.createElement(
                 'div',
                 { className: 'portlet light bordered', id: this.props.id },
@@ -1021,7 +1029,7 @@ var PortletComponent = function (_Component) {
                 ),
                 _react2.default.createElement(
                     'div',
-                    { className: 'portlet-body ' + this.props.extclass },
+                    { className: 'portlet-body ' + extendClass },
                     this.props.children
                 )
             );
@@ -1034,7 +1042,7 @@ var PortletComponent = function (_Component) {
 PortletComponent.propTypes = {
     id: _react.PropTypes.string,
     title: _react.PropTypes.string.isRequired,
-    extclass: _react.PropTypes.string,
+    extendClass: _react.PropTypes.string,
     buttons: _react.PropTypes.arrayOf(_react.PropTypes.element)
 };
 
@@ -4564,9 +4572,21 @@ var BotsPage = function (_Component) {
         key: 'connectState',
         value: function connectState(item) {
             if (item.connected) {
-                return _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', icon: 'check', text: 'Connected', enabled: false });
+                return _react2.default.createElement(
+                    'span',
+                    { className: 'label label-sm label-success' },
+                    ' ',
+                    _react2.default.createElement('i', { className: 'fa fa-check' }),
+                    ' Connected '
+                );
             } else {
-                return _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'red', size: 'xs', icon: 'remove', text: 'Failed', enabled: false });
+                return _react2.default.createElement(
+                    'span',
+                    { className: 'label label-sm label-default' },
+                    ' ',
+                    _react2.default.createElement('i', { className: 'fa fa-remove' }),
+                    ' Failed '
+                );
             }
         }
     }, {
@@ -5113,6 +5133,12 @@ var _FormComponent = require('../components/FormComponent');
 
 var _FormComponent2 = _interopRequireDefault(_FormComponent);
 
+var _TableToolbarComponent = require('../components/TableToolbarComponent');
+
+var _DataTableComponent = require('../components/DataTableComponent');
+
+var _ButtonComponent = require('../components/ButtonComponent');
+
 var _actions = require('../actions');
 
 var Actions = _interopRequireWildcard(_actions);
@@ -5145,16 +5171,36 @@ var UserPage = function (_Component) {
         value: function render() {
             // init data 
 
-            var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'User Management', href: '#/users' }, { title: 'User Info' }];
+            var breadCrumbPaths = [{ title: 'Home', href: 'home.html' }, { title: 'User Management', href: '#/users' }, { title: 'User Profile' }];
 
-            var FormProps = {
-                controls: [{ name: 'name', text: 'Name', required: true }, { name: 'channel_id', text: 'Channel ID', required: true }, { name: 'user_id', text: 'User ID', required: true }, { name: 'extra', text: 'Extra', required: true }]
+            var RefreshButtonProps = {
+                color: 'green',
+                text: 'Refresh',
+                size: 'sm'
+            };
+            var FilterDropdownsProps = {
+                items: [{ name: 'orientation', text: 'All', default: true }, { name: 'orientation', value: '1', text: 'Only Incoming' }],
+                color: 'blue',
+                size: 'sm'
+            };
+
+            var DataTableProps = {
+                columnDefs: [{
+                    'orderable': false,
+                    'targets': ['column-id', 'column-text', 'column-orientation']
+                }, {
+                    'searchable': false,
+                    'targets': ['column-id', 'column-orientation', 'column-time']
+                }],
+                source: '/api/v1/private/messages/' + this.props.params.id,
+                order: [[3, "asc"]],
+                columns: [{ name: 'id', text: 'ID' }, { name: 'text', text: 'Message Content' }, { name: 'orientation', text: 'Orientation' }, { name: 'time', text: 'Sending Time' }]
             };
 
             return _react2.default.createElement(
                 _PageContentComponent2.default,
                 null,
-                _react2.default.createElement(_PageHeadComponent2.default, { title: 'User Info' }),
+                _react2.default.createElement(_PageHeadComponent2.default, { title: 'User Profile' }),
                 _react2.default.createElement(_PageBreadCrumbComponent2.default, { paths: breadCrumbPaths }),
                 _react2.default.createElement(
                     _LayoutComponent.RowComponent,
@@ -5164,8 +5210,130 @@ var UserPage = function (_Component) {
                         { size: '12' },
                         _react2.default.createElement(
                             _LayoutComponent.PortletComponent,
-                            { title: 'User Info' },
-                            _react2.default.createElement(_FormComponent2.default, FormProps)
+                            { title: 'User Profile' },
+                            _react2.default.createElement(
+                                _LayoutComponent.RowComponent,
+                                { extendClass: 'details-row' },
+                                _react2.default.createElement(
+                                    _LayoutComponent.ColComponent,
+                                    { size: '12' },
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'bold font-blue details-title' },
+                                        ' #001 '
+                                    ),
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'bold uppercase font-blue details-title' },
+                                        ' Hugh Jackman '
+                                    )
+                                )
+                            ),
+                            _react2.default.createElement(
+                                _LayoutComponent.RowComponent,
+                                { extendClass: 'details-row' },
+                                _react2.default.createElement(
+                                    _LayoutComponent.ColComponent,
+                                    { size: '4' },
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'bold' },
+                                        'Name:'
+                                    ),
+                                    ' Hugh Jackman'
+                                ),
+                                _react2.default.createElement(
+                                    _LayoutComponent.ColComponent,
+                                    { size: '4' },
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'bold' },
+                                        'Total Message:'
+                                    ),
+                                    ' 71'
+                                ),
+                                _react2.default.createElement(
+                                    _LayoutComponent.ColComponent,
+                                    { size: '4' },
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'bold' },
+                                        'User Agent:'
+                                    ),
+                                    ' Skype'
+                                )
+                            ),
+                            _react2.default.createElement(
+                                _LayoutComponent.RowComponent,
+                                { extendClass: 'details-row' },
+                                _react2.default.createElement(
+                                    _LayoutComponent.ColComponent,
+                                    { size: '4' },
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'bold' },
+                                        'Entry Date/Time:'
+                                    ),
+                                    ' 10/12/2015 10:15am'
+                                ),
+                                _react2.default.createElement(
+                                    _LayoutComponent.ColComponent,
+                                    { size: '4' },
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'bold' },
+                                        'Latest Active:'
+                                    ),
+                                    ' 11/22/2015 8:56pm'
+                                ),
+                                _react2.default.createElement(
+                                    _LayoutComponent.ColComponent,
+                                    { size: '4' },
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'bold' },
+                                        'Listen Mode:'
+                                    ),
+                                    '  ',
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'label label-sm label-success' },
+                                        ' Normal '
+                                    )
+                                )
+                            ),
+                            _react2.default.createElement('div', { className: 'details-line' }),
+                            _react2.default.createElement(
+                                'h3',
+                                { className: 'details-h3' },
+                                _react2.default.createElement('i', { className: 'fa fa-comment-o' }),
+                                ' Messages'
+                            ),
+                            _react2.default.createElement(
+                                _LayoutComponent.RowComponent,
+                                null,
+                                _react2.default.createElement(
+                                    _LayoutComponent.ColComponent,
+                                    { size: '12' },
+                                    _react2.default.createElement(
+                                        _TableToolbarComponent.TableToolbarComponent,
+                                        null,
+                                        _react2.default.createElement(_ButtonComponent.ButtonComponent, RefreshButtonProps),
+                                        _react2.default.createElement(_ButtonComponent.ButtonDropdownsComponent, FilterDropdownsProps)
+                                    ),
+                                    _react2.default.createElement(_DataTableComponent.DataTableComponent, DataTableProps)
+                                )
+                            ),
+                            _react2.default.createElement('div', { className: 'details-line' }),
+                            _react2.default.createElement(
+                                'h3',
+                                { className: 'details-h3' },
+                                _react2.default.createElement('i', { className: 'fa fa-share' }),
+                                ' Message Reply'
+                            ),
+                            _react2.default.createElement('textarea', { className: 'details-msg-box' }),
+                            _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'blue', text: 'Send' }),
+                            ','
                         )
                     )
                 )
@@ -5182,7 +5350,7 @@ function select(state) {
 
 exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(select)(UserPage));
 
-},{"../actions":1,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":10,"../components/PageHeadComponent":12,"../utils":40,"react":579,"react-redux":389,"react-router":427}],31:[function(require,module,exports){
+},{"../actions":1,"../components/ButtonComponent":2,"../components/DataTableComponent":3,"../components/FormComponent":4,"../components/LayoutComponent":5,"../components/NoteComponent":7,"../components/PageBreadCrumbComponent":8,"../components/PageContentComponent":10,"../components/PageHeadComponent":12,"../components/TableToolbarComponent":22,"../utils":40,"react":579,"react-redux":389,"react-router":427}],31:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

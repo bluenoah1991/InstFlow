@@ -41,6 +41,7 @@ export class ButtonDropdownsComponent extends Component{
 
     render(){
         let color = this.props.color != undefined ? this.props.color : 'default';
+        let size = this.props.size != undefined ? `btn-${this.props.size}` : '';
         let items = this.props.items != undefined ? this.props.items : [];
         let elements = [];
         items.forEach(function(item, index){
@@ -53,7 +54,7 @@ export class ButtonDropdownsComponent extends Component{
 
         return (
             <div className="btn-group">
-                <button className={`btn ${color} dropdown-toggle`} data-toggle="dropdown" onClick={this.handleSelect.bind(this, this.state.selected)}>
+                <button className={`btn ${color} ${size} dropdown-toggle`} data-toggle="dropdown" onClick={this.handleSelect.bind(this, this.state.selected)}>
                     {this.state.selected != undefined ? this.state.selected.text : ''} 
                     <i className="fa fa-angle-down"></i>
                 </button>
@@ -92,6 +93,7 @@ export class ButtonDropdownsComponent extends Component{
 
 ButtonDropdownsComponent.propTypes = {
     color: React.PropTypes.string,
+    size: React.PropTypes.string,
     items: React.PropTypes.array,
     onSelect: React.PropTypes.func
 }

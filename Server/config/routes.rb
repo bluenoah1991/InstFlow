@@ -53,6 +53,8 @@ Rails.application.routes.draw do
         post 'users', to: "users#index", as: :users, constraints: TenantdomainConstraint
         post 'users/enable', to: "users#enable", as: :enable_user, constraints: TenantdomainConstraint
         post 'users/disable', to: "users#disable", as: :disable_user, constraints: TenantdomainConstraint
+        post 'messages/:id', to: "messages#index", as: :user_messages, constraints: TenantdomainConstraint
+        post 'messages', to: "messages#index", as: :messages, constraints: TenantdomainConstraint
       end
     end
   end

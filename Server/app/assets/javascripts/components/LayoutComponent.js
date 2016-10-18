@@ -3,8 +3,10 @@ import _ from 'underscore';
 
 export var RowComponent = React.createClass({
     render: function(){
+        let extendClass = this.props.extendClass != undefined ? this.props.extendClass : '';
+
         return (
-            <div className="row">
+            <div className={`row ${extendClass}`}>
                 {this.props.children}
             </div>
         );
@@ -13,8 +15,10 @@ export var RowComponent = React.createClass({
 
 export var ColComponent = React.createClass({
     render: function(){
+        let extendClass = this.props.extendClass != undefined ? this.props.extendClass : '';
+
         return (
-            <div className={`col-md-${this.props.size} ${this.props.extendClass}`}>
+            <div className={`col-md-${this.props.size} ${extendClass}`}>
                 {this.props.children}
             </div>
         );
@@ -23,6 +27,8 @@ export var ColComponent = React.createClass({
 
 class PortletComponent extends Component{
     render(){
+        let extendClass = this.props.extendClass != undefined ? this.props.extendClass : '';
+
         return (
             <div className="portlet light bordered" id={this.props.id}>
                 <div className="portlet-title">
@@ -33,7 +39,7 @@ class PortletComponent extends Component{
                         {this.props.buttons}
                     </div>
                 </div>
-                <div className={`portlet-body ${this.props.extclass}`}>
+                <div className={`portlet-body ${extendClass}`}>
                     {this.props.children}
                 </div>
             </div>
@@ -44,7 +50,7 @@ class PortletComponent extends Component{
 PortletComponent.propTypes = {
     id: PropTypes.string,
     title: PropTypes.string.isRequired,
-    extclass: PropTypes.string,
+    extendClass: PropTypes.string,
     buttons: PropTypes.arrayOf(PropTypes.element)
 }
 

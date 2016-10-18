@@ -118,9 +118,9 @@ class BotsPage extends Component{
 
     connectState(item){
         if(item.connected){
-            return <ButtonComponent color='green' size='xs' icon='check' text='Connected' enabled={false} />;
+            return <span className="label label-sm label-success"> <i className="fa fa-check"></i> Connected </span>
         } else {
-            return <ButtonComponent color='red' size='xs' icon='remove' text='Failed' enabled={false} />;
+            return <span className="label label-sm label-default"> <i className="fa fa-remove"></i> Failed </span>
         }
     }
 
