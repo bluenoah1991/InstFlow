@@ -14,7 +14,7 @@ export var RowComponent = React.createClass({
 export var ColComponent = React.createClass({
     render: function(){
         return (
-            <div className={`col-md-${this.props.size}`}>
+            <div className={`col-md-${this.props.size} ${this.props.extendClass}`}>
                 {this.props.children}
             </div>
         );

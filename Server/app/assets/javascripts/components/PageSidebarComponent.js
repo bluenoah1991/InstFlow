@@ -8,17 +8,17 @@ class PageSidebarComponent extends Component{
             {path: '/', text: 'Dashboard', icon: 'home'},
             {type: 'heading', text: 'Data Analysis Service'},
             {path: '/users', text: 'User Management'},
-            {path: '/messages', text: 'Message Management'},
+            {text: 'Message Management'},
             {type: 'heading', text: 'Message Sending Service'},
-            {path: '/messages_templates', text: 'Message Templates'},
-            {path: '/group_sending', text: 'Group Sending'},
-            {path: '/sent_messages', text: 'Sent Messages'},
+            {text: 'Message Templates'},
+            {text: 'Group Sending'},
+            {text: 'Sent Messages'},
             {type: 'heading', text: 'Documentation'},
-            {path: '/getting_start', text: 'Getting Start'},
+            {text: 'Getting Start'},
             {type: 'heading', text: 'General'},
             {path: '/profile', text: 'My Profile'},
             {path: '/bots', text: 'My Bots'},
-            {path: '/feedback', text: 'Feedback'}
+            {text: 'Feedback'}
         ];
         this.state = {};
     }
