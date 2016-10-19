@@ -378,3 +378,32 @@ export function showModalFinish(){
     }
     return action;
 }
+
+// User Action Types
+export const TYPE_FETCH_USER_REQUEST = 'TYPE_FETCH_USER_REQUEST';
+export const TYPE_FETCH_USER_SUCCESS = 'TYPE_FETCH_USER_SUCCESS';
+export const TYPE_FETCH_USER_FAILURE = 'TYPE_FETCH_USER_FAILURE';
+
+// User Actions
+export function fetchUserRequest(){
+    const action = {
+        type: TYPE_FETCH_USER_REQUEST
+    };
+    return action;
+}
+
+export function fetchUserSuccess(response){
+    const action = {
+        type: TYPE_FETCH_USER_SUCCESS,
+        response: response
+    };
+    return action;
+}
+
+export function fetchUserFailure(err){
+    const action = {
+        type: TYPE_FETCH_USER_FAILURE,
+        err: err
+    };
+    return action;
+}

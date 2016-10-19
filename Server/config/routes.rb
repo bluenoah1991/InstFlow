@@ -50,6 +50,7 @@ Rails.application.routes.draw do
         delete 'bots/:id', to: "bots#destroy", as: :delete_bot, constraints: TenantdomainConstraint
         get 'bots', to: "bots#index", as: :bots, constraints: TenantdomainConstraint
         post 'bots', to: "bots#create", as: :new_bot, constraints: TenantdomainConstraint
+        get 'users/:id', to: "users#show", as: :show_user, constraints: TenantdomainConstraint
         post 'users', to: "users#index", as: :users, constraints: TenantdomainConstraint
         post 'users/enable', to: "users#enable", as: :enable_user, constraints: TenantdomainConstraint
         post 'users/disable', to: "users#disable", as: :disable_user, constraints: TenantdomainConstraint

@@ -4,27 +4,26 @@ module Api
             class UsersController < Api::V1::Private::ApplicationController
                 before_action :authenticate_admin!
                 before_action :authenticate_tenant!
+                before_action :set_instance, except: [:index]
 
                 def index
                     render json: UserDatatable.new(view_context, user_filter_params)
                 end
 
-                def enable
-                    optional! :id, type: Integer
+                def show
+                    render json: @instance
+                end
 
-                    @user = User.find(params[:id])
-                    @user.state = 0
-                    @user.save!
+                def enable
+                    @instance.state = 0
+                    @instance.save!
 
                     render json: { ok: 1 }
                 end
 
                 def disable
-                    optional! :id, type: Integer
-
-                    @user = User.find(params[:id])
-                    @user.state = -1
-                    @user.save!
+                    @instance.state = -1
+                    @instance.save!
 
                     render json: { ok: 1 }
                 end
@@ -38,6 +37,9 @@ module Api
                     end
                 end
 
+                def set_instance
+                    @instance = User.find(params[:id])
+                end
             end
         end
     end

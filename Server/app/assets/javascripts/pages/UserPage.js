@@ -28,7 +28,8 @@ class UserPage extends Component{
         let RefreshButtonProps = {
             color: 'green',
             text: 'Refresh',
-            size: 'sm'
+            size: 'sm',
+            onClick: this.handleRefresh.bind(this)
         };
         let FilterDropdownsProps = {
             items: [
@@ -36,7 +37,8 @@ class UserPage extends Component{
                 {name: 'orientation', value: '1', text: 'Only Incoming'}
             ],
             color: 'blue',
-            size: 'sm'
+            size: 'sm',
+            onSelect: this.handleFilter.bind(this)
         };
 
         let DataTableProps = {
@@ -54,39 +56,47 @@ class UserPage extends Component{
                 {name: 'text', text: 'Message Content'},
                 {name: 'orientation', text: 'Orientation'},
                 {name: 'time', text: 'Sending Time'}
-            ]
+            ],
+            onDidMount: this.handleDidMount.bind(this)
         };
         
+        let id = this.props.form != undefined ? Utils.safestring(this.props.form.id) : '';
+        let name = this.props.form != undefined ? Utils.safestring(this.props.form.name) : '';
+        let total_msg = this.props.form != undefined ? Utils.safestring(this.props.form.total_msg) : '';
+        let user_agent = this.props.form != undefined ? Utils.safestring(this.props.form.user_agent) : '';
+        let entry_date = this.props.form != undefined ? Utils.safestring(this.props.form.entry_date) : '';
+        let latest_active = this.props.form != undefined ? Utils.safestring(this.props.form.latest_active) : '';
+
         return (
             <PageContentComponent>
                 <PageHeadComponent title="User Profile" />
                 <PageBreadCrumbComponent paths={breadCrumbPaths} />
                 <RowComponent>
                     <ColComponent size="12">
-                        <PortletComponent title="User Profile">
+                        <PortletComponent title="User Profile" id="user_profile_portlet">
                             <RowComponent extendClass="details-row">
                                 <ColComponent size="12">
-                                    <span className="bold font-blue details-title"> #001 </span>
-                                    <span className="bold uppercase font-blue details-title"> Hugh Jackman </span>
+                                    <span className="bold font-blue details-title"> #{id} </span>
+                                    <span className="bold uppercase font-blue details-title"> {name} </span>
                                 </ColComponent>
                             </RowComponent>
                             <RowComponent extendClass="details-row">
                                 <ColComponent size="4">
-                                    <span className="bold">Name:</span> Hugh Jackman
+                                    <span className="bold">Name:</span> {name}
                                 </ColComponent>
                                 <ColComponent size="4">
-                                    <span className="bold">Total Message:</span> 71
+                                    <span className="bold">Total Message:</span> {total_msg}
                                 </ColComponent>
                                 <ColComponent size="4">
-                                    <span className="bold">User Agent:</span> Skype
+                                    <span className="bold">User Agent:</span> {user_agent}
                                 </ColComponent>
                             </RowComponent>
                             <RowComponent extendClass="details-row">
                                 <ColComponent size="4">
-                                    <span className="bold">Entry Date/Time:</span> 10/12/2015 10:15am
+                                    <span className="bold">Entry Date/Time:</span> {entry_date}
                                 </ColComponent>
                                 <ColComponent size="4">
-                                    <span className="bold">Latest Active:</span> 11/22/2015 8:56pm
+                                    <span className="bold">Latest Active:</span> {latest_active}
                                 </ColComponent>
                                 <ColComponent size="4">
                                     <span className="bold">Listen Mode:</span> &nbsp;
@@ -114,10 +124,76 @@ class UserPage extends Component{
             </PageContentComponent>
         );
     }
+
+    componentDidMount(){
+        this.props.dispatch(Actions.fetchUserRequest());
+        fetch(`/api/v1/private/users/${this.props.params.id}`, {credentials: 'same-origin'}).then(function(response){
+            return response.json();
+        }).then(function(data){
+            this.props.dispatch(Actions.fetchUserSuccess(data));
+        }.bind(this)).catch(function(err){
+            this.props.dispatch(Actions.fetchUserFailure(err.toString()));
+        }.bind(this));
+    }
+
+    componentDidUpdate(){
+        // Block UI
+        if(this.props.fetching != undefined && this.props.fetching){
+            App.blockUI({
+                target: '#user_profile_portlet',
+                animate: true
+            });
+            window.setTimeout(function() {
+                App.unblockUI('#user_profile_portlet');
+            }, 5000);
+        } else {
+            App.unblockUI('#user_profile_portlet');
+        }
+    }
+
+    handleRefresh(){
+        if(this.state.dataTable == undefined){
+            return;
+        }
+        this.state.dataTable.ajax.reload(null, false);
+    }
+
+    handleFilter(item){
+        if(item == undefined){
+            return;
+        }
+        if(this.state.grid == undefined || this.state.dataTable == undefined){
+            return;
+        }
+        this.state.grid.setAjaxParam(`filter[${item.name}]`, item.value);
+        this.state.dataTable.ajax.reload(null, false);
+    }
+
+    handleDidMount(grid){
+        let dataTable = grid.getDataTable();
+        this.setState({
+            grid: grid,
+            dataTable: dataTable
+        });
+    }
 }
 
+UserPage.propTypes = {
+    fetching: PropTypes.bool,
+    form: PropTypes.object,
+    err: PropTypes.string
+};
+
+const FetchingSelector = state => state.user.data.fetching;
+const FormSelector = state => state.user.data.form;
+const FetchErrSelector = state => state.user.data.err;
+
 function select(state){
-    return {};
+    return {
+        fetching: FetchingSelector(state),
+        form: FormSelector(state),
+        err: FetchErrSelector(state)
+    };
 }
 
 export default withRouter(connect(select)(UserPage));
