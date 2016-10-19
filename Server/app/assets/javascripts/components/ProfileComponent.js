@@ -20,7 +20,7 @@ export var ProfileCardComponent = React.createClass({
         return (
             <div className="portlet light profile-sidebar-portlet bordered">
                 <div className="profile-userpic">
-                    <img src="/assets/pages/media/profile/profile_user.jpg" className="img-responsive" alt="" /> </div>
+                    <img src="/assets/pages/img/avatar-big.png" className="img-responsive" alt="" /> </div>
                 <div className="profile-usertitle">
                     <div className="profile-usertitle-name"> {this.props.title} </div>
                     <div className="profile-usertitle-job"> {this.props.subtitle} </div>

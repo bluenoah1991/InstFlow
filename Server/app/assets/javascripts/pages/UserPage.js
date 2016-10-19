@@ -117,7 +117,7 @@ class UserPage extends Component{
                             <div className="details-line"></div>
                             <h3 className="details-h3"><i className="fa fa-share"></i> Message Reply</h3>
                             <textarea className="details-msg-box"></textarea>
-                            <ButtonComponent color='blue' text='Send' />,
+                            <ButtonComponent color='blue' icon='send' text='Send' />,
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>
