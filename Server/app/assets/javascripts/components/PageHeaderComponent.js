@@ -167,7 +167,7 @@ class PageHeaderComponent extends Component{
                                         </li>
                                         <li>
                                             <a rel="nofollow" data-method="delete" href="/admins/sign_out">
-                                                <i className="icon-key"></i> Log Out </a>
+                                                <i className="fa fa-sign-out"></i> Log Out </a>
                                         </li>
                                     </ul>
                                 </li>

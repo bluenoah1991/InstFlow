@@ -1690,8 +1690,7 @@ exports.default = _react2.default.createClass({
         return _react2.default.createElement(
             'div',
             { className: 'page-head' },
-            _react2.default.createElement(_PageTitleComponent2.default, { title: this.props.title }),
-            _react2.default.createElement(_PageToolbarComponent2.default, null)
+            _react2.default.createElement(_PageTitleComponent2.default, { title: this.props.title })
         );
     }
 });
@@ -2168,7 +2167,7 @@ var PageHeaderComponent = function (_Component) {
                                             _react2.default.createElement(
                                                 'a',
                                                 { rel: 'nofollow', 'data-method': 'delete', href: '/admins/sign_out' },
-                                                _react2.default.createElement('i', { className: 'icon-key' }),
+                                                _react2.default.createElement('i', { className: 'fa fa-sign-out' }),
                                                 ' Log Out '
                                             )
                                         )

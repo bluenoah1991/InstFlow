@@ -8,7 +8,6 @@ export default React.createClass({
         return (
             <div className="page-head">
                 <PageTitleComponent title={this.props.title} />
-                <PageToolbarComponent />
             </div>
         );
     }
