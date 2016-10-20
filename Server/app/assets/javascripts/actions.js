@@ -407,3 +407,50 @@ export function fetchUserFailure(err){
     };
     return action;
 }
+
+// Global Action Types
+export const TYPE_REFRESH_BOTS_REQUEST = 'TYPE_REFRESH_BOTS_REQUEST';
+export const TYPE_REFRESH_BOTS_SUCCESS = 'TYPE_REFRESH_BOTS_SUCCESS';
+export const TYPE_REFRESH_BOTS_FAILURE = 'TYPE_REFRESH_BOTS_FAILURE';
+export const TYPE_CHANGE_USERNAME = 'TYPE_CHANGE_USERNAME';
+export const TYPE_CHANGE_CURRENT_BOT = 'TYPE_CHANGE_CURRENT_BOT';
+
+// Global Actions
+export function refreshBotsRequest(){
+    const action = {
+        type: TYPE_REFRESH_BOTS_REQUEST
+    };
+    return action;
+}
+
+export function refreshBotsSuccess(response){
+    const action = {
+        type: TYPE_REFRESH_BOTS_SUCCESS,
+        response: response
+    };
+    return action;
+}
+
+export function refreshBotsFailure(err){
+    const action = {
+        type: TYPE_REFRESH_BOTS_FAILURE,
+        err: err
+    };
+    return action;
+}
+
+export function changeUserName(username){
+    const action = {
+        type: TYPE_CHANGE_USERNAME,
+        username: username
+    }
+    return action;
+}
+
+export function changeCurrentBot(bot){
+    const action = {
+        type: TYPE_CHANGE_CURRENT_BOT,
+        bot: bot
+    }
+    return action;
+}

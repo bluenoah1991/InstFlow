@@ -1,10 +1,23 @@
-import React, {Component, PropTypes, Children} from 'react';
+import React, {Component, PropTypes} from 'react';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 
+import BotButtonComponent from '../components/BotButtonComponent';
+
+import * as Actions from '../actions';
 import * as Utils from '../utils';
 
 class PageHeaderComponent extends Component{
     render(){
         let displayName = Utils.meta('displayname');
+        if(this.props.username != undefined && this.props.username.trim().length > 0){
+            displayName = this.props.username;
+        }
+
+        let BotButtonProps = {
+            bots: this.props.bots,
+            currentBot: this.props.currentBot
+        };
 
         return (
             <div className="page-header navbar navbar-fixed-top">
@@ -17,28 +30,7 @@ class PageHeaderComponent extends Component{
                     </div>
                     <a href="javascript:;" className="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"> </a>
                     <div className="page-actions">
-                        <div className="btn-group">
-                            <button type="button" className="btn red-haze btn-sm dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <i className="fa fa-cube"></i>
-                                <span className="hidden-sm hidden-xs">&nbsp;Hummingbird&nbsp;</span>
-                                <i className="fa fa-angle-down"></i>
-                            </button>
-                            <ul className="dropdown-menu" role="menu">
-                                <li>
-                                    <a href="javascript:;"><i className="fa fa-cube"></i> Hummingbird (Current) </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;"><i className="fa fa-cube"></i> Owl </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:;"><i className="fa fa-cube"></i> Azure Bot </a>
-                                </li>
-                                <li className="divider"> </li>
-                                <li>
-                                    <a href="javascript:;"><i className="fa fa-plus"></i> New Bot </a>
-                                </li>
-                            </ul>
-                        </div>
+                        <BotButtonComponent {...BotButtonProps} />
                     </div>
                     <div className="page-top">
                         <div className="top-menu">
@@ -178,10 +170,35 @@ class PageHeaderComponent extends Component{
             </div>
         );
     }
+
+    componentDidMount(){
+        this.props.dispatch(Actions.refreshBotsRequest());
+        fetch('/api/v1/private/bots', {credentials: 'same-origin'}).then(function(response){
+            return response.json();
+        }).then(function(data){
+            this.props.dispatch(Actions.refreshBotsSuccess(data));
+        }.bind(this)).catch(function(err){
+            this.props.dispatch(Actions.refreshBotsFailure(err.toString()));
+        }.bind(this));
+    }
 }
 
-// <%= link_to destroy_session_path(:admin), method: :delete do %>
-//     <i className="icon-key"></i> Log Out 
-// <% end %>
+PageHeaderComponent.propTypes = {
+    bots: PropTypes.array,
+    username: PropTypes.string,
+    currentBot: PropTypes.object
+};
 
-export default PageHeaderComponent;
+const BotsSelector = state => state.global.bots.form;
+const UserNameSelector = state => state.global.meta.username;
+const CurrentBotSelector = state => state.global.bots.currentBot;
+
+function select(state){
+    return {
+        bots: BotsSelector(state),
+        username: UserNameSelector(state),
+        currentBot: CurrentBotSelector(state)
+    };
+}
+
+export default withRouter(connect(select)(PageHeaderComponent));
