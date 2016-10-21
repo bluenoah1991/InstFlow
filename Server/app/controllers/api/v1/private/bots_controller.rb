@@ -71,8 +71,9 @@ module Api
                 end
 
                 def destroy
+                    name = @instance.name
                     @instance.destroy
-                    render json: { ok: 1 }
+                    render json: { ok: 1, name: name }
                 end
 
                 def set_instance

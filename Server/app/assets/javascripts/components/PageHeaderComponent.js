@@ -172,13 +172,13 @@ class PageHeaderComponent extends Component{
     }
 
     componentDidMount(){
-        this.props.dispatch(Actions.refreshBotsRequest());
+        this.props.dispatch(Actions.fetchBotsRequest());
         fetch('/api/v1/private/bots', {credentials: 'same-origin'}).then(function(response){
             return response.json();
         }).then(function(data){
-            this.props.dispatch(Actions.refreshBotsSuccess(data));
+            this.props.dispatch(Actions.fetchBotsSuccess(data));
         }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.refreshBotsFailure(err.toString()));
+            this.props.dispatch(Actions.fetchBotsFailure(err.toString()));
         }.bind(this));
     }
 }
@@ -189,9 +189,9 @@ PageHeaderComponent.propTypes = {
     currentBot: PropTypes.object
 };
 
-const BotsSelector = state => state.global.bots.form;
+const BotsSelector = state => state.bot.data.list;
 const UserNameSelector = state => state.global.meta.username;
-const CurrentBotSelector = state => state.global.bots.currentBot;
+const CurrentBotSelector = state => state.bot.data.currentBot;
 
 function select(state){
     return {

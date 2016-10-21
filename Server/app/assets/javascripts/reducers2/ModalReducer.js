@@ -1,18 +1,23 @@
 import {combineReducers} from 'redux';
-import {ActionTypes} from '../actions';
+import {
+    TYPE_SHOW_MODAL,
+    TYPE_SHOW_MODAL_FINISH
+} from '../actions';
 
 export default function(state={}, action){
     switch(action.type){
-        case ActionTypes.TYPE_SHOW_MODAL:
+        case TYPE_SHOW_MODAL:
             return Object.assign({}, state, {
                 show: true,
                 title: action.title,
                 body: action.body,
-                handleMethod: action.handleMethod,
+                handleEvent: action.handleEvent,
                 relatedTarget: action.relatedTarget
             });
-        case ActionTypes.TYPE_SHOW_MODAL_FINISH:
-            return { show: false };
+        case TYPE_SHOW_MODAL_FINISH:
+            return Object.assign({}, state, {
+                show: false
+            });
         default:
             return state;
     }

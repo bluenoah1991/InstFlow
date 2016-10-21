@@ -1,163 +1,88 @@
 import {combineReducers} from 'redux';
-import {
-    TYPE_FETCH_BOT_REQUEST,
-    TYPE_FETCH_BOT_SUCCESS,
-    TYPE_FETCH_BOT_FAILURE,
-    TYPE_SAVE_BOT_REQUEST,
-    TYPE_SAVE_BOT_SUCCESS,
-    TYPE_SAVE_BOT_FAILURE,
-    TYPE_CHANGE_BOT_FORM,
-    TYPE_CHANGE_CANCEL_BOT,
-    TYPE_BOT_CREATE_REQUEST, 
-    TYPE_BOT_CREATE_SUCCESS, 
-    TYPE_BOT_CREATE_FAILURE,
-    TYPE_CHANGE_BOT_CREATE_FORM,
-    TYPE_CHANGE_CANCEL_BOT_CREATE,
-    TYPE_CLEAN_BOT_FORM,
-    TYPE_FETCH_BOTS_REQUEST,
-    TYPE_FETCH_BOTS_SUCCESS,
-    TYPE_FETCH_BOTS_FAILURE,
-    TYPE_OPEN_RECENT_CRAETED_BOT,
-    TYPE_CONNECT_MS_REQUEST,
-    TYPE_CONNECT_MS_SUCCESS,
-    TYPE_CONNECT_MS_FAILURE
-} from '../actions';
+import {ActionTypes} from '../actions';
 
-function BotReducer(state={}, action){
+export default function(state={}, action){
     switch(action.type){
-        case TYPE_BOT_CREATE_REQUEST:
+        case ActionTypes.TYPE_CREATE_BOT_REQUEST:
             return Object.assign({}, state, {
-                fetching: true
+                isFetching: true
             });
-        case TYPE_BOT_CREATE_SUCCESS:
-            return Object.assign({}, state, {
-                fetching: false,
+        case ActionTypes.TYPE_CREATE_BOT_SUCCESS:
+            var items = Object.assign({}, state.items);
+            items[action.response.id] = {
+                isFetching: false,
+                data: action.response,
                 response: action.response,
-                form: action.response,
-                recent_created: action.response
-            });
-        case TYPE_BOT_CREATE_FAILURE:
+                recentCreated: true
+            };
             return Object.assign({}, state, {
-                fetching: false,
-                err: action.err
-            });
-        case TYPE_CHANGE_BOT_CREATE_FORM:
-            var changedData = Object.assign({}, state.form);
-            changedData[action.fieldName] = action.value;
-            var connect_state = state.connect_state;
-            if(action.fieldName == 'ms_appid' || action.fieldName == 'ms_appsecret'){
-                connect_state = 'init';
-            }
-            return Object.assign({}, state, {
-                form: changedData,
-                connect_state: connect_state
-            });
-        case TYPE_CHANGE_CANCEL_BOT_CREATE:
-            return Object.assign({}, state, {
+                isFetching: false,
                 form: null,
-                connect_state: null
-            });
-        case TYPE_FETCH_BOT_REQUEST:
+                items: items
+            });// TODO
+        case ActionTypes.TYPE_CREATE_BOT_FAILURE:
+            return { isFetching: false };
+        case ActionTypes.TYPE_DELETE_BOT_REQUEST:
             return Object.assign({}, state, {
-                fetching: true
+                currentBot: action.bot
             });
-        case TYPE_FETCH_BOT_SUCCESS:
-            var connect_state = 'init';
-            if(action.response.connected){
-                connect_state = 'connected';
-            }
+        case ActionTypes.TYPE_DELETE_BOT_SUCCESS:
             return Object.assign({}, state, {
-                fetching: false,
-                response: action.response,
-                form: action.response,
-                connect_state: connect_state
+                isFetching: true
             });
-        case TYPE_FETCH_BOT_FAILURE:
+        case ActionTypes.TYPE_DELETE_BOT_FAILURE:
             return Object.assign({}, state, {
-                fetching: false,
-                err: action.err
+                isFetching: false,
+                data: action.response,
+                response: action.response
             });
-        case TYPE_SAVE_BOT_REQUEST:
+        case ActionTypes.TYPE_UPDATE_BOT_REQUEST:
+            return { isFetching: false };
+        case ActionTypes.TYPE_CHANGE_CURRENT_BOT:
             return Object.assign({}, state, {
-                fetching: true
+                currentBot: action.bot
             });
-        case TYPE_SAVE_BOT_SUCCESS:
+        case ActionTypes.TYPE_UPDATE_BOT_SUCCESS:
             return Object.assign({}, state, {
-                fetching: false,
-                response: action.response,
-                form: action.response
+                isFetching: true
             });
-        case TYPE_SAVE_BOT_FAILURE:
+        case ActionTypes.TYPE_UPDATE_BOT_FAILURE:
             return Object.assign({}, state, {
-                fetching: false,
-                err: action.err
+                isFetching: false,
+                data: action.response,
+                response: action.response
             });
-        case TYPE_CHANGE_BOT_FORM:
-            var changedData = Object.assign({}, state.form);
-            changedData[action.fieldName] = action.value;
-            var connect_state = state.connect_state;
-            if(action.fieldName == 'ms_appid' || action.fieldName == 'ms_appsecret'){
-                connect_state = 'init';
-            }
+        case ActionTypes.TYPE_FETCH_BOT_REQUEST:
+            return { isFetching: false };
+        case ActionTypes.TYPE_CHANGE_CURRENT_BOT:
             return Object.assign({}, state, {
-                form: changedData,
-                connect_state: connect_state
+                currentBot: action.bot
             });
-        case TYPE_CHANGE_CANCEL_BOT:
-            var connect_state = 'init';
-            if(state.response.connected){
-                connect_state = 'connected';
-            }
+        case ActionTypes.TYPE_FETCH_BOT_SUCCESS:
             return Object.assign({}, state, {
-                form: state.response,
-                connect_state: connect_state
+                isFetching: true
             });
-        case TYPE_CLEAN_BOT_FORM:
+        case ActionTypes.TYPE_FETCH_BOT_FAILURE:
             return Object.assign({}, state, {
-                form: null
+                isFetching: false,
+                data: action.response,
+                response: action.response
             });
-        case TYPE_FETCH_BOTS_REQUEST:
-            return Object.assign({}, state, {
-                fetching: true
-            });
-        case TYPE_FETCH_BOTS_SUCCESS:
-            return Object.assign({}, state, {
-                fetching: false,
-                list: action.response
-            });
-        case TYPE_FETCH_BOTS_FAILURE:
-            return Object.assign({}, state, {
-                fetching: false,
-                err: action.err
-            });
-        case TYPE_OPEN_RECENT_CRAETED_BOT:
-            var connect_state = 'init';
-            if(state.recent_created.connected){
-                connect_state = 'connected';
-            }
-            return Object.assign({}, state, {
-                response: state.recent_created,
-                form: state.recent_created,
-                connect_state: connect_state,
-                recent_created: null
-            });
-        case TYPE_CONNECT_MS_REQUEST:
-            return Object.assign({}, state, {
-                connect_state: 'connecting'
-            });
-        case TYPE_CONNECT_MS_SUCCESS:
-            return Object.assign({}, state, {
-                connect_state: 'connected'
-            });
-        case TYPE_CONNECT_MS_FAILURE:
-            return Object.assign({}, state, {
-                connect_state: 'error'
-            });
+        case ActionTypes.TYPE_CONNECT_BOT_REQUEST:
+            return { isFetching: false };
+        case ActionTypes.TYPE_CONNECT_BOT_SUCCESS:
+            return { isFetching: false };
+        case ActionTypes.TYPE_CONNECT_BOT_FAILURE:
+            return { isFetching: false };
+        case ActionTypes.TYPE_CHANGE_BOT_DATA:
+            return { isFetching: false };
+        case ActionTypes.TYPE_RESET_BOT_DATA:
+            return { isFetching: false };
+        case ActionTypes.TYPE_CHANGE_NEW_BOT_DATA:
+            return { isFetching: false };
+        case ActionTypes.TYPE_RESET_NEW_BOT_DATA:
+            return { isFetching: false };
         default:
             return state;
     }
 }
-
-export default combineReducers({
-    data: BotReducer
-});

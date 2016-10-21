@@ -5,8 +5,9 @@ import 'jquery-ujs';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Router, Route, hashHistory} from 'react-router';
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import {Provider} from 'react-redux';
+import thunkMiddleware from 'redux-thunk';
 
 import reducers from './reducers';
 
@@ -25,7 +26,7 @@ import UsersPage from './pages/UsersPage';
 import UserPage from './pages/UserPage';
 import {ConstructionPage} from './pages/ConstructionPage';
 
-let store = createStore(reducers, {});
+let store = createStore(reducers, applyMiddleware(thunkMiddleware));
 
 ReactDOM.render(
     <Provider store={store}>

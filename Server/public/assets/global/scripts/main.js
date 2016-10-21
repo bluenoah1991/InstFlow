@@ -48,9 +48,6 @@ exports.showModalFinish = showModalFinish;
 exports.fetchUserRequest = fetchUserRequest;
 exports.fetchUserSuccess = fetchUserSuccess;
 exports.fetchUserFailure = fetchUserFailure;
-exports.refreshBotsRequest = refreshBotsRequest;
-exports.refreshBotsSuccess = refreshBotsSuccess;
-exports.refreshBotsFailure = refreshBotsFailure;
 exports.changeUserName = changeUserName;
 exports.changeCurrentBot = changeCurrentBot;
 // Toast Action Types
@@ -459,36 +456,10 @@ function fetchUserFailure(err) {
 }
 
 // Global Action Types
-var TYPE_REFRESH_BOTS_REQUEST = exports.TYPE_REFRESH_BOTS_REQUEST = 'TYPE_REFRESH_BOTS_REQUEST';
-var TYPE_REFRESH_BOTS_SUCCESS = exports.TYPE_REFRESH_BOTS_SUCCESS = 'TYPE_REFRESH_BOTS_SUCCESS';
-var TYPE_REFRESH_BOTS_FAILURE = exports.TYPE_REFRESH_BOTS_FAILURE = 'TYPE_REFRESH_BOTS_FAILURE';
 var TYPE_CHANGE_USERNAME = exports.TYPE_CHANGE_USERNAME = 'TYPE_CHANGE_USERNAME';
 var TYPE_CHANGE_CURRENT_BOT = exports.TYPE_CHANGE_CURRENT_BOT = 'TYPE_CHANGE_CURRENT_BOT';
 
 // Global Actions
-function refreshBotsRequest() {
-    var action = {
-        type: TYPE_REFRESH_BOTS_REQUEST
-    };
-    return action;
-}
-
-function refreshBotsSuccess(response) {
-    var action = {
-        type: TYPE_REFRESH_BOTS_SUCCESS,
-        response: response
-    };
-    return action;
-}
-
-function refreshBotsFailure(err) {
-    var action = {
-        type: TYPE_REFRESH_BOTS_FAILURE,
-        err: err
-    };
-    return action;
-}
-
 function changeUserName(username) {
     var action = {
         type: TYPE_CHANGE_USERNAME,
@@ -994,7 +965,7 @@ DataTableComponent.propTypes = {
     onDidMount: _react.PropTypes.func
 };
 
-},{"react":582,"react-redux":392,"underscore":600}],5:[function(require,module,exports){
+},{"react":582,"react-redux":392,"underscore":601}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1167,7 +1138,7 @@ FormComponent.propTypes = {
 
 exports.default = FormComponent;
 
-},{"../utils":43,"react":582,"underscore":600}],6:[function(require,module,exports){
+},{"../utils":43,"react":582,"underscore":601}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1383,7 +1354,7 @@ exports.PortletComponent = PortletComponent;
 exports.PortletTabContentComponent = PortletTabContentComponent;
 exports.PortletTabComponent = PortletTabComponent;
 
-},{"react":582,"underscore":600}],7:[function(require,module,exports){
+},{"react":582,"underscore":601}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1547,7 +1518,7 @@ function select(state) {
 
 exports.default = (0, _reactRedux.connect)(select)(ModalComponent);
 
-},{"../actions":1,"react":582,"react-redux":392,"underscore":600}],8:[function(require,module,exports){
+},{"../actions":1,"react":582,"react-redux":392,"underscore":601}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2336,13 +2307,13 @@ var PageHeaderComponent = function (_Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            this.props.dispatch(Actions.refreshBotsRequest());
+            this.props.dispatch(Actions.fetchBotsRequest());
             fetch('/api/v1/private/bots', { credentials: 'same-origin' }).then(function (response) {
                 return response.json();
             }).then(function (data) {
-                this.props.dispatch(Actions.refreshBotsSuccess(data));
+                this.props.dispatch(Actions.fetchBotsSuccess(data));
             }.bind(this)).catch(function (err) {
-                this.props.dispatch(Actions.refreshBotsFailure(err.toString()));
+                this.props.dispatch(Actions.fetchBotsFailure(err.toString()));
             }.bind(this));
         }
     }]);
@@ -2357,13 +2328,13 @@ PageHeaderComponent.propTypes = {
 };
 
 var BotsSelector = function BotsSelector(state) {
-    return state.global.bots.form;
+    return state.bot.data.list;
 };
 var UserNameSelector = function UserNameSelector(state) {
     return state.global.meta.username;
 };
 var CurrentBotSelector = function CurrentBotSelector(state) {
-    return state.global.bots.currentBot;
+    return state.bot.data.currentBot;
 };
 
 function select(state) {
@@ -3436,6 +3407,10 @@ var _redux = require('redux');
 
 var _reactRedux = require('react-redux');
 
+var _reduxThunk = require('redux-thunk');
+
+var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
+
 var _reducers = require('./reducers');
 
 var _reducers2 = _interopRequireDefault(_reducers);
@@ -3496,7 +3471,7 @@ var _ConstructionPage = require('./pages/ConstructionPage');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var store = (0, _redux.createStore)(_reducers2.default, {});
+var store = (0, _redux.createStore)(_reducers2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default));
 
 _reactDom2.default.render(_react2.default.createElement(
     _reactRedux.Provider,
@@ -3528,7 +3503,7 @@ _reactDom2.default.render(_react2.default.createElement(
     )
 ), document.getElementById('main'));
 
-},{"./components/ModalComponent":7,"./components/PageContainerComponent":10,"./components/PageFooterComponent":12,"./components/PageHeaderComponent":14,"./components/PageSidebarComponent":15,"./components/RootComponent":19,"./components/ToastComponent":24,"./pages/BotCreatePage":26,"./pages/BotPage":27,"./pages/BotsPage":28,"./pages/ConstructionPage":29,"./pages/ProfilePage":30,"./pages/UserPage":31,"./pages/UsersPage":32,"./reducers":39,"babel-polyfill":44,"jquery-ujs":386,"react":582,"react-dom":389,"react-redux":392,"react-router":430,"redux":588,"whatwg-fetch":602}],26:[function(require,module,exports){
+},{"./components/ModalComponent":7,"./components/PageContainerComponent":10,"./components/PageFooterComponent":12,"./components/PageHeaderComponent":14,"./components/PageSidebarComponent":15,"./components/RootComponent":19,"./components/ToastComponent":24,"./pages/BotCreatePage":26,"./pages/BotPage":27,"./pages/BotsPage":28,"./pages/ConstructionPage":29,"./pages/ProfilePage":30,"./pages/UserPage":31,"./pages/UsersPage":32,"./reducers":39,"babel-polyfill":44,"jquery-ujs":386,"react":582,"react-dom":389,"react-redux":392,"react-router":430,"redux":589,"redux-thunk":583,"whatwg-fetch":603}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4303,7 +4278,7 @@ function select(state) {
 
 exports.default = (0, _reactRedux.connect)(select)(BotsPage);
 
-},{"../actions":1,"../components/ButtonComponent":3,"../components/LayoutComponent":6,"../components/NoteComponent":8,"../components/PageBreadCrumbComponent":9,"../components/PageContentComponent":11,"../components/PageHeadComponent":13,"../components/TableComponent":22,"../utils":43,"react":582,"react-redux":392,"underscore":600}],29:[function(require,module,exports){
+},{"../actions":1,"../components/ButtonComponent":3,"../components/LayoutComponent":6,"../components/NoteComponent":8,"../components/PageBreadCrumbComponent":9,"../components/PageContentComponent":11,"../components/PageHeadComponent":13,"../components/TableComponent":22,"../utils":43,"react":582,"react-redux":392,"underscore":601}],29:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5364,6 +5339,10 @@ function BotReducer() {
     var action = arguments[1];
 
     switch (action.type) {
+        case _actions.TYPE_CHANGE_CURRENT_BOT:
+            return Object.assign({}, state, {
+                currentBot: action.bot
+            });
         case _actions.TYPE_BOT_CREATE_REQUEST:
             return Object.assign({}, state, {
                 fetching: true
@@ -5501,7 +5480,7 @@ exports.default = (0, _redux.combineReducers)({
     data: BotReducer
 });
 
-},{"../actions":1,"redux":588}],34:[function(require,module,exports){
+},{"../actions":1,"redux":589}],34:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5511,35 +5490,6 @@ Object.defineProperty(exports, "__esModule", {
 var _redux = require('redux');
 
 var _actions = require('../actions');
-
-function BotsReducer() {
-    var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    var action = arguments[1];
-
-    switch (action.type) {
-        case _actions.TYPE_REFRESH_BOTS_REQUEST:
-            return Object.assign({}, state, {
-                fetching: true
-            });
-        case _actions.TYPE_REFRESH_BOTS_SUCCESS:
-            return Object.assign({}, state, {
-                fetching: false,
-                response: action.response,
-                form: action.response
-            });
-        case _actions.TYPE_REFRESH_BOTS_FAILURE:
-            return Object.assign({}, state, {
-                fetching: false,
-                err: action.err
-            });
-        case _actions.TYPE_CHANGE_CURRENT_BOT:
-            return Object.assign({}, state, {
-                currentBot: action.bot
-            });
-        default:
-            return state;
-    }
-}
 
 function MetaReducer() {
     var state = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -5556,11 +5506,10 @@ function MetaReducer() {
 }
 
 exports.default = (0, _redux.combineReducers)({
-    bots: BotsReducer,
     meta: MetaReducer
 });
 
-},{"../actions":1,"redux":588}],35:[function(require,module,exports){
+},{"../actions":1,"redux":589}],35:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5593,7 +5542,7 @@ var _redux = require('redux');
 
 var _actions = require('../actions');
 
-},{"../actions":1,"redux":588}],36:[function(require,module,exports){
+},{"../actions":1,"redux":589}],36:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5693,7 +5642,7 @@ exports.default = (0, _redux.combineReducers)({
     password: PasswordReducer
 });
 
-},{"../actions":1,"redux":588}],37:[function(require,module,exports){
+},{"../actions":1,"redux":589}],37:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5725,7 +5674,7 @@ var _redux = require('redux');
 
 var _actions = require('../actions');
 
-},{"../actions":1,"redux":588}],38:[function(require,module,exports){
+},{"../actions":1,"redux":589}],38:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5765,7 +5714,7 @@ exports.default = (0, _redux.combineReducers)({
     data: UserReducer
 });
 
-},{"../actions":1,"redux":588}],39:[function(require,module,exports){
+},{"../actions":1,"redux":589}],39:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5811,7 +5760,7 @@ var reducers = (0, _redux.combineReducers)({
 
 exports.default = reducers;
 
-},{"./BotReducer":33,"./GlobalReducer":34,"./ModalReducer":35,"./ProfileReducer":36,"./ToastReducer":37,"./UserReducer":38,"redux":588}],40:[function(require,module,exports){
+},{"./BotReducer":33,"./GlobalReducer":34,"./ModalReducer":35,"./ProfileReducer":36,"./ToastReducer":37,"./UserReducer":38,"redux":589}],40:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5862,7 +5811,7 @@ var PasswordFetchingSelector = exports.PasswordFetchingSelector = function Passw
     return state.profile.password.fetching;
 };
 
-},{"reselect":595}],41:[function(require,module,exports){
+},{"reselect":596}],41:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5885,7 +5834,7 @@ var ToastMessageSelector = exports.ToastMessageSelector = function ToastMessageS
   return state.toast.toastMessage;
 };
 
-},{"reselect":595}],42:[function(require,module,exports){
+},{"reselect":596}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5976,7 +5925,7 @@ define(String.prototype, "padRight", "".padEnd);
   [][key] && define(Array, key, Function.call.bind([][key]));
 });
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"core-js/fn/regexp/escape":45,"core-js/shim":338,"regenerator-runtime/runtime":594}],45:[function(require,module,exports){
+},{"core-js/fn/regexp/escape":45,"core-js/shim":338,"regenerator-runtime/runtime":595}],45:[function(require,module,exports){
 require('../../modules/core.regexp.escape');
 module.exports = require('../../modules/_core').RegExp.escape;
 },{"../../modules/_core":66,"../../modules/core.regexp.escape":162}],46:[function(require,module,exports){
@@ -15873,7 +15822,7 @@ exports.stringify = function (obj) {
 	}).join('&') : '';
 };
 
-},{"strict-uri-encode":596}],389:[function(require,module,exports){
+},{"strict-uri-encode":597}],389:[function(require,module,exports){
 'use strict';
 
 module.exports = require('react/lib/ReactDOM');
@@ -16450,7 +16399,7 @@ function wrapActionCreators(actionCreators) {
     return (0, _redux.bindActionCreators)(actionCreators, dispatch);
   };
 }
-},{"redux":588}],397:[function(require,module,exports){
+},{"redux":589}],397:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -19768,7 +19717,7 @@ function routerWarning(falseToWarn, message) {
 function _resetWarned() {
   warned = {};
 }
-},{"warning":601}],436:[function(require,module,exports){
+},{"warning":602}],436:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -39303,6 +39252,30 @@ module.exports = require('./lib/React');
 'use strict';
 
 exports.__esModule = true;
+function createThunkMiddleware(extraArgument) {
+  return function (_ref) {
+    var dispatch = _ref.dispatch;
+    var getState = _ref.getState;
+    return function (next) {
+      return function (action) {
+        if (typeof action === 'function') {
+          return action(dispatch, getState, extraArgument);
+        }
+
+        return next(action);
+      };
+    };
+  };
+}
+
+var thunk = createThunkMiddleware();
+thunk.withExtraArgument = createThunkMiddleware;
+
+exports['default'] = thunk;
+},{}],584:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -39358,7 +39331,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":586}],584:[function(require,module,exports){
+},{"./compose":587}],585:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -39410,7 +39383,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],585:[function(require,module,exports){
+},{}],586:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -39555,7 +39528,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require("g5I+bs"))
-},{"./createStore":587,"./utils/warning":589,"g5I+bs":387,"lodash/isPlainObject":593}],586:[function(require,module,exports){
+},{"./createStore":588,"./utils/warning":590,"g5I+bs":387,"lodash/isPlainObject":594}],587:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -39594,7 +39567,7 @@ function compose() {
     }, last.apply(undefined, arguments));
   };
 }
-},{}],587:[function(require,module,exports){
+},{}],588:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -39856,7 +39829,7 @@ function createStore(reducer, preloadedState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":593,"symbol-observable":597}],588:[function(require,module,exports){
+},{"lodash/isPlainObject":594,"symbol-observable":598}],589:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -39905,7 +39878,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require("g5I+bs"))
-},{"./applyMiddleware":583,"./bindActionCreators":584,"./combineReducers":585,"./compose":586,"./createStore":587,"./utils/warning":589,"g5I+bs":387}],589:[function(require,module,exports){
+},{"./applyMiddleware":584,"./bindActionCreators":585,"./combineReducers":586,"./compose":587,"./createStore":588,"./utils/warning":590,"g5I+bs":387}],590:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -39931,15 +39904,15 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],590:[function(require,module,exports){
+},{}],591:[function(require,module,exports){
 module.exports=require(397)
-},{"./_overArg":591}],591:[function(require,module,exports){
+},{"./_overArg":592}],592:[function(require,module,exports){
 module.exports=require(398)
-},{}],592:[function(require,module,exports){
-module.exports=require(399)
 },{}],593:[function(require,module,exports){
+module.exports=require(399)
+},{}],594:[function(require,module,exports){
 module.exports=require(400)
-},{"./_getPrototype":590,"./isObjectLike":592}],594:[function(require,module,exports){
+},{"./_getPrototype":591,"./isObjectLike":593}],595:[function(require,module,exports){
 (function (process,global){
 /**
  * Copyright (c) 2014, Facebook, Inc.
@@ -40611,7 +40584,7 @@ module.exports=require(400)
 );
 
 }).call(this,require("g5I+bs"),typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"g5I+bs":387}],595:[function(require,module,exports){
+},{"g5I+bs":387}],596:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -40723,7 +40696,7 @@ function createStructuredSelector(selectors) {
     }, {});
   });
 }
-},{}],596:[function(require,module,exports){
+},{}],597:[function(require,module,exports){
 'use strict';
 module.exports = function (str) {
 	return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
@@ -40731,10 +40704,10 @@ module.exports = function (str) {
 	});
 };
 
-},{}],597:[function(require,module,exports){
+},{}],598:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":598}],598:[function(require,module,exports){
+},{"./lib/index":599}],599:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -40759,7 +40732,7 @@ if (typeof global !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":599}],599:[function(require,module,exports){
+},{"./ponyfill":600}],600:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40783,7 +40756,7 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}],600:[function(require,module,exports){
+},{}],601:[function(require,module,exports){
 //     Underscore.js 1.8.3
 //     http://underscorejs.org
 //     (c) 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -42333,9 +42306,9 @@ function symbolObservablePonyfill(root) {
   }
 }.call(this));
 
-},{}],601:[function(require,module,exports){
+},{}],602:[function(require,module,exports){
 module.exports=require(383)
-},{"g5I+bs":387}],602:[function(require,module,exports){
+},{"g5I+bs":387}],603:[function(require,module,exports){
 (function(self) {
   'use strict';
 

@@ -1,22 +1,17 @@
 import {combineReducers} from 'redux';
-import {
-    TYPE_SHOW_TOAST,
-    TYPE_SHOW_TOAST_FINISH
-} from '../actions';
+import {ActionTypes} from '../actions';
 
 export default function(state={}, action){
     switch(action.type){
-        case TYPE_SHOW_TOAST:
+        case ActionTypes.TYPE_SHOW_MODAL:
             return Object.assign({}, state, {
-                showToast: true,
-                toastMethod: action.method,
-                toastTitle: action.title,
-                toastMessage: action.message
+                show: true,
+                type: action.toastType,
+                title: action.title,
+                body: action.body
             });
-        case TYPE_SHOW_TOAST_FINISH:
-            return Object.assign({}, state, {
-                showToast: false
-            });
+        case ActionTypes.TYPE_SHOW_MODAL_FINISH:
+            return { show: false };
         default:
             return state;
     }
