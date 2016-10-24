@@ -1,12 +1,11 @@
 import React, {Component, PropTypes, Children} from 'react';
 import {connect} from 'react-redux';
 
-import {ToastSelectors} from '../selectors';
 import * as Actions from '../actions';
 
 class ToastComponent extends Component{
     render(){
-        if(this.props.showToast != undefined && this.props.showToast){
+        if(this.props.show != undefined && this.props.show){
             let title = 'Update Success!';
             let msg = 'The password is changed';        
             toastr.options = {
@@ -23,30 +22,35 @@ class ToastComponent extends Component{
                 showMethod: 'fadeIn',
                 hideMethod: 'fadeOut'
             }
-            var $toast = toastr[this.props.toastMethod](
-                this.props.toastMessage, this.props.toastTitle);
+            var $toast = toastr[this.props.type](
+                this.props.body, this.props.title);
         }
         return null;
     }
 
     componentDidUpdate(){
-        this.props.dispatch(Actions.showToastFinish());
+        this.props.dispatch(Actions.ToastActions.showToastFinish());
     }
 }
 
 ToastComponent.propTypes = {
-    showToast: PropTypes.bool,
-    toastMethod: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
-    toastTitle: PropTypes.string,
-    toastMessage: PropTypes.string
+    show: PropTypes.bool,
+    type: PropTypes.oneOf(['success', 'info', 'warning', 'error']),
+    title: PropTypes.string,
+    body: PropTypes.string
 };
+
+const ShowSelector = state => state.toast.show;
+const TypeSelector = state => state.toast.type;
+const TitleSelector = state => state.toast.title;
+const BodySelector = state => state.toast.body;
 
 function select(state){
     return {
-        showToast: ToastSelectors.ShowToastSelector(state),
-        toastMethod: ToastSelectors.ToastMethodSelector(state),
-        toastTitle: ToastSelectors.ToastTitleSelector(state),
-        toastMessage: ToastSelectors.ToastMessageSelector(state)
+        show: ShowSelector(state),
+        type: TypeSelector(state),
+        title: TitleSelector(state),
+        body: BodySelector(state)
     };
 }
 

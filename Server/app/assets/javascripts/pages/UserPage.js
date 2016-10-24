@@ -60,12 +60,12 @@ class UserPage extends Component{
             onDidMount: this.handleDidMount.bind(this)
         };
         
-        let id = this.props.form != undefined ? Utils.safestring(this.props.form.id) : '';
-        let name = this.props.form != undefined ? Utils.safestring(this.props.form.name) : '';
-        let total_msg = this.props.form != undefined ? Utils.safestring(this.props.form.total_msg) : '';
-        let user_agent = this.props.form != undefined ? Utils.safestring(this.props.form.user_agent) : '';
-        let entry_date = this.props.form != undefined ? Utils.safestring(this.props.form.entry_date) : '';
-        let latest_active = this.props.form != undefined ? Utils.safestring(this.props.form.latest_active) : '';
+        let id = this.props.data != undefined ? Utils.safestring(this.props.data.id) : '';
+        let name = this.props.data != undefined ? Utils.safestring(this.props.data.name) : '';
+        let total_msg = this.props.data != undefined ? Utils.safestring(this.props.data.total_msg) : '';
+        let user_agent = this.props.data != undefined ? Utils.safestring(this.props.data.user_agent) : '';
+        let entry_date = this.props.data != undefined ? Utils.safestring(this.props.data.entry_date) : '';
+        let latest_active = this.props.data != undefined ? Utils.safestring(this.props.data.latest_active) : '';
 
         return (
             <PageContentComponent>
@@ -126,19 +126,12 @@ class UserPage extends Component{
     }
 
     componentDidMount(){
-        this.props.dispatch(Actions.fetchUserRequest());
-        fetch(`/api/v1/private/users/${this.props.params.id}`, {credentials: 'same-origin'}).then(function(response){
-            return response.json();
-        }).then(function(data){
-            this.props.dispatch(Actions.fetchUserSuccess(data));
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.fetchUserFailure(err.toString()));
-        }.bind(this));
+        this.props.dispatch(Actions.UserActions.fetchUser(this.props.params.id));
     }
 
     componentDidUpdate(){
         // Block UI
-        if(this.props.fetching != undefined && this.props.fetching){
+        if(this.props.isFetching != undefined && this.props.isFetching){
             App.blockUI({
                 target: '#user_profile_portlet',
                 animate: true
@@ -179,20 +172,23 @@ class UserPage extends Component{
 }
 
 UserPage.propTypes = {
-    fetching: PropTypes.bool,
-    form: PropTypes.object,
-    err: PropTypes.string
+    isFetching: PropTypes.bool,
+    data: PropTypes.object
 };
 
-const FetchingSelector = state => state.user.data.fetching;
-const FormSelector = state => state.user.data.form;
-const FetchErrSelector = state => state.user.data.err;
+const IsFetchingSelector = state => state.user.isFetching;
+const DataSelector = function(state, ownProps){
+    if(state.user.items == undefined){ return; }
+    let id = ownProps.params.id;
+    let user = state.user.items[id];
+    if(user == undefined){ return; }
+    return user.data;
+};
 
-function select(state){
+function select(state, ownProps){
     return {
-        fetching: FetchingSelector(state),
-        form: FormSelector(state),
-        err: FetchErrSelector(state)
+        isFetching: IsFetchingSelector(state),
+        data: DataSelector(state, ownProps)
     };
 }
 

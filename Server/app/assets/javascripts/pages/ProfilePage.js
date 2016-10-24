@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
+import {createSelector} from 'reselect';
 
 import {RowComponent, ColComponent, PortletComponent, PortletTabComponent, PortletTabContentComponent} from '../components/LayoutComponent';
 import {NoteComponent} from '../components/NoteComponent';
@@ -11,16 +12,10 @@ import {ButtonComponent} from '../components/ButtonComponent';
 import FormComponent from '../components/FormComponent';
 import {SettingComponent} from '../components/SettingComponent';
 
-import {ProfileSelectors} from '../selectors';
 import * as Actions from '../actions';
 import * as Utils from '../utils';
 
 class ProfilePage extends Component {
-    constructor(){
-        super();
-        this.state = {};
-    }
-
     render(){
         // init data 
 
@@ -61,27 +56,24 @@ class ProfilePage extends Component {
                 <ButtonComponent key={1} color='default' text='Cancel' onClick={this.handleCancelChanges.bind(this)} />
             ],
             onChange: this.handleProfileFormChanage.bind(this),
-            data: this.props.form
+            data: this.props.data
         };
 
-        let isPasswordEmpty = this.state.isCheckPasswordFormNull && 
-            (this.props.passwordForm == undefined || this.props.passwordForm.password == undefined || this.props.passwordForm.password.trim().length === 0);
-        let isNewPasswordEmpty = this.state.isCheckPasswordFormNull && 
-            (this.props.passwordForm == undefined || this.props.passwordForm.newpassword == undefined || this.props.passwordForm.newpassword.trim().length === 0);
-        let isNewPassword2Empty = this.state.isCheckPasswordFormNull && 
-            (this.props.passwordForm == undefined || this.props.passwordForm.newpassword2 == undefined || this.props.passwordForm.newpassword2.trim().length === 0);
         let ChangePasswordProps = {
             controls: [
-                {name: 'password', text: 'Current Password', placeholder: '', type: 'password', state: isPasswordEmpty ? 'error' : ''},
-                {name: 'newpassword', text: 'New Password', placeholder: '', type: 'password', state: isNewPasswordEmpty ? 'error' : ''},
-                {name: 'newpassword2', text: 'Re-type New Password', placeholder: '', type: 'password', state: isNewPassword2Empty || this.isPasswordNotIdentical() ? 'error' : ''}
+                {name: 'password', text: 'Current Password', placeholder: '', type: 'password', 
+                state: !this.props.pwdInit && this.props.pwdError != undefined && this.props.pwdError['password'] ? 'error' : ''},
+                {name: 'newpassword', text: 'New Password', placeholder: '', type: 'password', 
+                state: !this.props.pwdInit && this.props.pwdError != undefined && this.props.pwdError['newpassword'] ? 'error' : ''},
+                {name: 'newpassword2', text: 'Re-type New Password', placeholder: '', type: 'password', 
+                state: !this.props.pwdInit && this.props.pwdError != undefined && this.props.pwdError['newpassword2'] ? 'error' : ''}
             ],
             buttons: [
                 <ButtonComponent key={0} color='green' text='Change Password' onClick={this.handleChangePassword.bind(this)} />,
                 <ButtonComponent key={1} color='default' text='Cancel' onClick={this.handleCancelChangePassword.bind(this)} />
             ],
             onChange: this.handlePasswordFormChanage.bind(this),
-            data: this.props.passwordForm
+            data: this.props.pwdForm
         };
 
         let options = [{
@@ -144,25 +136,13 @@ class ProfilePage extends Component {
     }
 
     componentDidMount(){
-        this.props.dispatch(Actions.fetchProfileRequest());
-        fetch('/api/v1/private/profile', {credentials: 'same-origin'}).then(function(response){
-            return response.json();
-        }).then(function(data){
-            this.props.dispatch(Actions.fetchProfileSuccess(data));
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.fetchProfileFailure(err.toString()));
-            this.props.dispatch(Actions.showToast(
-                'error',
-                'Bad Request',
-                err.toString()
-            ));
-        }.bind(this));
+        this.props.dispatch(Actions.ProfileActions.fetchProfile());
     }
 
     componentDidUpdate(){
         // Block UI
-        if((this.props.fetching != undefined && this.props.fetching) ||
-            (this.props.passwordFetching != undefined && this.props.passwordFetching)){
+        if((this.props.isFetching != undefined && this.props.isFetching) ||
+            (this.props.pwdIsFetching != undefined && this.props.pwdIsFetching)){
             App.blockUI({
                 target: '#profile_content_portlet_tab',
                 animate: true
@@ -176,155 +156,87 @@ class ProfilePage extends Component {
     }
 
     handleSaveChanges(e){
-        this.props.dispatch(Actions.saveProfileRequest());
-        let dataHasAuthToken = Object.assign({}, this.props.form, {
-            authenticity_token: Utils.csrfToken()
-        });
-        fetch('/api/v1/private/profile', {
-            method: 'POST', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify(dataHasAuthToken)
-        }).then(function(response){
-            return response.json();
-        }).then(function(data){
-            let err = data['error'];
-            if(err == undefined || err.trim().length === 0){
-                this.props.dispatch(Actions.saveProfileSuccess(data));
-                this.props.dispatch(Actions.showToast(
-                    'success',
-                    'Change Profile',
-                    'Your account has been updated successfully!'
-                ));
-            } else {
-                this.props.dispatch(Actions.saveProfileFailure(err));
-                this.props.dispatch(Actions.showToast(
-                    'error',
-                    'Change Profile',
-                    data['message']
-                ));
-            }
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.saveProfileFailure(err.toString()));
-            this.props.dispatch(Actions.showToast(
-                'error',
-                'Change Profile',
-                err.toString()
-            ));
-        }.bind(this));
+        this.props.dispatch(Actions.ProfileActions.updateProfile());
     }
 
     handleCancelChanges(e){
-        this.props.dispatch(Actions.changeCancelProfile());
+        this.props.dispatch(Actions.ProfileActions.resetProfileData());
     }
 
     handleProfileFormChanage(e, control){
-        this.props.dispatch(Actions.changeProfileForm(control.name, e.target.value));
+        this.props.dispatch(Actions.ProfileActions.changeProfileData(control.name, e.target.value));
     }
 
     handleChangePassword(){
-        this.setState({
-            isCheckPasswordFormNull: true
-        });
-        if(this.isPasswordFormComplete()){
-            this.props.dispatch(Actions.changePasswordRequest());
-            let dataHasAuthToken = Object.assign({}, this.props.passwordForm, {
-                authenticity_token: Utils.csrfToken()
-            });
-            fetch('/api/v1/private/profile/password', {
-                method: 'POST', 
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'same-origin',
-                body: JSON.stringify(dataHasAuthToken)
-            }).then(function(response){
-                return response.json();
-            }).then(function(data){
-                this.setState({
-                    isCheckPasswordFormNull: false
-                });
-                let err = data['error'];
-                if(err == undefined || err.trim().length === 0){
-                    this.props.dispatch(Actions.changePasswordSuccess(data));
-                    this.props.dispatch(Actions.showToast(
-                        'success',
-                        'Change Password',
-                        'Password has been successfully changed!'
-                    ));
-                } else {
-                    this.props.dispatch(Actions.changePasswordFailure(err));
-                    this.props.dispatch(Actions.showToast(
-                        'error',
-                        'Change Password',
-                        data['message']
-                    ));
-                }
-            }.bind(this)).catch(function(err){
-                this.props.dispatch(Actions.changePasswordFailure(err));
-                this.setState({
-                    isCheckPasswordFormNull: false
-                });
-                this.props.dispatch(Actions.showToast(
-                    'error',
-                    'Change Password',
-                    'Password update failed.'
-                ));
-            }.bind(this));
-        }
+        this.props.dispatch(Actions.PasswordActions.updatePassword());
     }
 
     handleCancelChangePassword(e){
-        this.setState({
-            isCheckPasswordFormNull: false
-        });
-        this.props.dispatch(Actions.changeCancelPassword());
+        this.props.dispatch(Actions.PasswordActions.resetPasswordData());
     }
 
     handlePasswordFormChanage(e, control){
-        this.setState({
-            isCheckPasswordFormNull: false
-        });
-        this.props.dispatch(Actions.changePasswordForm(control.name, e.target.value));
-    }
-
-    isPasswordNotIdentical(){
-        return this.props.passwordForm != undefined && 
-            this.props.passwordForm.newpassword2 != undefined && 
-            this.props.passwordForm.newpassword != this.props.passwordForm.newpassword2;
-    }
-
-    isPasswordFormComplete(){
-        return !this.isPasswordNotIdentical() && this.props.passwordForm != undefined &&
-            this.props.passwordForm.password != undefined && this.props.passwordForm.password.trim().length > 0 &&
-            this.props.passwordForm.newpassword != undefined && this.props.passwordForm.newpassword.trim().length > 0 &&
-            this.props.passwordForm.newpassword2 != undefined && this.props.passwordForm.newpassword2.trim().length > 0;
+        this.props.dispatch(Actions.PasswordActions.changePassword(control.name, e.target.value));
     }
 }
 
 ProfilePage.propTypes = {
-    fetching: PropTypes.bool,
-    form: PropTypes.object,
-    err: PropTypes.object,
+    isFetching: PropTypes.bool,
+    data: PropTypes.object,
     displayName: PropTypes.string,
     displayOccupation: PropTypes.string,
-    passwordForm: PropTypes.object,
-    passwordFetching: PropTypes.bool
+    pwdForm: PropTypes.object,
+    pwdIsFetching: PropTypes.bool,
+    pwdError: PropTypes.object,
+    pwdInit: PropTypes.bool
 };
+
+const IsFetchingSelector = state => state.profile.isFetching;
+const DataSelector = state => state.profile.data;
+const ResponseSelector = state => state.profile.response;
+const PwdFormSelector = state => state.password.form;
+const PwdIsFetchingSelector = state => state.password.isFetching;
+const PwdErrorSelector = state => state.password.error;
+const PwdInitSelector = state => state.password.init;
+const DisplayNameSelector = createSelector(
+    ResponseSelector,
+    function(data){
+        if(data == undefined){
+            return '';
+        } else if((data.first_name == undefined || data.first_name.trim().length === 0) &&
+            (data.last_name == undefined || data.last_name.trim().length === 0)) {
+            return data.email.substring(0, data.email.lastIndexOf('@')).toUpperCase(); 
+        } else {
+            let firstName = data.first_name != undefined ? data.first_name.toUpperCase() : '';
+            let lastName = data.last_name != undefined ? data.last_name.toUpperCase() : '';
+            return `${firstName} ${lastName}`.trim();
+        }
+    }
+);
+const DisplayOccupationSelector = createSelector(
+    ResponseSelector,
+    function(data){
+        if(data == undefined){
+            return '';
+        }
+        if(data.occupation != undefined && data.occupation.trim().length > 0){
+            return data.occupation.toUpperCase();
+        } else {
+            return '';
+        }
+    }
+);
 
 function select(state){
     return {
-        fetching: ProfileSelectors.FetchingSelector(state),
-        form: ProfileSelectors.FormSelector(state),
-        err: ProfileSelectors.FetchErrSelector(state),
-        displayName: ProfileSelectors.DisplayNameSelector(state),
-        displayOccupation: ProfileSelectors.DisplayOccupationSelector(state),
-        passwordForm: ProfileSelectors.PasswordFormSelector(state),
-        passwordFetching: ProfileSelectors.PasswordFetchingSelector(state)
+        isFetching: IsFetchingSelector(state),
+        data: DataSelector(state),
+        displayName: DisplayNameSelector(state),
+        displayOccupation: DisplayOccupationSelector(state),
+        pwdForm: PwdFormSelector(state),
+        pwdIsFetching: PwdIsFetchingSelector(state),
+        pwdError: PwdErrorSelector(state),
+        pwdInit: PwdInitSelector(state)
     };
 }
 

@@ -15,12 +15,19 @@ export function fetchBotsRequest(){
     return action;
 }
 
-export function fetchBotsSuccess(response){
+export function fetchBotsSuccess_(response){
     const action = {
         type: TYPE_FETCH_BOTS_SUCCESS,
         response: response
     };
     return action;
+}
+
+export function fetchBotsSuccess(response){
+    return function(dispatch, getState){
+        dispatch(fetchBotsSuccess_(response));
+        dispatch(changeCurrentBot());
+    };
 }
 
 export function fetchBotsFailure(){
@@ -30,7 +37,7 @@ export function fetchBotsFailure(){
     return action;
 }
 
-export function fetchBots(showToast = true){
+export function fetchBots(silence = false){
     return function(dispatch){
         dispatch(fetchBotsRequest());
         return Utils.get('/api/v1/private/bots').then(function(response){
@@ -41,7 +48,7 @@ export function fetchBots(showToast = true){
                 dispatch(fetchBotsSuccess(data));
             } else {
                 dispatch(fetchBotsFailure());
-                if(showToast){
+                if(!silence){
                     dispatch(showToast(
                         'error', 'Fetch Bots', data['message'] != undefined ? data['message'] : err
                     ));
@@ -49,7 +56,7 @@ export function fetchBots(showToast = true){
             }
         }).catch(function(err){
             dispatch(fetchBotsFailure());
-            if(showToast){
+            if(!silence){
                 dispatch(showToast(
                     'error', 'Bad Request', err.toString()
                 ));
@@ -58,10 +65,10 @@ export function fetchBots(showToast = true){
     }
 }
 
-export function changeCurrentBot(bot){
+export function changeCurrentBot(id){
     const action = {
         type: TYPE_CHANGE_CURRENT_BOT,
-        bot: bot
+        id: id
     }
     return action;
 }

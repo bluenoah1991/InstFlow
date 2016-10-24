@@ -4,7 +4,9 @@ import {ActionTypes} from '../actions';
 export default function(state={}, action){
     switch(action.type){
         case ActionTypes.TYPE_FETCH_PROFILE_REQUEST:
-            return { isFetching: true };
+            return Object.assign({}, state, {
+                isFetching: true
+            });
         case ActionTypes.TYPE_FETCH_PROFILE_SUCCESS:
             return Object.assign({}, state, {
                 isFetching: false,
@@ -24,7 +26,9 @@ export default function(state={}, action){
                 data: state.response
             });
         case ActionTypes.TYPE_UPDATE_PROFILE_REQUEST:
-            return { isFetching: true };
+            return Object.assign({}, state, {
+                isFetching: true
+            });
         case ActionTypes.TYPE_UPDATE_PROFILE_SUCCESS:
             return Object.assign({}, state, {
                 isFetching: false,

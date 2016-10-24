@@ -12,7 +12,9 @@ export default function(state={}, action){
                 relatedTarget: action.relatedTarget
             });
         case ActionTypes.TYPE_SHOW_MODAL_FINISH:
-            return { show: false };
+            return Object.assign({}, state, {
+                show: false
+            });
         default:
             return state;
     }

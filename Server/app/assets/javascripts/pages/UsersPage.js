@@ -108,43 +108,32 @@ class UsersPage extends Component{
         // handle row action
         grid.getTable().on('click', 'tbody > tr > td:last-child a.action-enable,button.action-enable', _.partial(function(e, the) {
             e.preventDefault();
-            the.props.dispatch(Actions.showModal(
+            the.props.dispatch(Actions.ModalActions.showModal(
             null, null, function(e){
                 let target = $(e.relatedTarget);
                 let data = target.data();
                 let id = parseInt(data.id);
-                let dataHasAuthToken = Object.assign({}, {id : id}, {
-                    authenticity_token: Utils.csrfToken()
-                });
 
-                fetch('/api/v1/private/users/enable', {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dataHasAuthToken)
-                }).then(function(response){
+                Utils.post('/api/v1/private/users/enable', {id: id}).then(function(response){
                     return response.json();
                 }).then(function(data){
                     let err = data['error'];
                     if(err == undefined || err.trim().length === 0){
-                        this.props.dispatch(Actions.showToast(
+                        this.props.dispatch(Actions.ToastActions.showToast(
                             'success',
                             'Enable User',
                             'User has been enabled.'
                         ));
                         this.handleRefresh();
                     } else {
-                        this.props.dispatch(Actions.showToast(
+                        this.props.dispatch(Actions.ToastActions.showToast(
                             'error',
                             'Enable User',
                             data['message']
                         ));
                     }
                 }.bind(this)).catch(function(err){
-                    this.props.dispatch(Actions.showToast(
+                    this.props.dispatch(Actions.ToastActions.showToast(
                         'error',
                         'Enable User',
                         err.toString()
@@ -155,43 +144,32 @@ class UsersPage extends Component{
 
         grid.getTable().on('click', 'tbody > tr > td:last-child a.action-disable,button.action-disable', _.partial(function(e, the) {
             e.preventDefault();
-            the.props.dispatch(Actions.showModal(
+            the.props.dispatch(Actions.ModalActions.showModal(
             null, null, function(e){
                 let target = $(e.relatedTarget);
                 let data = target.data();
                 let id = parseInt(data.id);
-                let dataHasAuthToken = Object.assign({}, {id : id}, {
-                    authenticity_token: Utils.csrfToken()
-                });
 
-                fetch('/api/v1/private/users/disable', {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dataHasAuthToken)
-                }).then(function(response){
+                Utils.post('/api/v1/private/users/disable', {id: id}).then(function(response){
                     return response.json();
                 }).then(function(data){
                     let err = data['error'];
                     if(err == undefined || err.trim().length === 0){
-                        this.props.dispatch(Actions.showToast(
+                        this.props.dispatch(Actions.ToastActions.showToast(
                             'success',
                             'Disable User',
                             'User has been disabled.'
                         ));
                         this.handleRefresh();
                     } else {
-                        this.props.dispatch(Actions.showToast(
+                        this.props.dispatch(Actions.ToastActions.showToast(
                             'error',
                             'Disable User',
                             data['message']
                         ));
                     }
                 }.bind(this)).catch(function(err){
-                    this.props.dispatch(Actions.showToast(
+                    this.props.dispatch(Actions.ToastActions.showToast(
                         'error',
                         'Disable User',
                         err.toString()

@@ -1,9 +1,12 @@
+import _ from 'underscore';
+
 import {
     TYPE_CHANGE_PASSWORD_DATA,
     TYPE_CLEAN_PASSWORD_DATA,
     TYPE_UPDATE_PASSWORD_REQUEST,
     TYPE_UPDATE_PASSWORD_SUCCESS,
-    TYPE_UPDATE_PASSWORD_FAILURE
+    TYPE_UPDATE_PASSWORD_FAILURE,
+    TYPE_CHECK_PASSWORD_DATA
 } from './ActionTypes';
 
 import * as Utils from '../utils';
@@ -23,6 +26,20 @@ export function resetPasswordData(){
         type: TYPE_CLEAN_PASSWORD_DATA
     };
     return action;
+}
+
+export function checkPasswordData(){
+    const action = {
+        type: TYPE_CHECK_PASSWORD_DATA
+    };
+    return action;
+}
+
+export function changePassword(name, value){
+    return function(dispatch, getState){
+        dispatch(changePasswordData(name, value));
+        dispatch(checkPasswordData());
+    };
 }
 
 export function updatePasswordRequest(){
@@ -49,7 +66,17 @@ export function updatePasswordFailure(){
 
 export function updatePassword(){
     return function(dispatch, getState){
+        dispatch(checkPasswordData());
         let rootState = getState();
+        if(rootState.password.error != undefined){
+            let isOk = true;
+            _.mapObject(rootState.password.error, function(val, key){
+                if(val){ isOk = false; }
+            });
+            if(!isOk){
+                return Promise.resolve();
+            }
+        }
         if(rootState.password.form == undefined){
             return Promise.resolve();
         }

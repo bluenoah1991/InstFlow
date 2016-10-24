@@ -7,7 +7,6 @@
 	"bot": {
 		"items": {
 			"id": {
-				"isFetching": false,
 				"data": {},
 				"response": {},
 				"recentCreated": false
@@ -24,12 +23,13 @@
 	},
 	"password": {
 		"form": {},
-		"isFetching": false
+		"isFetching": false,
+		"init": true,
+		"error": {"": false}
 	},
 	"user": {
 		"items": {
 			"id": {
-				"isFetching": false,
 				"data": {},
 				"response": {}
 			}
@@ -38,7 +38,7 @@
 	},
 	"toast": {
 		"show": false,
-		"type": "info/success/error",
+		"type": "info/success/warning/error",
 		"title": "",
 		"body": ""
 	},

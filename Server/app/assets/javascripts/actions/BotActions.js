@@ -17,8 +17,10 @@ import {
     TYPE_CHANGE_BOT_DATA,
     TYPE_RESET_BOT_DATA,
     TYPE_CHANGE_NEW_BOT_DATA,
-    TYPE_RESET_NEW_BOT_DATA
+    TYPE_CLEAN_NEW_BOT_DATA
 } from './ActionTypes';
+
+import {fetchBots} from './BotsActions';
 
 import * as Utils from '../utils';
 import {showToast} from './ToastActions';
@@ -45,7 +47,7 @@ export function createBotFailure(){
     return action;
 }
 
-export function createBot(){
+export function createBot(callback){
     return function(dispatch, getState){
         let rootState = getState();
         if(rootState.bot.form == undefined){
@@ -61,6 +63,10 @@ export function createBot(){
                 dispatch(showToast(
                     'success', 'Create Bot', `Bot ${rootState.bot.form.name} has been created.`
                 ));
+                dispatch(fetchBots(true));
+                if(callback != undefined){
+                    callback(data);
+                }
             } else {
                 dispatch(createBotFailure());
                 dispatch(showToast(
@@ -83,10 +89,10 @@ export function removeBotRequest(){
     return action;
 }
 
-export function removeBotSuccess(response){
+export function removeBotSuccess(id){
     const action = {
         type: TYPE_DELETE_BOT_SUCCESS,
-        response: response
+        id: id
     };
     return action;
 }
@@ -106,11 +112,12 @@ export function removeBot(id){
         }).then(function(data){
             let err = data['error'];
             if(err == undefined || err.trim().length === 0){
-                dispatch(removeBotSuccess(data));
+                dispatch(removeBotSuccess(id));
                 let name = data['name'];
                 dispatch(showToast(
                     'success', 'Delete Bot', `Bot ${name} has been removed.`
                 ));
+                dispatch(fetchBots(true));
             } else {
                 dispatch(removeBotFailure());
                 dispatch(showToast(
@@ -172,6 +179,7 @@ export function updateBot(id){
                 dispatch(showToast(
                     'success', 'Update Bot', `Bot ${bot.name} has been updated.`
                 ));
+                dispatch(fetchBots(false));
             } else {
                 dispatch(updateBotFailure());
                 dispatch(showToast(
@@ -210,7 +218,14 @@ export function fetchBotFailure(){
 }
 
 export function fetchBot(id){
-    return function(dispatch){
+    return function(dispatch, getState){
+        let rootState = getState();
+        if(rootState.bot.items != undefined){
+            let item = rootState.bot.items[id];
+            if(item != undefined && item.recentCreated){
+                return Promise.resolve();
+            }
+        }
         dispatch(fetchBotRequest());
         return Utils.get(`/api/v1/private/bots/${id}`).then(function(response){
             return response.json();
@@ -258,15 +273,26 @@ export function connectBotFailure(){
 export function connectBot(appid, appsecret){
     return function(dispatch){
         dispatch(connectBotRequest());
-        return Utils.post('/api/v1/private/bots/connect').then(function(response){
+        return Utils.post('/api/v1/private/bots/connect', {
+            ms_appid: appid,
+            ms_appsecret: appsecret
+        }).then(function(response){
             return response.json();
         }).then(function(data){
             let err = data['error'];
+            let state = data['state'];
             if(err == undefined || err.trim().length === 0){
-                dispatch(connectBotSuccess(data));
-                dispatch(showToast(
-                    'success', 'Connect Microsoft Account', 'Connected'
-                ));
+                if(state != undefined && state === 1){
+                    dispatch(connectBotSuccess(data));
+                    dispatch(showToast(
+                        'success', 'Connect Microsoft Account', 'Connected'
+                    ));
+                } else {
+                    dispatch(connectBotFailure());
+                    dispatch(showToast(
+                        'error', 'Connect Microsoft Account', 'Validation failed.'
+                    ));
+                }
             } else {
                 dispatch(connectBotFailure());
                 dispatch(showToast(
@@ -282,18 +308,20 @@ export function connectBot(appid, appsecret){
     }
 }
 
-export function changeBotData(name, value){
+export function changeBotData(id, name, value){
     const action = {
         type: TYPE_CHANGE_BOT_DATA,
+        id: id,
         name: name,
         value: value
     };
     return action;
 }
 
-export function resetBotData(){
+export function resetBotData(id){
     const action = {
-        type: TYPE_RESET_BOT_DATA
+        type: TYPE_RESET_BOT_DATA,
+        id: id
     };
     return action;
 }
@@ -309,7 +337,7 @@ export function changeNewBotData(name, value){
 
 export function resetNewBotData(){
     const action = {
-        type: TYPE_RESET_NEW_BOT_DATA
+        type: TYPE_CLEAN_NEW_BOT_DATA
     };
     return action;
 }
