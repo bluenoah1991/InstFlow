@@ -29,7 +29,7 @@ class BotCreatePage extends Component {
         
         // microsoft account connect state
         let ConnectStateProps = {
-            state: this.props.state != undefined ? this.props.state : 'init',
+            state: this.props.currentConnectState != undefined ? this.props.currentConnectState : 'init',
             onClick: this.handleConnect.bind(this)
         };
 
@@ -71,137 +71,53 @@ class BotCreatePage extends Component {
     componentDidMount(){
         // Set route leave hook
         this.props.router.setRouteLeaveHook(this.props.route, function(){
-            this.props.dispatch(Actions.changeCancelBotCreate());
+            this.props.dispatch(Actions.BotActions.resetNewBotData());
         }.bind(this));
     }
 
     componentWillMount(){
-        this.props.dispatch(Actions.cleanBotForm());
+        this.props.dispatch(Actions.BotActions.resetNewBotData());
     }
 
     handleConnect(){
-        this.props.dispatch(Actions.connectMSRequest());
-        let dataHasAuthToken = Object.assign({}, this.props.form, {
-            authenticity_token: Utils.csrfToken()
-        });
-        fetch('/api/v1/private/bots/connect', {
-            method: 'POST', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify(dataHasAuthToken)
-        }).then(function(response){
-            return response.json();
-        }).then(function(data){
-            let err = data['error'];
-            let state = data['state'];
-            if(err == undefined || err.trim().length === 0){
-                if(state != undefined && state === 1){
-                    this.props.dispatch(Actions.connectMSSuccess(data));
-                    this.props.dispatch(Actions.showToast(
-                        'success',
-                        'Connect Microsoft Account',
-                        'Connected.'
-                    ));
-                } else {
-                    this.props.dispatch(Actions.connectMSFailure(err));
-                    this.props.dispatch(Actions.showToast(
-                        'error',
-                        'Connect Microsoft Account',
-                        'Validation failed.'
-                    ));
-                }
-            } else {
-                this.props.dispatch(Actions.connectMSFailure(err));
-                this.props.dispatch(Actions.showToast(
-                    'error',
-                    'Connect Microsoft Account',
-                    data['message']
-                ));
-            }
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.connectMSFailure(err.toString()));
-            this.props.dispatch(Actions.showToast(
-                'error',
-                'Connect Microsoft Account',
-                err.toString()
-            ));
-        }.bind(this));
+        if(this.props.form == undefined){
+            return;
+        }
+        let appid = this.props.form.ms_appid;
+        let appsecret = this.props.form.ms_appsecret;
+        this.props.dispatch(Actions.BotActions.connectBot(appid, appsecret));
     }
 
     handleFormChange(e, control){
-        this.props.dispatch(Actions.changeBotCreateForm(control.name, e.target.value));
+        this.props.dispatch(Actions.BotActions.changeNewBotData(control.name, e.target.value));
     }
 
     handleCancelCreate(e){
-        this.props.dispatch(Actions.changeCancelBotCreate());
         this.props.router.push('/bots');
     }
 
     handleCreate(e){
-        this.props.dispatch(Actions.createBotRequest());
-        let dataHasAuthToken = Object.assign({}, this.props.form, {
-            authenticity_token: Utils.csrfToken()
-        });
-        fetch('/api/v1/private/bots', {
-            method: 'POST', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify(dataHasAuthToken)
-        }).then(function(response){
-            return response.json();
-        }).then(function(data){
-            let err = data['error'];
-            if(err == undefined || err.trim().length === 0){
-            this.props.dispatch(Actions.createBotSuccess(data));
-                this.props.dispatch(Actions.showToast(
-                    'success',
-                    'Create Bot',
-                    `${this.props.form.name} bot has been created.`
-                ));
-                this.props.router.push(`/bots/${data.id}`);
-            } else {
-                this.props.dispatch(Actions.createBotFailure(err));
-                this.props.dispatch(Actions.showToast(
-                    'error',
-                    'Create Bot',
-                    data['message']
-                ));
-            }
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.createBotFailure(err.toString()));
-            this.props.dispatch(Actions.showToast(
-                'error',
-                'Create Bot',
-                err.toString()
-            ));
-        }.bind(this));
+        this.props.dispatch(Actions.BotActions.createBot(function(data){
+            this.props.router.push(`/bots/${data.id}`);
+        }.bind(this)));
     }
 }
 
 BotCreatePage.propTypes = {
-    fetching: PropTypes.bool,
+    isFetching: PropTypes.bool,
     form: PropTypes.object,
-    err: PropTypes.string,
-    state: PropTypes.string
+    currentConnectState: PropTypes.string
 };
 
-const FetchingSelector = state => state.bot.data.fetching;
-const FormSelector = state => state.bot.data.form;
-const FetchErrSelector = state => state.bot.data.err;
-const StateSelector = state => state.bot.data.connect_state;
+const IsFetchingSelector = state => state.bot.isFetching;
+const FormSelector = state => state.bot.form;
+const CurrentStateSelector = state => state.bot.currentConnectState;
 
 function select(state){
     return {
-        fetching: FetchingSelector(state),
+        isFetching: IsFetchingSelector(state),
         form: FormSelector(state),
-        err: FetchErrSelector(state),
-        state: StateSelector(state)
+        currentConnectState: CurrentStateSelector(state)
     };
 }
 

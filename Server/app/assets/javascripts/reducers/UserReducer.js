@@ -1,32 +1,29 @@
 import {combineReducers} from 'redux';
-import {
-    TYPE_FETCH_USER_REQUEST,
-    TYPE_FETCH_USER_SUCCESS,
-    TYPE_FETCH_USER_FAILURE
-} from '../actions';
+import {ActionTypes} from '../actions';
 
-function UserReducer(state={}, action){
+import Immutable from 'immutable';
+
+export default function(state={}, action){
     switch(action.type){
-        case TYPE_FETCH_USER_REQUEST:
+        case ActionTypes.TYPE_FETCH_USER_REQUEST:
             return Object.assign({}, state, {
-                fetching: true
+                isFetching: true
             });
-        case TYPE_FETCH_USER_SUCCESS:
-            return Object.assign({}, state, {
-                fetching: false,
-                response: action.response,
-                form: action.response
+        case ActionTypes.TYPE_FETCH_USER_SUCCESS:
+            var items = Immutable.fromJS(state.items != undefined ? state.items : {});
+            items = items.setIn([action.response.id], {
+                data: action.response,
+                response: action.response
             });
-        case TYPE_FETCH_USER_FAILURE:
             return Object.assign({}, state, {
-                fetching: false,
-                err: action.err
+                isFetching: false,
+                items: items.toJS()
+            });
+        case ActionTypes.TYPE_FETCH_USER_FAILURE:
+            return Object.assign({}, state, {
+                isFetching: false
             });
         default:
             return state;
     }
 }
-
-export default combineReducers({
-    data: UserReducer
-});

@@ -32,8 +32,8 @@ class BotsPage extends Component{
         };
 
         let PortletBody = null;
-        if(this.props.list != undefined && this.props.list.length > 0){
-            let data = this.props.list.map(function(item){
+        if(this.props.data != undefined && this.props.data.length > 0){
+            let data = this.props.data.map(function(item){
                 return Object.assign({}, item, {
                     ms_app: this.connectState(item),
                     actions: [
@@ -82,12 +82,12 @@ class BotsPage extends Component{
     }
 
     componentDidMount(){
-        this.fetchBots();
+        this.props.dispatch(Actions.BotsActions.fetchBots());
     }
 
     componentDidUpdate(){
         // Block UI
-        if(this.props.fetching != undefined && this.props.fetching){
+        if(this.props.isFetching != undefined && this.props.isFetching){
             App.blockUI({
                 target: '#bots_content_portlet',
                 animate: true
@@ -100,22 +100,6 @@ class BotsPage extends Component{
         }
     }
 
-    fetchBots(){
-        this.props.dispatch(Actions.fetchBotsRequest());
-        fetch('/api/v1/private/bots', {credentials: 'same-origin'}).then(function(response){
-            return response.json();
-        }).then(function(data){
-            this.props.dispatch(Actions.fetchBotsSuccess(data));
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.fetchBotsFailure(err.toString()));
-            this.props.dispatch(Actions.showToast(
-                'error',
-                'Bad Request',
-                err.toString()
-            ));
-        }.bind(this));
-    }
-
     connectState(item){
         if(item.connected){
             return <span className="label label-sm label-success"> <i className="fa fa-check"></i> Connected </span>
@@ -125,64 +109,26 @@ class BotsPage extends Component{
     }
 
     handleDelete(e, item){
-        this.props.dispatch(Actions.showModal(
+        this.props.dispatch(Actions.ModalActions.showModal(
             null, null, function(){
-                this.props.dispatch(Actions.deleteBotRequest());
-                fetch(`/api/v1/private/bots/${item.id}`, {
-                    method: 'DELETE',
-                    credentials: 'same-origin',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                }).then(function(response){
-                    return response.json();
-                }).then(function(data){
-                    let err = data['error'];
-                    if(err == undefined || err.trim().length === 0){
-                        this.props.dispatch(Actions.deleteBotSuccess(data));
-                        this.fetchBots();
-                        this.props.dispatch(Actions.showToast(
-                            'success',
-                            'Delete Bot',
-                            `You have successfully removed the bot ${item.name}.`
-                        ));
-                    } else {
-                        this.props.dispatch(Actions.deleteBotFailure(err.toString()));
-                        this.props.dispatch(Actions.showToast(
-                            'error',
-                            'Delete Bot',
-                            data['message']
-                        ));
-                    }
-                }.bind(this)).catch(function(err){
-                    this.props.dispatch(Actions.deleteBotFailure(err.toString()));
-                    this.props.dispatch(Actions.showToast(
-                        'error',
-                        'Bad Request',
-                        err.toString()
-                    ));
-                }.bind(this));
+                this.props.dispatch(Actions.BotActions.removeBot(item.id));
             }.bind(this)
         ));
     }
 }
 
 BotsPage.propTypes = {
-    fetching: PropTypes.bool,
-    list: PropTypes.array,
-    err: PropTypes.string
+    isFetching: PropTypes.bool,
+    data: PropTypes.array
 };
 
-const FetchingSelector = state => state.bot.data.fetching;
-const ListSelector = state => state.bot.data.list;
-const FetchErrSelector = state => state.bot.data.err;
+const IsFetchingSelector = state => state.bots.isFetching;
+const DataSelector = state => state.bots.data;
 
 function select(state){
     return {
-        fetching: FetchingSelector(state),
-        list: ListSelector(state),
-        err: FetchErrSelector(state)
+        isFetching: IsFetchingSelector(state),
+        data: DataSelector(state)
     };
 }
 

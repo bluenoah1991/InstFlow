@@ -1,0 +1,52 @@
+{
+	"bots": {
+		"currentBot": {},
+		"isFetching": false,
+		"data": []
+	},
+	"bot": {
+		"items": {
+			"id": {
+				"data": {},
+				"response": {},
+				"recentCreated": false
+			}
+		},
+		"form": {},
+		"isFetching": false,
+		"currentConnectState": "init/connecting/connected/error"
+	},
+	"profile": {
+		"isFetching": false,
+		"data": {},
+		"response": {}
+	},
+	"password": {
+		"form": {},
+		"isFetching": false,
+		"init": true,
+		"error": {"": false}
+	},
+	"user": {
+		"items": {
+			"id": {
+				"data": {},
+				"response": {}
+			}
+		},
+		"isFetching": false
+	},
+	"toast": {
+		"show": false,
+		"type": "info/success/warning/error",
+		"title": "",
+		"body": ""
+	},
+	"modal": {
+		"show": false,
+		"title": "",
+		"body": "",
+		"handleMethod": {},
+		"relatedTarget": {}
+	}
+}

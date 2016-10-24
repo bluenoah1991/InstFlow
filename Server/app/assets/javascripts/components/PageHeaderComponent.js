@@ -10,10 +10,6 @@ import * as Utils from '../utils';
 class PageHeaderComponent extends Component{
     render(){
         let displayName = Utils.meta('displayname');
-        if(this.props.username != undefined && this.props.username.trim().length > 0){
-            displayName = this.props.username;
-        }
-
         let BotButtonProps = {
             bots: this.props.bots,
             currentBot: this.props.currentBot
@@ -172,31 +168,21 @@ class PageHeaderComponent extends Component{
     }
 
     componentDidMount(){
-        this.props.dispatch(Actions.refreshBotsRequest());
-        fetch('/api/v1/private/bots', {credentials: 'same-origin'}).then(function(response){
-            return response.json();
-        }).then(function(data){
-            this.props.dispatch(Actions.refreshBotsSuccess(data));
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.refreshBotsFailure(err.toString()));
-        }.bind(this));
+        this.props.dispatch(Actions.BotsActions.fetchBots());
     }
 }
 
 PageHeaderComponent.propTypes = {
     bots: PropTypes.array,
-    username: PropTypes.string,
     currentBot: PropTypes.object
 };
 
-const BotsSelector = state => state.global.bots.form;
-const UserNameSelector = state => state.global.meta.username;
-const CurrentBotSelector = state => state.global.bots.currentBot;
+const BotsSelector = state => state.bots.data;
+const CurrentBotSelector = state => state.bots.currentBot;
 
 function select(state){
     return {
         bots: BotsSelector(state),
-        username: UserNameSelector(state),
         currentBot: CurrentBotSelector(state)
     };
 }

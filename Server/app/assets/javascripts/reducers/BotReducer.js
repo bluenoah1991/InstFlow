@@ -1,163 +1,153 @@
 import {combineReducers} from 'redux';
-import {
-    TYPE_FETCH_BOT_REQUEST,
-    TYPE_FETCH_BOT_SUCCESS,
-    TYPE_FETCH_BOT_FAILURE,
-    TYPE_SAVE_BOT_REQUEST,
-    TYPE_SAVE_BOT_SUCCESS,
-    TYPE_SAVE_BOT_FAILURE,
-    TYPE_CHANGE_BOT_FORM,
-    TYPE_CHANGE_CANCEL_BOT,
-    TYPE_BOT_CREATE_REQUEST, 
-    TYPE_BOT_CREATE_SUCCESS, 
-    TYPE_BOT_CREATE_FAILURE,
-    TYPE_CHANGE_BOT_CREATE_FORM,
-    TYPE_CHANGE_CANCEL_BOT_CREATE,
-    TYPE_CLEAN_BOT_FORM,
-    TYPE_FETCH_BOTS_REQUEST,
-    TYPE_FETCH_BOTS_SUCCESS,
-    TYPE_FETCH_BOTS_FAILURE,
-    TYPE_OPEN_RECENT_CRAETED_BOT,
-    TYPE_CONNECT_MS_REQUEST,
-    TYPE_CONNECT_MS_SUCCESS,
-    TYPE_CONNECT_MS_FAILURE
-} from '../actions';
+import {ActionTypes} from '../actions';
 
-function BotReducer(state={}, action){
+import _ from 'underscore';
+import Immutable from 'immutable';
+
+export default function(state={}, action){
     switch(action.type){
-        case TYPE_BOT_CREATE_REQUEST:
+        case ActionTypes.TYPE_CREATE_BOT_REQUEST:
             return Object.assign({}, state, {
-                fetching: true
+                isFetching: true
             });
-        case TYPE_BOT_CREATE_SUCCESS:
-            return Object.assign({}, state, {
-                fetching: false,
+        case ActionTypes.TYPE_CREATE_BOT_SUCCESS:
+            var items = Immutable.fromJS(state.items != undefined ? state.items : {});
+            items = items.setIn([action.response.id], {
+                data: action.response,
                 response: action.response,
-                form: action.response,
-                recent_created: action.response
+                recentCreated: true
             });
-        case TYPE_BOT_CREATE_FAILURE:
             return Object.assign({}, state, {
-                fetching: false,
-                err: action.err
-            });
-        case TYPE_CHANGE_BOT_CREATE_FORM:
-            var changedData = Object.assign({}, state.form);
-            changedData[action.fieldName] = action.value;
-            var connect_state = state.connect_state;
-            if(action.fieldName == 'ms_appid' || action.fieldName == 'ms_appsecret'){
-                connect_state = 'init';
-            }
-            return Object.assign({}, state, {
-                form: changedData,
-                connect_state: connect_state
-            });
-        case TYPE_CHANGE_CANCEL_BOT_CREATE:
-            return Object.assign({}, state, {
+                isFetching: false,
                 form: null,
-                connect_state: null
+                items: items.toJS()
             });
-        case TYPE_FETCH_BOT_REQUEST:
+        case ActionTypes.TYPE_CREATE_BOT_FAILURE:
             return Object.assign({}, state, {
-                fetching: true
-            });
-        case TYPE_FETCH_BOT_SUCCESS:
-            var connect_state = 'init';
-            if(action.response.connected){
-                connect_state = 'connected';
-            }
-            return Object.assign({}, state, {
-                fetching: false,
-                response: action.response,
-                form: action.response,
-                connect_state: connect_state
-            });
-        case TYPE_FETCH_BOT_FAILURE:
-            return Object.assign({}, state, {
-                fetching: false,
-                err: action.err
-            });
-        case TYPE_SAVE_BOT_REQUEST:
-            return Object.assign({}, state, {
-                fetching: true
-            });
-        case TYPE_SAVE_BOT_SUCCESS:
-            return Object.assign({}, state, {
-                fetching: false,
-                response: action.response,
-                form: action.response
-            });
-        case TYPE_SAVE_BOT_FAILURE:
-            return Object.assign({}, state, {
-                fetching: false,
-                err: action.err
-            });
-        case TYPE_CHANGE_BOT_FORM:
-            var changedData = Object.assign({}, state.form);
-            changedData[action.fieldName] = action.value;
-            var connect_state = state.connect_state;
-            if(action.fieldName == 'ms_appid' || action.fieldName == 'ms_appsecret'){
-                connect_state = 'init';
-            }
-            return Object.assign({}, state, {
-                form: changedData,
-                connect_state: connect_state
-            });
-        case TYPE_CHANGE_CANCEL_BOT:
-            var connect_state = 'init';
-            if(state.response.connected){
-                connect_state = 'connected';
-            }
-            return Object.assign({}, state, {
-                form: state.response,
-                connect_state: connect_state
-            });
-        case TYPE_CLEAN_BOT_FORM:
-            return Object.assign({}, state, {
+                isFetching: false,
                 form: null
             });
-        case TYPE_FETCH_BOTS_REQUEST:
+        case ActionTypes.TYPE_DELETE_BOT_REQUEST:
             return Object.assign({}, state, {
-                fetching: true
+                isFetching: true
             });
-        case TYPE_FETCH_BOTS_SUCCESS:
+        case ActionTypes.TYPE_DELETE_BOT_SUCCESS:
+            var items = Immutable.fromJS(state.items != undefined ? state.items : {});
+            items.delete(action.id);
             return Object.assign({}, state, {
-                fetching: false,
-                list: action.response
+                isFetching: false,
+                items: items.toJS()
             });
-        case TYPE_FETCH_BOTS_FAILURE:
+        case ActionTypes.TYPE_DELETE_BOT_FAILURE:
             return Object.assign({}, state, {
-                fetching: false,
-                err: action.err
+                isFetching: false
             });
-        case TYPE_OPEN_RECENT_CRAETED_BOT:
-            var connect_state = 'init';
-            if(state.recent_created.connected){
-                connect_state = 'connected';
+        case ActionTypes.TYPE_UPDATE_BOT_REQUEST:
+            return Object.assign({}, state, {
+                isFetching: true
+            });
+        case ActionTypes.TYPE_UPDATE_BOT_SUCCESS:
+            var items = Immutable.fromJS(state.items != undefined ? state.items : {});
+            items = items.setIn([action.response.id], {
+                data: action.response,
+                response: action.response,
+                recentCreated: false
+            });
+            return Object.assign({}, state, {
+                isFetching: false,
+                items: items.toJS()
+            });
+        case ActionTypes.TYPE_UPDATE_BOT_FAILURE:
+            return Object.assign({}, state, {
+                isFetching: false
+            });
+        case ActionTypes.TYPE_FETCH_BOT_REQUEST:
+            return Object.assign({}, state, {
+                isFetching: true
+            });
+        case ActionTypes.TYPE_FETCH_BOT_SUCCESS:
+            var items = Immutable.fromJS(state.items != undefined ? state.items : {});
+            items = items.setIn([action.response.id], {
+                data: action.response,
+                response: action.response,
+                recentCreated: false
+            });
+            var currentConnectState = 'init';
+            if(action.response.connected){
+                currentConnectState = 'connected';
             }
             return Object.assign({}, state, {
-                response: state.recent_created,
-                form: state.recent_created,
-                connect_state: connect_state,
-                recent_created: null
+                isFetching: false,
+                currentConnectState: currentConnectState,
+                items: items.toJS()
             });
-        case TYPE_CONNECT_MS_REQUEST:
+        case ActionTypes.TYPE_FETCH_BOT_FAILURE:
             return Object.assign({}, state, {
-                connect_state: 'connecting'
+                isFetching: false
             });
-        case TYPE_CONNECT_MS_SUCCESS:
+        case ActionTypes.TYPE_CONNECT_BOT_REQUEST:
             return Object.assign({}, state, {
-                connect_state: 'connected'
+                currentConnectState: 'connecting'
             });
-        case TYPE_CONNECT_MS_FAILURE:
+        case ActionTypes.TYPE_CONNECT_BOT_SUCCESS:
             return Object.assign({}, state, {
-                connect_state: 'error'
+                currentConnectState: 'connected'
+            });
+        case ActionTypes.TYPE_CONNECT_BOT_FAILURE:
+            return Object.assign({}, state, {
+                currentConnectState: 'error'
+            });
+        case ActionTypes.TYPE_CHANGE_BOT_DATA:
+            if(state.items == undefined){
+                return state;
+            }
+            var items = Immutable.fromJS(state.items != undefined ? state.items : {});
+            items = items.updateIn([action.id, 'data'], function(item){
+                if(item != undefined){
+                    item = item.set(action.name, action.value);
+                }
+                return item;
+            });
+            var currentConnectState = state.currentConnectState;
+            if(action.name == 'ms_appid' || action.name == 'ms_appsecret'){
+                currentConnectState = 'init';
+            }
+            return Object.assign({}, state, {
+                items: items.toJS(),
+                currentConnectState: currentConnectState
+            });
+        case ActionTypes.TYPE_RESET_BOT_DATA:
+            if(state.items == undefined){
+                return state;
+            }
+            var items = Immutable.fromJS(state.items != undefined ? state.items : {});
+            items = items.updateIn([action.id], function(item){
+                if(item != undefined){
+                    item = item.set('data', item.response);
+                }
+                return item;
+            });
+            return Object.assign({}, state, {
+                items: items.toJS(),
+                currentConnectState: 'init'
+            });
+        case ActionTypes.TYPE_CHANGE_NEW_BOT_DATA:
+            var form = Object.assign({}, state.form);
+            form[action.name] = action.value;
+            var currentConnectState = state.currentConnectState;
+            if(action.name == 'ms_appid' || action.name == 'ms_appsecret'){
+                currentConnectState = 'init';
+            }
+            return Object.assign({}, state, {
+                form: form,
+                currentConnectState: currentConnectState
+            });
+        case ActionTypes.TYPE_CLEAN_NEW_BOT_DATA:
+            return Object.assign({}, state, {
+                form: null,
+                currentConnectState: 'init'
             });
         default:
             return state;
     }
 }
-
-export default combineReducers({
-    data: BotReducer
-});

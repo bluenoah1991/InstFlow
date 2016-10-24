@@ -1,17 +1,19 @@
 import {combineReducers} from 'redux';
 
-import GlobalReducer from './GlobalReducer';
 import ToastReducer from './ToastReducer';
 import ModalReducer from './ModalReducer';
 import ProfileReducer from './ProfileReducer';
+import PasswordReducer from './PasswordReducer';
+import BotsReducer from './BotsReducer';
 import BotReducer from './BotReducer';
 import UserReducer from './UserReducer';
 
 const reducers = combineReducers({
-    global: GlobalReducer,
-    modal: ModalReducer,
     toast: ToastReducer,
+    modal: ModalReducer,
     profile: ProfileReducer,
+    password: PasswordReducer,
+    bots: BotsReducer,
     bot: BotReducer,
     user: UserReducer
 });

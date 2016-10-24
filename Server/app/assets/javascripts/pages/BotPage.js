@@ -38,7 +38,7 @@ class BotPage extends Component {
         
         // microsoft account connect state
         let ConnectStateProps = {
-            state: this.props.state != undefined ? this.props.state : 'init',
+            state: this.props.currentConnectState != undefined ? this.props.currentConnectState : 'init',
             onClick: this.handleConnect.bind(this)
         };
 
@@ -59,7 +59,7 @@ class BotPage extends Component {
                 <ButtonComponent key={0} color='blue' text='Save' onClick={this.handleSave.bind(this)} hasRequired={true} />
             ],
             onChange: this.handleFormChange.bind(this),
-            data: this.props.form
+            data: this.props.data
         };
 
         return (
@@ -79,28 +79,17 @@ class BotPage extends Component {
     }
 
     componentDidMount(){
-        if(this.props.recent_created != undefined && this.props.recent_created.id == parseInt(this.props.params.id)){
-            this.props.dispatch(Actions.openRecentCreatedBot());
-        } else {
-            this.props.dispatch(Actions.fetchBotRequest());
-            fetch(`/api/v1/private/bots/${this.props.params.id}`, {credentials: 'same-origin'}).then(function(response){
-                return response.json();
-            }).then(function(data){
-                this.props.dispatch(Actions.fetchBotSuccess(data));
-            }.bind(this)).catch(function(err){
-                this.props.dispatch(Actions.fetchBotFailure(err.toString()));
-            }.bind(this));
-        }
+        this.props.dispatch(Actions.BotActions.fetchBot(this.props.params.id));
 
         // Set route leave hook
         this.props.router.setRouteLeaveHook(this.props.route, function(){
-            this.props.dispatch(Actions.changeCancelBot());
+            this.props.dispatch(Actions.BotActions.resetBotData(this.props.params.id));
         }.bind(this));
     }
 
     componentDidUpdate(){
         // Block UI
-        if(this.props.fetching != undefined && this.props.fetching){
+        if(this.props.isFetching != undefined && this.props.isFetching){
             App.blockUI({
                 target: '#bot_content_portlet',
                 animate: true
@@ -114,129 +103,48 @@ class BotPage extends Component {
     }
 
     handleConnect(){
-        this.props.dispatch(Actions.connectMSRequest());
-        let dataHasAuthToken = Object.assign({}, this.props.form, {
-            authenticity_token: Utils.csrfToken()
-        });
-        fetch('/api/v1/private/bots/connect', {
-            method: 'POST', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify(dataHasAuthToken)
-        }).then(function(response){
-            return response.json();
-        }).then(function(data){
-            let err = data['error'];
-            let state = data['state'];
-            if(err == undefined || err.trim().length === 0){
-                if(state != undefined && state === 1){
-                    this.props.dispatch(Actions.connectMSSuccess(data));
-                    this.props.dispatch(Actions.showToast(
-                        'success',
-                        'Connect Microsoft Account',
-                        'Connected.'
-                    ));
-                } else {
-                    this.props.dispatch(Actions.connectMSFailure(err));
-                    this.props.dispatch(Actions.showToast(
-                        'error',
-                        'Connect Microsoft Account',
-                        'Validation failed.'
-                    ));
-                }
-            } else {
-                this.props.dispatch(Actions.connectMSFailure(err));
-                this.props.dispatch(Actions.showToast(
-                    'error',
-                    'Connect Microsoft Account',
-                    data['message']
-                ));
-            }
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.connectMSFailure(err.toString()));
-            this.props.dispatch(Actions.showToast(
-                'error',
-                'Connect Microsoft Account',
-                err.toString()
-            ));
-        }.bind(this));
+        if(this.props.data == undefined){
+            return;
+        }
+        let appid = this.props.data.ms_appid;
+        let appsecret = this.props.data.ms_appsecret;
+        this.props.dispatch(Actions.BotActions.connectBot(appid, appsecret));
     }
 
     handleFormChange(e, control){
-        this.props.dispatch(Actions.changeBotForm(control.name, e.target.value));
+        this.props.dispatch(Actions.BotActions.changeBotData(this.props.params.id, control.name, e.target.value));
     }
 
     handleCancelSave(e){
-        this.props.dispatch(Actions.changeCancelBot());
         this.props.router.push('/bots');
     }
 
     handleSave(e){
-        this.props.dispatch(Actions.saveBotRequest());
-        let dataHasAuthToken = Object.assign({}, this.props.form, {
-            authenticity_token: Utils.csrfToken()
-        });
-        fetch(`/api/v1/private/bots/${this.props.params.id}`, {
-            method: 'PUT', 
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin',
-            body: JSON.stringify(dataHasAuthToken)
-        }).then(function(response){
-            return response.json();
-        }).then(function(data){
-            let err = data['error'];
-            if(err == undefined || err.trim().length === 0){
-                this.props.dispatch(Actions.saveBotSuccess(data));
-                this.props.dispatch(Actions.showToast(
-                    'success',
-                    'Update Bot',
-                    `${this.props.form.name} bot has been updated.`
-                ));
-            } else {
-                this.props.dispatch(Actions.saveBotFailure(err));
-                this.props.dispatch(Actions.showToast(
-                    'error',
-                    'Update Bot',
-                    data['message']
-                ));
-            }
-        }.bind(this)).catch(function(err){
-            this.props.dispatch(Actions.saveBotFailure(err.toString()));
-            this.props.dispatch(Actions.showToast(
-                'error',
-                'Update Bot',
-                err.toString()
-            ));
-        }.bind(this));
+        this.props.dispatch(Actions.BotActions.updateBot(this.props.params.id));
     }
 }
 
 BotPage.propTypes = {
-    fetching: PropTypes.bool,
-    form: PropTypes.object,
-    err: PropTypes.string,
-    state: PropTypes.string
+    isFetching: PropTypes.bool,
+    data: PropTypes.object,
+    currentConnectState: PropTypes.string
 };
 
-const FetchingSelector = state => state.bot.data.fetching;
-const FormSelector = state => state.bot.data.form;
-const FetchErrSelector = state => state.bot.data.err;
-const RecentCreatedSelector = state => state.bot.data.recent_created;
-const StateSelector = state => state.bot.data.connect_state;
+const IsFetchingSelector = state => state.bot.isFetching;
+const DataSelector = function(state, ownProps){
+    if(state.bot.items == undefined){ return; }
+    let id = ownProps.params.id;
+    let bot = state.bot.items[id];
+    if(bot == undefined){ return; }
+    return bot.data;
+}
+const CurrentStateSelector = state => state.bot.currentConnectState;
 
-function select(state){
+function select(state, ownProps){
     return {
-        fetching: FetchingSelector(state),
-        form: FormSelector(state),
-        err: FetchErrSelector(state),
-        recent_created: RecentCreatedSelector(state),
-        state: StateSelector(state)
+        isFetching: IsFetchingSelector(state),
+        data: DataSelector(state, ownProps),
+        currentConnectState: CurrentStateSelector(state)
     };
 }
 
