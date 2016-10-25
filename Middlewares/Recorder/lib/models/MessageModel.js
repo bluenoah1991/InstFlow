@@ -22,8 +22,8 @@ var MessageModel = _DbConnection.sequelize_.define('message', (0, _DbConnection.
     user_name: _sequelize2.default.STRING,
     channel_id: _sequelize2.default.STRING,
     conversation_id: _sequelize2.default.STRING,
-    bot_id: _sequelize2.default.STRING,
-    bot_name: _sequelize2.default.STRING,
+    bot_client_id: _sequelize2.default.STRING,
+    bot_client_name: _sequelize2.default.STRING,
     orientation: _sequelize2.default.INTEGER,
     time: _sequelize2.default.INTEGER
 }));

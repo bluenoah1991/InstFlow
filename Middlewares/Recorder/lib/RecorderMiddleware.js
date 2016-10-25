@@ -44,10 +44,10 @@ function RecordMessage(event, orientation) {
     var user_name = event.address.user.name;
     var channel_id = event.address.channelId;
     var conversation_id = event.address.conversation.id;
-    var bot_id = event.address.bot.id;
-    var bot_name = event.address.bot.name;
+    var bot_client_id = event.address.bot.id;
+    var bot_client_name = event.address.bot.name;
     var time = new Date().getTime();
-    _Schedule2.default.saveMessage(msg_id = msg_id, text = text, msg_type = msg_type, source = source, agent = agent, user_id = user_id, user_name = user_name, channel_id = channel_id, conversation_id = conversation_id, bot_id = bot_id, bot_name = bot_name, orientation = orientation, time = time);
+    _Schedule2.default.saveMessage(msg_id = msg_id, text = text, msg_type = msg_type, source = source, agent = agent, user_id = user_id, user_name = user_name, channel_id = channel_id, conversation_id = conversation_id, bot_client_id = bot_client_id, bot_client_name = bot_client_name, orientation = orientation, time = time);
 }
 
 var RecorderMiddleware = function () {

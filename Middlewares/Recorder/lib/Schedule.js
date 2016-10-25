@@ -87,7 +87,7 @@ var Schedule = function () {
         }
     }, {
         key: 'saveMessage',
-        value: function saveMessage(msg_id, text, msg_type, source, agent, user_id, user_name, channel_id, conversation_id, bot_id, bot_name, orientation, time) {
+        value: function saveMessage(msg_id, text, msg_type, source, agent, user_id, user_name, channel_id, conversation_id, bot_client_id, bot_client_name, orientation, time) {
             return _models.MessageModel.create({
                 msg_id: msg_id,
                 text: text,
@@ -98,8 +98,8 @@ var Schedule = function () {
                 user_name: user_name,
                 channel_id: channel_id,
                 conversation_id: conversation_id,
-                bot_id: bot_id,
-                bot_name: bot_name,
+                bot_client_id: bot_client_id,
+                bot_client_name: bot_client_name,
                 orientation: orientation,
                 time: time
             }).then(function (instance) {

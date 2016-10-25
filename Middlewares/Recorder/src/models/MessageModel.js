@@ -13,8 +13,8 @@ var MessageModel = sequelize_.define('message', _BaseModel({
     user_name: Sequelize.STRING,
     channel_id: Sequelize.STRING,
     conversation_id: Sequelize.STRING,
-    bot_id: Sequelize.STRING,
-    bot_name: Sequelize.STRING,
+    bot_client_id: Sequelize.STRING,
+    bot_client_name: Sequelize.STRING,
     orientation: Sequelize.INTEGER,
     time: Sequelize.INTEGER
 }));

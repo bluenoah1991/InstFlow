@@ -63,7 +63,7 @@ class Schedule {
     saveMessage(
         msg_id, text, msg_type, source, agent, user_id,
         user_name, channel_id, conversation_id,
-        bot_id, bot_name, orientation, time){
+        bot_client_id, bot_client_name, orientation, time){
         return MessageModel.create({
             msg_id: msg_id,
             text: text,
@@ -74,8 +74,8 @@ class Schedule {
             user_name: user_name,
             channel_id: channel_id,
             conversation_id: conversation_id,
-            bot_id: bot_id,
-            bot_name: bot_name,
+            bot_client_id: bot_client_id,
+            bot_client_name: bot_client_name,
             orientation: orientation,
             time: time
         }).then(function(instance){

@@ -30,8 +30,8 @@ function RecordMessage(event, orientation){
     let user_name = event.address.user.name;
     let channel_id = event.address.channelId;
     let conversation_id = event.address.conversation.id;
-    let bot_id = event.address.bot.id;
-    let bot_name = event.address.bot.name;
+    let bot_client_id = event.address.bot.id;
+    let bot_client_name = event.address.bot.name;
     let time = new Date().getTime();
     schedule.saveMessage(
         msg_id=msg_id,
@@ -43,8 +43,8 @@ function RecordMessage(event, orientation){
         user_name=user_name,
         channel_id=channel_id,
         conversation_id=conversation_id,
-        bot_id=bot_id,
-        bot_name=bot_name,
+        bot_client_id=bot_client_id,
+        bot_client_name=bot_client_name,
         orientation=orientation,
         time=time
     );
