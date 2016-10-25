@@ -1,5 +1,6 @@
 import React, {Component, PropTypes, Children} from 'react';
 import {connect} from 'react-redux';
+import {hashHistory} from 'react-router';
 
 import _ from 'underscore';
 

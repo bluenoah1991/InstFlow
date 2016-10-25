@@ -16,6 +16,7 @@ module Api
                 optional! :tags, type: Array
 
                 @instance = User.new
+                @instance.bot_id = @current_bot.id
                 @instance.channel_id = params[:channel_id]
                 @instance.user_id = params[:user_id]
                 @instance.name = params[:name]

@@ -12,7 +12,7 @@ module Api
                 private
 
                 def message_filter_params
-                    permitted = params.permit(:id, filter: [:orientation])
+                    permitted = params.permit(:id, filter: [:bot_id, :orientation])
                     if permitted.permitted?
                         filter = permitted[:filter]
                         filter = {} if filter.nil?

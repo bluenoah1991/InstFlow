@@ -1,4 +1,5 @@
 import React, {Component, PropTypes, Children} from 'react';
+import {connect} from 'react-redux';
 import {hashHistory} from 'react-router';
 
 class PageSidebarComponent extends Component{
@@ -88,4 +89,16 @@ class PageSidebarComponent extends Component{
     }
 }
 
-export default PageSidebarComponent;
+PageSidebarComponent.propTypes = {
+    currentBot: PropTypes.object
+};
+
+const CurrentBotSelector = state => state.bots.currentBot;
+
+function select(state){
+    return {
+        currentBot: CurrentBotSelector(state)
+    };
+}
+
+export default connect(select)(PageSidebarComponent);

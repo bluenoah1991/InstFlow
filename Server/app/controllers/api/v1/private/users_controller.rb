@@ -31,7 +31,7 @@ module Api
                 private
 
                 def user_filter_params
-                    permitted = params.permit(filter: [:state])
+                    permitted = params.permit(filter: [:bot_id, :state])
                     if permitted.permitted?
                         permitted[:filter]
                     end

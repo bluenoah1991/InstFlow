@@ -26,12 +26,13 @@ module Api
                 optional! :user_name, type: String
                 optional! :channel_id, type: String
                 optional! :conversation_id, type: String
-                optional! :bot_id, type: String
-                optional! :bot_name, type: String
+                optional! :bot_client_id, type: String
+                optional! :bot_client_name, type: String
                 optional! :orientation, type: Integer
                 optional! :time, type: Integer
 
                 @instance = Message.new
+                @instance.bot_id = @current_bot.id
                 @instance.msg_id = params[:msg_id]
                 @instance.text = params[:text]
                 @instance.msg_type = params[:msg_type]
@@ -41,8 +42,8 @@ module Api
                 @instance.user_name = params[:user_name]
                 @instance.channel_id = params[:channel_id]
                 @instance.conversation_id = params[:conversation_id]
-                @instance.bot_id = params[:bot_id]
-                @instance.bot_name = params[:bot_name]
+                @instance.bot_client_id = params[:bot_client_id]
+                @instance.bot_client_name = params[:bot_client_name]
                 @instance.orientation = params[:orientation]
                 time_ = params[:time]
                 time = Time.at(time_ / 1000, (time_ % 1000) * 1000)

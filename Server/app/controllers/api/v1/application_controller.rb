@@ -80,7 +80,7 @@ module Api
 
       def authenticate_token
         access_token = params[:access_token].presence || request.headers['Access-Token'].presence
-        @current_app = Bot.find_by(access_token: access_token)
+        @current_bot = Bot.find_by(access_token: access_token)
       end
 
       def unauthorized_token
@@ -99,7 +99,7 @@ module Api
       end
 
       def authenticate_tenant
-        @current_app.present? && @current_app.admin.tenant_id == current_tenant
+        @current_bot.present? && @current_bot.admin.tenant_id == current_tenant
       end
     end
   end

@@ -24,7 +24,8 @@ import BotsPage from './pages/BotsPage';
 import BotCreatePage from './pages/BotCreatePage';
 import UsersPage from './pages/UsersPage';
 import UserPage from './pages/UserPage';
-import {ConstructionPage} from './pages/ConstructionPage';
+import ConstructionPage from './pages/ConstructionPage';
+import DashboardPage from './pages/DashboardPage';
 
 let store = createStore(reducers, applyMiddleware(thunkMiddleware));
 
@@ -35,7 +36,7 @@ ReactDOM.render(
             <PageContainerComponent>
                 <PageSidebarComponent />
                     <Router history={hashHistory}>
-                        <Route name='root' path='/' component={ProfilePage} />
+                        <Route name='dashboard' path='/' component={DashboardPage} />
                         <Route name='construction' path='/construction' component={ConstructionPage} />
                         <Route name='profile' path='/profile' component={ProfilePage} />
                         <Route name='new_bot' path='/bots/new' component={BotCreatePage} />

@@ -6,7 +6,7 @@ import PageBreadCrumbComponent from '../components/PageBreadCrumbComponent';
 import PageContentComponent from '../components/PageContentComponent';
 import PageHeadComponent from '../components/PageHeadComponent';
 
-export class ConstructionPage extends Component{
+class ConstructionPage extends Component{
     render(){
         let breadCrumbPaths = [
             {title: 'Home', href: 'home.html'},
@@ -35,3 +35,5 @@ export class ConstructionPage extends Component{
         );
     }
 }
+
+export default ConstructionPage;

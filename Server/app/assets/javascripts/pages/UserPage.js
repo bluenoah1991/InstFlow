@@ -57,7 +57,7 @@ class UserPage extends Component{
                 {name: 'orientation', text: 'Orientation'},
                 {name: 'time', text: 'Sending Time'}
             ],
-            onDidMount: this.handleDidMount.bind(this)
+            onChange: this.handleChange.bind(this)
         };
         
         let id = this.props.data != undefined ? Utils.safestring(this.props.data.id) : '';
@@ -145,29 +145,26 @@ class UserPage extends Component{
     }
 
     handleRefresh(){
-        if(this.state.dataTable == undefined){
+        if(this.dataTable == undefined){
             return;
         }
-        this.state.dataTable.ajax.reload(null, false);
+        this.dataTable.ajax.reload(null, false);
     }
 
     handleFilter(item){
         if(item == undefined){
             return;
         }
-        if(this.state.grid == undefined || this.state.dataTable == undefined){
+        if(this.grid == undefined || this.dataTable == undefined){
             return;
         }
-        this.state.grid.setAjaxParam(`filter[${item.name}]`, item.value);
-        this.state.dataTable.ajax.reload(null, false);
+        this.grid.setAjaxParam(`filter[${item.name}]`, item.value);
+        this.dataTable.ajax.reload(null, false);
     }
 
-    handleDidMount(grid){
-        let dataTable = grid.getDataTable();
-        this.setState({
-            grid: grid,
-            dataTable: dataTable
-        });
+    handleChange(grid){
+        this.grid = grid;
+        this.dataTable = grid.getDataTable();
     }
 }
 

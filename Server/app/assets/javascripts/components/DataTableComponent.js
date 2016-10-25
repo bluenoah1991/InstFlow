@@ -6,12 +6,11 @@ export class DataTableComponent extends Component{
     constructor(){
         super();
         this.state = {
-            id: _.uniqueId('dt_'),
-            grid: new Datatable()
+            id: _.uniqueId('dt_')
         };
     }
 
-    datatableInit(){
+    datatableInit(grid){
         let columnDefs = this.props.columnDefs != undefined ? this.props.columnDefs : [];
         if(this.props.checkbox != undefined && this.props.checkbox){
             columnDefs = columnDefs.concat([{
@@ -27,7 +26,7 @@ export class DataTableComponent extends Component{
         if(this.props.checkbox != undefined && this.props.checkbox){
             columns.unshift({name: 'checkbox'});
         }
-        this.state.grid.init({
+        grid.init({
             src: $(`#${this.state.id}`),
             onSuccess: function (grid, response) {
                 // grid:        grid object
@@ -42,6 +41,7 @@ export class DataTableComponent extends Component{
             },
             loadingMessage: 'Loading...',
             dataTable: { // here you can define a typical datatable settings from http://datatables.net/usage/options 
+                "destroy": true,
                 "searching": true,
                 "language": {
                     "aria": {
@@ -115,18 +115,28 @@ export class DataTableComponent extends Component{
     }
 
     componentDidUpdate(){
-        
+        let grid = new Datatable();
+        if(this.props.defaultAjaxParams != undefined){
+            this.props.defaultAjaxParams.forEach(function(param){
+                grid.setAjaxParam(param.name, param.value);
+            }.bind(this));
+        }
+        this.datatableInit(grid);
+        if(this.props.onChange != undefined){
+            this.props.onChange(grid);
+        }
     }
 
     componentDidMount(){
+        let grid = new Datatable();
         if(this.props.defaultAjaxParams != undefined){
             this.props.defaultAjaxParams.forEach(function(param){
-                this.state.grid.setAjaxParam(param.name, param.value);
+                grid.setAjaxParam(param.name, param.value);
             }.bind(this));
         }
-        this.datatableInit();
-        if(this.props.onDidMount != undefined){
-            this.props.onDidMount(this.state.grid);
+        this.datatableInit(grid);
+        if(this.props.onChange != undefined){
+            this.props.onChange(grid);
         }
     }
 }
@@ -138,5 +148,5 @@ DataTableComponent.propTypes = {
     columns: PropTypes.array.isRequired,
     defaultAjaxParams: PropTypes.array,
     checkbox: PropTypes.bool,
-    onDidMount: PropTypes.func
+    onChange: PropTypes.func
 };

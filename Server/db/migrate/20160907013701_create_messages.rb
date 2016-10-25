@@ -10,8 +10,8 @@ class CreateMessages < ActiveRecord::Migration[5.0]
       t.string :user_name, null: true
       t.string :channel_id, null: true
       t.string :conversation_id, null: true
-      t.string :bot_id, null: true
-      t.string :bot_name, null: true
+      t.string :bot_client_id, null: true
+      t.string :bot_client_name, null: true
       t.integer :orientation
       t.timestamp :time
 

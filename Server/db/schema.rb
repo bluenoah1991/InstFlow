@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160920015436) do
+ActiveRecord::Schema.define(version: 20161025014645) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -61,12 +61,14 @@ ActiveRecord::Schema.define(version: 20160920015436) do
     t.string   "user_name"
     t.string   "channel_id"
     t.string   "conversation_id"
-    t.string   "bot_id"
-    t.string   "bot_name"
+    t.string   "bot_client_id"
+    t.string   "bot_client_name"
     t.integer  "orientation"
     t.datetime "time"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.integer  "bot_id"
+    t.index ["bot_id"], name: "index_messages_on_bot_id"
   end
 
   create_table "tags", force: :cascade do |t|
@@ -90,6 +92,8 @@ ActiveRecord::Schema.define(version: 20160920015436) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "state",      default: 0, null: false
+    t.integer  "bot_id"
+    t.index ["bot_id"], name: "index_users_on_bot_id"
     t.index ["channel_id", "user_id"], name: "index_users_on_channel_id_and_user_id", unique: true
   end
 
