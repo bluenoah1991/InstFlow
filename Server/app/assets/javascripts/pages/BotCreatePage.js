@@ -71,12 +71,12 @@ class BotCreatePage extends Component {
     componentDidMount(){
         // Set route leave hook
         this.props.router.setRouteLeaveHook(this.props.route, function(){
-            this.props.dispatch(Actions.BotActions.resetNewBotData());
+            this.props.dispatch(Actions.BotActions.cleanNewBotData());
         }.bind(this));
     }
 
     componentWillMount(){
-        this.props.dispatch(Actions.BotActions.resetNewBotData());
+        this.props.dispatch(Actions.BotActions.cleanNewBotData());
     }
 
     handleConnect(){

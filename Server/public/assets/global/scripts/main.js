@@ -61,6 +61,10 @@ var TYPE_CLEAN_NEW_BOT_DATA = exports.TYPE_CLEAN_NEW_BOT_DATA = 'TYPE_RESET_NEW_
 var TYPE_FETCH_USER_REQUEST = exports.TYPE_FETCH_USER_REQUEST = 'TYPE_FETCH_USER_REQUEST';
 var TYPE_FETCH_USER_SUCCESS = exports.TYPE_FETCH_USER_SUCCESS = 'TYPE_FETCH_USER_SUCCESS';
 var TYPE_FETCH_USER_FAILURE = exports.TYPE_FETCH_USER_FAILURE = 'TYPE_FETCH_USER_FAILURE';
+var TYPE_CHANGE_DIRECT_MESSAGE_DATA = exports.TYPE_CHANGE_DIRECT_MESSAGE_DATA = 'TYPE_CHANGE_DIRECT_MESSAGE_DATA';
+var TYPE_CLEAN_DIRECT_MESSAGE_DATA = exports.TYPE_CLEAN_DIRECT_MESSAGE_DATA = 'TYPE_CLEAN_DIRECT_MESSAGE_DATA';
+var TYPE_SEND_DIRECT_MESSAGE = exports.TYPE_SEND_DIRECT_MESSAGE = 'TYPE_SEND_DIRECT_MESSAGE';
+var TYPE_SEND_DIRECT_MESSAGE_FINISH = exports.TYPE_SEND_DIRECT_MESSAGE_FINISH = 'TYPE_SEND_DIRECT_MESSAGE_FINISH';
 
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -91,7 +95,7 @@ exports.connectBot = connectBot;
 exports.changeBotData = changeBotData;
 exports.resetBotData = resetBotData;
 exports.changeNewBotData = changeNewBotData;
-exports.resetNewBotData = resetNewBotData;
+exports.cleanNewBotData = cleanNewBotData;
 
 var _ActionTypes = require('./ActionTypes');
 
@@ -385,7 +389,7 @@ function changeNewBotData(name, value) {
     return action;
 }
 
-function resetNewBotData() {
+function cleanNewBotData() {
     var action = {
         type: _ActionTypes.TYPE_CLEAN_NEW_BOT_DATA
     };
@@ -797,6 +801,11 @@ exports.fetchUserRequest = fetchUserRequest;
 exports.fetchUserSuccess = fetchUserSuccess;
 exports.fetchUserFailure = fetchUserFailure;
 exports.fetchUser = fetchUser;
+exports.changeDirectMessageData = changeDirectMessageData;
+exports.cleanDirectMessageData = cleanDirectMessageData;
+exports.sendDirectMessageRequest = sendDirectMessageRequest;
+exports.sendDirectMessageFinish = sendDirectMessageFinish;
+exports.sendDirectMessage = sendDirectMessage;
 
 var _ActionTypes = require('./ActionTypes');
 
@@ -850,6 +859,61 @@ function fetchUser(id) {
             if (_ToastActions.showToast) {
                 dispatch((0, _ToastActions.showToast)('error', 'Bad Request', err.toString()));
             }
+        });
+    };
+}
+
+function changeDirectMessageData(message) {
+    var action = {
+        type: _ActionTypes.TYPE_CHANGE_DIRECT_MESSAGE_DATA,
+        message: message
+    };
+    return action;
+}
+
+function cleanDirectMessageData() {
+    var action = {
+        type: _ActionTypes.TYPE_CLEAN_DIRECT_MESSAGE_DATA
+    };
+    return action;
+}
+
+function sendDirectMessageRequest() {
+    var action = {
+        type: _ActionTypes.TYPE_SEND_DIRECT_MESSAGE
+    };
+    return action;
+}
+
+function sendDirectMessageFinish() {
+    var action = {
+        type: _ActionTypes.TYPE_SEND_DIRECT_MESSAGE_FINISH
+    };
+    return action;
+}
+
+function sendDirectMessage(id) {
+    return function (dispatch, getState) {
+        var rootState = getState();
+        if (rootState.user.directMessage == undefined || rootState.user.directMessage.length === 0) {
+            return Promise.resolve();
+        }
+        dispatch(sendDirectMessageRequest());
+        return Utils.post('/api/v1/private/send/' + id, {
+            message: rootState.user.directMessage
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            var err = data['error'];
+            dispatch(sendDirectMessageFinish());
+            if (err == undefined || err.trim().length === 0) {
+                dispatch((0, _ToastActions.showToast)('success', 'Send Message', 'Send success!'));
+            } else {
+                dispatch((0, _ToastActions.showToast)('error', 'Send Message', data['message'] != undefined ? data['message'] : err));
+            }
+        }).catch(function (err) {
+            dispatch(sendDirectMessageFinish());
+            dispatch((0, _ToastActions.showToast)('error', 'Bad Request', err.toString()));
         });
     };
 }
@@ -1358,6 +1422,15 @@ var DataTableComponent = exports.DataTableComponent = function (_Component) {
     }, {
         key: 'componentDidUpdate',
         value: function componentDidUpdate() {
+            if (this.state.meltKey != this.props.meltKey) {
+                this.setState({
+                    meltKey: this.props.meltKey
+                });
+            } else {
+                if (this.props.freeze != undefined && this.props.freeze) {
+                    return;
+                }
+            }
             var grid = new Datatable();
             if (this.props.defaultAjaxParams != undefined) {
                 this.props.defaultAjaxParams.forEach(function (param) {
@@ -1382,6 +1455,11 @@ var DataTableComponent = exports.DataTableComponent = function (_Component) {
             if (this.props.onChange != undefined) {
                 this.props.onChange(grid);
             }
+            if (this.props.meltKey != undefined) {
+                this.setState({
+                    meltKey: this.props.meltKey
+                });
+            }
         }
     }]);
 
@@ -1395,7 +1473,9 @@ DataTableComponent.propTypes = {
     columns: _react.PropTypes.array.isRequired,
     defaultAjaxParams: _react.PropTypes.array,
     checkbox: _react.PropTypes.bool,
-    onChange: _react.PropTypes.func
+    onChange: _react.PropTypes.func,
+    freeze: _react.PropTypes.bool,
+    meltKey: _react.PropTypes.string
 };
 
 },{"react":591,"react-redux":401,"underscore":610}],13:[function(require,module,exports){
@@ -3522,7 +3602,9 @@ var SettingComponent = exports.SettingComponent = _react2.default.createClass({
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.ConnectStateComponent = undefined;
+exports.SendStateComponent = exports.ConnectStateComponent = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
@@ -3532,30 +3614,81 @@ var _ButtonComponent = require('../components/ButtonComponent');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ConnectStateComponent = exports.ConnectStateComponent = _react2.default.createClass({
-    displayName: 'ConnectStateComponent',
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    render: function render() {
-        var states = {
-            init: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', text: 'Connect', onClick: this.props.onClick }),
-            connecting: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', icon: 'spinner', spin: true, text: 'Connecting' }),
-            connected: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', icon: 'check', text: 'Connected', enabled: false }),
-            error: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'red', size: 'xs', icon: 'remove', text: 'Rejected', enabled: false }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'green', size: 'xs', text: 'Reconnect', onClick: this.props.onClick })]
-        };
-        var state = states[this.props.state];
-        if (state == undefined) {
-            state = [];
-        }
-        return _react2.default.createElement(
-            'div',
-            { className: 'btn-toolbar' },
-            state
-        );
-    },
-    propTypes: {
-        state: _react2.default.PropTypes.oneOf(['init', 'connecting', 'connected', 'error'])
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ConnectStateComponent = exports.ConnectStateComponent = function (_Component) {
+    _inherits(ConnectStateComponent, _Component);
+
+    function ConnectStateComponent() {
+        _classCallCheck(this, ConnectStateComponent);
+
+        return _possibleConstructorReturn(this, (ConnectStateComponent.__proto__ || Object.getPrototypeOf(ConnectStateComponent)).apply(this, arguments));
     }
-});
+
+    _createClass(ConnectStateComponent, [{
+        key: 'render',
+        value: function render() {
+            var states = {
+                init: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', text: 'Connect', onClick: this.props.onClick }),
+                connecting: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', icon: 'spinner', spin: true, text: 'Connecting' }),
+                connected: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'green', size: 'xs', icon: 'check', text: 'Connected', enabled: false }),
+                error: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'red', size: 'xs', icon: 'remove', text: 'Rejected', enabled: false }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'green', size: 'xs', text: 'Reconnect', onClick: this.props.onClick })]
+            };
+            var state = states[this.props.state];
+            if (state == undefined) {
+                state = [];
+            }
+            return _react2.default.createElement(
+                'div',
+                { className: 'btn-toolbar' },
+                state
+            );
+        }
+    }]);
+
+    return ConnectStateComponent;
+}(_react.Component);
+
+ConnectStateComponent.propTypes = {
+    state: _react2.default.PropTypes.oneOf(['init', 'connecting', 'connected', 'error']),
+    onClick: _react2.default.PropTypes.func
+};
+
+var SendStateComponent = exports.SendStateComponent = function (_Component2) {
+    _inherits(SendStateComponent, _Component2);
+
+    function SendStateComponent() {
+        _classCallCheck(this, SendStateComponent);
+
+        return _possibleConstructorReturn(this, (SendStateComponent.__proto__ || Object.getPrototypeOf(SendStateComponent)).apply(this, arguments));
+    }
+
+    _createClass(SendStateComponent, [{
+        key: 'render',
+        value: function render() {
+            var states = {
+                init: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'blue', icon: 'send', text: 'Send', onClick: this.props.onClick }),
+                sending: _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'blue', icon: 'spinner', spin: true, text: 'Sending', onClick: this.props.onClick })
+            };
+            var state = states[this.props.state];
+            if (state == undefined) {
+                state = [];
+            }
+            return state;
+        }
+    }]);
+
+    return SendStateComponent;
+}(_react.Component);
+
+SendStateComponent.propTypes = {
+    state: _react2.default.PropTypes.oneOf(['init', 'sending']),
+    onClick: _react2.default.PropTypes.func
+};
 
 },{"../components/ButtonComponent":11,"react":591}],30:[function(require,module,exports){
 "use strict";
@@ -4077,13 +4210,13 @@ var BotCreatePage = function (_Component) {
         value: function componentDidMount() {
             // Set route leave hook
             this.props.router.setRouteLeaveHook(this.props.route, function () {
-                this.props.dispatch(Actions.BotActions.resetNewBotData());
+                this.props.dispatch(Actions.BotActions.cleanNewBotData());
             }.bind(this));
         }
     }, {
         key: 'componentWillMount',
         value: function componentWillMount() {
-            this.props.dispatch(Actions.BotActions.resetNewBotData());
+            this.props.dispatch(Actions.BotActions.cleanNewBotData());
         }
     }, {
         key: 'handleConnect',
@@ -5135,6 +5268,8 @@ var _DataTableComponent = require('../components/DataTableComponent');
 
 var _ButtonComponent = require('../components/ButtonComponent');
 
+var _StateComponent = require('../components/StateComponent');
+
 var _actions = require('../actions');
 
 var Actions = _interopRequireWildcard(_actions);
@@ -5193,7 +5328,15 @@ var UserPage = function (_Component) {
                 source: '/api/v1/private/messages/' + this.props.params.id,
                 order: [[3, "asc"]],
                 columns: [{ name: 'id', text: 'ID' }, { name: 'text', text: 'Message Content' }, { name: 'orientation', text: 'Orientation' }, { name: 'time', text: 'Sending Time' }],
-                onChange: this.handleChange.bind(this)
+                onChange: this.handleChange.bind(this),
+                freeze: true,
+                meltKey: this.props.params.id.toString()
+            };
+
+            // sending state
+            var SendStateProps = {
+                state: this.props.sendingState != undefined ? this.props.sendingState : 'init',
+                onClick: this.handleSend.bind(this)
             };
 
             var id = this.props.data != undefined ? Utils.safestring(this.props.data.id) : '';
@@ -5202,6 +5345,8 @@ var UserPage = function (_Component) {
             var user_agent = this.props.data != undefined ? Utils.safestring(this.props.data.user_agent) : '';
             var entry_date = this.props.data != undefined ? Utils.safestring(this.props.data.entry_date) : '';
             var latest_active = this.props.data != undefined ? Utils.safestring(this.props.data.latest_active) : '';
+
+            var directMessage = Utils.safestring(this.props.directMessage);
 
             return _react2.default.createElement(
                 _PageContentComponent2.default,
@@ -5346,8 +5491,8 @@ var UserPage = function (_Component) {
                                 _react2.default.createElement('i', { className: 'fa fa-share' }),
                                 ' Message Reply'
                             ),
-                            _react2.default.createElement('textarea', { className: 'details-msg-box' }),
-                            _react2.default.createElement(_ButtonComponent.ButtonComponent, { color: 'blue', icon: 'send', text: 'Send' }),
+                            _react2.default.createElement('textarea', { className: 'details-msg-box', value: directMessage, onChange: this.handleChangeMessage.bind(this) }),
+                            _react2.default.createElement(_StateComponent.SendStateComponent, SendStateProps),
                             ','
                         )
                     )
@@ -5358,6 +5503,10 @@ var UserPage = function (_Component) {
         key: 'componentDidMount',
         value: function componentDidMount() {
             this.props.dispatch(Actions.UserActions.fetchUser(this.props.params.id));
+            // Set route leave hook
+            this.props.router.setRouteLeaveHook(this.props.route, function () {
+                this.props.dispatch(Actions.UserActions.cleanDirectMessageData());
+            }.bind(this));
         }
     }, {
         key: 'componentDidUpdate',
@@ -5401,6 +5550,16 @@ var UserPage = function (_Component) {
             this.grid = grid;
             this.dataTable = grid.getDataTable();
         }
+    }, {
+        key: 'handleChangeMessage',
+        value: function handleChangeMessage(e) {
+            this.props.dispatch(Actions.UserActions.changeDirectMessageData(e.target.value));
+        }
+    }, {
+        key: 'handleSend',
+        value: function handleSend() {
+            this.props.dispatch(Actions.UserActions.sendDirectMessage(this.props.params.id));
+        }
     }]);
 
     return UserPage;
@@ -5408,7 +5567,9 @@ var UserPage = function (_Component) {
 
 UserPage.propTypes = {
     isFetching: _react.PropTypes.bool,
-    data: _react.PropTypes.object
+    data: _react.PropTypes.object,
+    directMessage: _react.PropTypes.string,
+    sendingState: _react.PropTypes.string
 };
 
 var IsFetchingSelector = function IsFetchingSelector(state) {
@@ -5425,17 +5586,25 @@ var DataSelector = function DataSelector(state, ownProps) {
     }
     return user.data;
 };
+var DirectMessageSelector = function DirectMessageSelector(state) {
+    return state.user.directMessage;
+};
+var SendingStateSelector = function SendingStateSelector(state) {
+    return state.user.sendingState;
+};
 
 function select(state, ownProps) {
     return {
         isFetching: IsFetchingSelector(state),
-        data: DataSelector(state, ownProps)
+        data: DataSelector(state, ownProps),
+        directMessage: DirectMessageSelector(state),
+        sendingState: SendingStateSelector(state)
     };
 }
 
 exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(select)(UserPage));
 
-},{"../actions":9,"../components/ButtonComponent":11,"../components/DataTableComponent":12,"../components/FormComponent":13,"../components/LayoutComponent":14,"../components/NoteComponent":16,"../components/PageBreadCrumbComponent":17,"../components/PageContentComponent":19,"../components/PageHeadComponent":21,"../components/TableToolbarComponent":31,"../utils":51,"react":591,"react-redux":401,"react-router":439}],42:[function(require,module,exports){
+},{"../actions":9,"../components/ButtonComponent":11,"../components/DataTableComponent":12,"../components/FormComponent":13,"../components/LayoutComponent":14,"../components/NoteComponent":16,"../components/PageBreadCrumbComponent":17,"../components/PageContentComponent":19,"../components/PageHeadComponent":21,"../components/StateComponent":29,"../components/TableToolbarComponent":31,"../utils":51,"react":591,"react-redux":401,"react-router":439}],42:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6137,6 +6306,23 @@ exports.default = function () {
         case _actions.ActionTypes.TYPE_FETCH_USER_FAILURE:
             return Object.assign({}, state, {
                 isFetching: false
+            });
+        case _actions.ActionTypes.TYPE_CHANGE_DIRECT_MESSAGE_DATA:
+            return Object.assign({}, state, {
+                directMessage: action.message
+            });
+        case _actions.ActionTypes.TYPE_CLEAN_DIRECT_MESSAGE_DATA:
+            return Object.assign({}, state, {
+                directMessage: null
+            });
+        case _actions.ActionTypes.TYPE_SEND_DIRECT_MESSAGE:
+            return Object.assign({}, state, {
+                sendingState: 'sending'
+            });
+        case _actions.ActionTypes.TYPE_SEND_DIRECT_MESSAGE_FINISH:
+            return Object.assign({}, state, {
+                sendingState: 'init',
+                directMessage: null
             });
         default:
             return state;

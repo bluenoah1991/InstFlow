@@ -115,6 +115,15 @@ export class DataTableComponent extends Component{
     }
 
     componentDidUpdate(){
+        if(this.state.meltKey != this.props.meltKey){
+            this.setState({
+                meltKey: this.props.meltKey
+            });
+        } else {
+            if(this.props.freeze != undefined && this.props.freeze){
+                return;
+            }
+        }
         let grid = new Datatable();
         if(this.props.defaultAjaxParams != undefined){
             this.props.defaultAjaxParams.forEach(function(param){
@@ -138,6 +147,11 @@ export class DataTableComponent extends Component{
         if(this.props.onChange != undefined){
             this.props.onChange(grid);
         }
+        if(this.props.meltKey != undefined){
+            this.setState({
+                meltKey: this.props.meltKey
+            });
+        }
     }
 }
 
@@ -148,5 +162,7 @@ DataTableComponent.propTypes = {
     columns: PropTypes.array.isRequired,
     defaultAjaxParams: PropTypes.array,
     checkbox: PropTypes.bool,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    freeze: PropTypes.bool,
+    meltKey: PropTypes.string
 };

@@ -23,6 +23,23 @@ export default function(state={}, action){
             return Object.assign({}, state, {
                 isFetching: false
             });
+        case ActionTypes.TYPE_CHANGE_DIRECT_MESSAGE_DATA:
+            return Object.assign({}, state, {
+                directMessage: action.message
+            });
+        case ActionTypes.TYPE_CLEAN_DIRECT_MESSAGE_DATA:
+            return Object.assign({}, state, {
+                directMessage: null
+            });
+        case ActionTypes.TYPE_SEND_DIRECT_MESSAGE:
+            return Object.assign({}, state, {
+                sendingState: 'sending'
+            });
+        case ActionTypes.TYPE_SEND_DIRECT_MESSAGE_FINISH:
+            return Object.assign({}, state, {
+                sendingState: 'init',
+                directMessage: null
+            });
         default:
             return state;
     }
