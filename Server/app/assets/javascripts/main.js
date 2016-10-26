@@ -26,6 +26,15 @@ import UsersPage from './pages/UsersPage';
 import UserPage from './pages/UserPage';
 import ConstructionPage from './pages/ConstructionPage';
 import DashboardPage from './pages/DashboardPage';
+import PageWrapper from './pages/PageWrapper';
+
+var wrapComponent = function(component, props){
+    return React.createClass({
+        render: function() {
+            return React.createElement(component, props);
+        }
+    });
+};
 
 let store = createStore(reducers, applyMiddleware(thunkMiddleware));
 
@@ -43,7 +52,7 @@ ReactDOM.render(
                         <Route name='bot' path='/bots/:id' component={BotPage} />
                         <Route name='bots' path='/bots' component={BotsPage} />
                         <Route name='user' path='/users/:id' component={UserPage} />
-                        <Route name='users' path='/users' component={UsersPage} />
+                        <Route name='users' path='/users' component={wrapComponent(PageWrapper, {component: UsersPage})} />
                     </Router>
             </PageContainerComponent>
             <PageFooterComponent />
