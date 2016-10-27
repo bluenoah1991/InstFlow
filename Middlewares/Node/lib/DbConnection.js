@@ -33,6 +33,6 @@ var sequelize_ = exports.sequelize_ = new _sequelize2.default(null, null, null, 
         min: 0,
         idle: 10000
     },
-    storage: process.env.RECORDER_STORAGE_PATH || './recorded_data.sqlite3'
+    storage: process.env.RECORDER_STORAGE_PATH || './data.sqlite3'
 });
 //# sourceMappingURL=DbConnection.js.map
