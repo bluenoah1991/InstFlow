@@ -34,7 +34,9 @@
 				"response": {}
 			}
 		},
-		"isFetching": false
+		"isFetching": false,
+		"directMessage": "",
+		"sendingState": "init/sending"
 	},
 	"toast": {
 		"show": false,

@@ -335,7 +335,7 @@ export function changeNewBotData(name, value){
     return action;
 }
 
-export function resetNewBotData(){
+export function cleanNewBotData(){
     const action = {
         type: TYPE_CLEAN_NEW_BOT_DATA
     };

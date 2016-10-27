@@ -73,7 +73,7 @@ class UsersPage extends Component{
                 columns: [
                     {name: 'name', text: 'Name'},
                     {name: 'channel_id', text: 'Channel ID'},
-                    {name: 'user_id', text: 'User ID'},
+                    {name: 'user_client_id', text: 'User ID'},
                     {name: 'created_at', text: 'Created At'},
                     {name: 'updated_at', text: 'Updated At'},
                     {name: 'actions', text: ''}

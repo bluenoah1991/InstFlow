@@ -11,6 +11,7 @@ import FormComponent from '../components/FormComponent';
 import {TableToolbarComponent} from '../components/TableToolbarComponent';
 import {DataTableComponent} from '../components/DataTableComponent';
 import {ButtonComponent, ButtonDropdownsComponent} from '../components/ButtonComponent';
+import {SendStateComponent} from '../components/StateComponent';
 
 import * as Actions from '../actions';
 import * as Utils from '../utils';
@@ -57,15 +58,25 @@ class UserPage extends Component{
                 {name: 'orientation', text: 'Orientation'},
                 {name: 'time', text: 'Sending Time'}
             ],
-            onChange: this.handleChange.bind(this)
+            onChange: this.handleChange.bind(this),
+            freeze: true,
+            meltKey: this.props.params.id.toString()
         };
         
+        // sending state
+        let SendStateProps = {
+            state: this.props.sendingState != undefined ? this.props.sendingState : 'init',
+            onClick: this.handleSend.bind(this)
+        };
+
         let id = this.props.data != undefined ? Utils.safestring(this.props.data.id) : '';
         let name = this.props.data != undefined ? Utils.safestring(this.props.data.name) : '';
         let total_msg = this.props.data != undefined ? Utils.safestring(this.props.data.total_msg) : '';
         let user_agent = this.props.data != undefined ? Utils.safestring(this.props.data.user_agent) : '';
         let entry_date = this.props.data != undefined ? Utils.safestring(this.props.data.entry_date) : '';
         let latest_active = this.props.data != undefined ? Utils.safestring(this.props.data.latest_active) : '';
+
+        let directMessage = Utils.safestring(this.props.directMessage);
 
         return (
             <PageContentComponent>
@@ -116,8 +127,8 @@ class UserPage extends Component{
                             </RowComponent>
                             <div className="details-line"></div>
                             <h3 className="details-h3"><i className="fa fa-share"></i> Message Reply</h3>
-                            <textarea className="details-msg-box"></textarea>
-                            <ButtonComponent color='blue' icon='send' text='Send' />,
+                            <textarea className="details-msg-box" value={directMessage} onChange={this.handleChangeMessage.bind(this)}></textarea>
+                            <SendStateComponent {...SendStateProps} />,
                         </PortletComponent>
                     </ColComponent>
                 </RowComponent>
@@ -127,6 +138,10 @@ class UserPage extends Component{
 
     componentDidMount(){
         this.props.dispatch(Actions.UserActions.fetchUser(this.props.params.id));
+        // Set route leave hook
+        this.props.router.setRouteLeaveHook(this.props.route, function(){
+            this.props.dispatch(Actions.UserActions.cleanDirectMessageData());
+        }.bind(this));
     }
 
     componentDidUpdate(){
@@ -166,11 +181,21 @@ class UserPage extends Component{
         this.grid = grid;
         this.dataTable = grid.getDataTable();
     }
+
+    handleChangeMessage(e){
+        this.props.dispatch(Actions.UserActions.changeDirectMessageData(e.target.value));
+    }
+
+    handleSend(){
+        this.props.dispatch(Actions.UserActions.sendDirectMessage(this.props.params.id));
+    }
 }
 
 UserPage.propTypes = {
     isFetching: PropTypes.bool,
-    data: PropTypes.object
+    data: PropTypes.object,
+    directMessage: PropTypes.string,
+    sendingState: PropTypes.string
 };
 
 const IsFetchingSelector = state => state.user.isFetching;
@@ -181,11 +206,15 @@ const DataSelector = function(state, ownProps){
     if(user == undefined){ return; }
     return user.data;
 };
+const DirectMessageSelector = state => state.user.directMessage;
+const SendingStateSelector = state => state.user.sendingState;
 
 function select(state, ownProps){
     return {
         isFetching: IsFetchingSelector(state),
-        data: DataSelector(state, ownProps)
+        data: DataSelector(state, ownProps),
+        directMessage: DirectMessageSelector(state),
+        sendingState: SendingStateSelector(state)
     };
 }
 
