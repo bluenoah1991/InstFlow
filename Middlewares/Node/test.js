@@ -1,6 +1,7 @@
 var restify = require('restify');
 var builder = require('botbuilder');
 var fs = require('fs');
+var instflow = require('./index.js');
 
 //=========================================================
 // Bot Setup
@@ -32,6 +33,4 @@ bot.dialog('/', function (session) {
     session.send("Hello World");
 });
 
-var RecorderMiddleware = require('./lib/RecorderMiddleware').default;
-
-bot.use(new RecorderMiddleware());
+bot.use(new instflow.ExtractMiddleware.default());
