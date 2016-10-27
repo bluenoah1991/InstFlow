@@ -7,6 +7,8 @@ module Api
                 before_action :set_instance
 
                 def create
+                    requires! :message, type: String
+
                     configuration = ::SwaggerClient::Configuration.new
                     configuration.host = @user.serviceUrl
                     configuration.access_token = BotFramework::Auth.connect(@bot.ms_appid, @bot.ms_appsecret)['access_token']
@@ -20,7 +22,20 @@ module Api
                     })
                     begin
                         result = api_instance.conversations_create_conversation(parameters)
-                        p result # TODO
+                        conversation_id = result.id
+                        if conversation_id.present?
+                            activity = ::SwaggerClient::Activity.new({
+                                :type => 'message',
+                                :text => params['message'],
+                                :from => {
+                                    id: @user.bot_client_id, name: @user.bot_client_name
+                                },
+                                :recipient => {
+                                    id: @user.user_client_id, name: @user.user_client_name
+                                }
+                            })
+                            api_instance.conversations_send_to_conversation(activity, conversation_id)
+                        end
                     rescue ::SwaggerClient::ApiError => e
                         puts "Exception when calling ConversationsApi->conversations_create_conversation: #{e}"
                     end
