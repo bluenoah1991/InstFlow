@@ -39,6 +39,8 @@ module Api
                         end
                     rescue ::SwaggerClient::ApiError => e
                         raise BadRequest.new(e)
+                    rescue ::TypeError => e
+                        raise BadRequest.new(e)
                     end
                 end
 
