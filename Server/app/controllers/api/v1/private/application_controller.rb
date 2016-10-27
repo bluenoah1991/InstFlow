@@ -27,6 +27,7 @@ module Api
           end
         end
 
+        class BadRequest < StandardError; end
         class AccessDenied < StandardError; end
         class PageNotFound < StandardError; end
 
@@ -35,6 +36,9 @@ module Api
         end
         rescue_from(ActiveRecord::RecordInvalid) do |err|
           render json: { error: 'RecordInvalid', message: err }, status: 400
+        end
+        rescue_from(BadRequest) do |err|
+          render json: { error: 'BadRequest', message: err }, status: 400
         end
         rescue_from(AccessDenied) do |err|
           render json: { error: 'AccessDenied', message: err }, status: 403

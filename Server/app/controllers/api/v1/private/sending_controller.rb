@@ -35,9 +35,10 @@ module Api
                                 }
                             })
                             api_instance.conversations_send_to_conversation(activity, conversation_id)
+                            render json: { ok: 1 }
                         end
                     rescue ::SwaggerClient::ApiError => e
-                        puts "Exception when calling ConversationsApi->conversations_create_conversation: #{e}"
+                        raise BadRequest.new(e)
                     end
                 end
 
