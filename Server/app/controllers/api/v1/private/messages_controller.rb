@@ -18,7 +18,7 @@ module Api
                         filter = {} if filter.nil?
                         if permitted[:id].present?
                             user = User.find(permitted[:id])
-                            filter[:user_id] = user.user_id
+                            filter[:user_client_id] = user.user_client_id
                             filter[:channel_id] = user.channel_id
                         end
                         filter

@@ -52,21 +52,22 @@ ActiveRecord::Schema.define(version: 20161025014645) do
   end
 
   create_table "messages", force: :cascade do |t|
-    t.string   "msg_id",          null: false
-    t.string   "text"
+    t.string   "msg_id",           null: false
     t.string   "msg_type"
+    t.string   "text"
     t.string   "source"
     t.string   "agent"
-    t.string   "user_id"
-    t.string   "user_name"
-    t.string   "channel_id"
-    t.string   "conversation_id"
+    t.string   "serviceUrl"
+    t.string   "user_client_id"
+    t.string   "user_client_name"
     t.string   "bot_client_id"
     t.string   "bot_client_name"
+    t.string   "channel_id"
+    t.string   "conversation_id"
     t.integer  "orientation"
     t.datetime "time"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.integer  "bot_id"
     t.index ["bot_id"], name: "index_messages_on_bot_id"
   end
@@ -85,16 +86,19 @@ ActiveRecord::Schema.define(version: 20161025014645) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "channel_id",             null: false
-    t.string   "user_id",                null: false
-    t.string   "name"
+    t.string   "serviceUrl",                   null: false
+    t.string   "bot_client_id"
+    t.string   "bot_client_name"
+    t.string   "user_client_id",               null: false
+    t.string   "user_client_name"
+    t.string   "channel_id",                   null: false
     t.text     "extra"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.integer  "state",      default: 0, null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.integer  "state",            default: 0, null: false
     t.integer  "bot_id"
     t.index ["bot_id"], name: "index_users_on_bot_id"
-    t.index ["channel_id", "user_id"], name: "index_users_on_channel_id_and_user_id", unique: true
+    t.index ["channel_id", "user_client_id"], name: "index_users_on_channel_id_and_user_client_id", unique: true
   end
 
 end

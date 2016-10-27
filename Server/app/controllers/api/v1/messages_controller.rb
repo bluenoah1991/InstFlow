@@ -5,10 +5,10 @@ module Api
 
             def index
                 optional! :channel_id, type: String
-                optional! :user_id, type: String
+                optional! :user_client_id, type: String
 
-                if params[:channel_id].present? && params[:user_id].present?
-                    @instances = Message.who(params[:channel_id], params[:user_id])
+                if params[:channel_id].present? && params[:user_client_id].present?
+                    @instances = Message.who(params[:channel_id], params[:user_client_id])
                 else
                     @instances = Message.all
                 end
@@ -18,32 +18,34 @@ module Api
 
             def create
                 requires! :msg_id, type: String
-                optional! :text, type: String
                 optional! :msg_type, type: String
+                optional! :text, type: String
                 optional! :source, type: String
                 optional! :agent, type: String
-                optional! :user_id, type: String
-                optional! :user_name, type: String
-                optional! :channel_id, type: String
-                optional! :conversation_id, type: String
+                optional! :serviceUrl, type: String
+                optional! :user_client_id, type: String
+                optional! :user_client_name, type: String
                 optional! :bot_client_id, type: String
                 optional! :bot_client_name, type: String
+                optional! :channel_id, type: String
+                optional! :conversation_id, type: String
                 optional! :orientation, type: Integer
                 optional! :time, type: Integer
 
                 @instance = Message.new
                 @instance.bot_id = @current_bot.id
                 @instance.msg_id = params[:msg_id]
-                @instance.text = params[:text]
                 @instance.msg_type = params[:msg_type]
+                @instance.text = params[:text]
                 @instance.source = params[:source]
                 @instance.agent = params[:agent]
-                @instance.user_id = params[:user_id]
-                @instance.user_name = params[:user_name]
-                @instance.channel_id = params[:channel_id]
-                @instance.conversation_id = params[:conversation_id]
+                @instance.serviceUrl = params[:serviceUrl]
+                @instance.user_client_id = params[:user_client_id]
+                @instance.user_client_name = params[:user_client_name]
                 @instance.bot_client_id = params[:bot_client_id]
                 @instance.bot_client_name = params[:bot_client_name]
+                @instance.channel_id = params[:channel_id]
+                @instance.conversation_id = params[:conversation_id]
                 @instance.orientation = params[:orientation]
                 time_ = params[:time]
                 time = Time.at(time_ / 1000, (time_ % 1000) * 1000)

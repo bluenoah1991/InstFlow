@@ -9,17 +9,23 @@ module Api
             end
 
             def create
+                requires! :serviceUrl, type: String
+                optional! :bot_client_id, type: String
+                optional! :bot_client_name, type: String
+                requires! :user_client_id, type: String
+                optional! :user_client_name, type: String
                 requires! :channel_id, type: String
-                requires! :user_id, type: String
-                optional! :name, type: String
                 optional! :extra, type: String
                 optional! :tags, type: Array
 
                 @instance = User.new
                 @instance.bot_id = @current_bot.id
+                @instance.serviceUrl = params[:serviceUrl]
+                @instance.bot_client_id = params[:bot_client_id]
+                @instance.bot_client_name = params[:bot_client_name]
+                @instance.user_client_id = params[:user_client_id]
+                @instance.user_client_name = params[:user_client_name]
                 @instance.channel_id = params[:channel_id]
-                @instance.user_id = params[:user_id]
-                @instance.name = params[:name]
                 @instance.extra = params[:extra]
                 if params.has_key?(:tags)
                     @instance.tags = params[:tags].map! { |tag_id| 
@@ -36,12 +42,10 @@ module Api
             end
 
             def update
-                optional! :name, type: String
-                optional! :extra, type: String
+                optional! :user_client_name, type: String
                 optional! :tags, type: Array
 
-                @instance.name = !params[:name].nil? ? params[:name] : @instance.name
-                @instance.extra = !params[:extra].nil? ? params[:extra] : @instance.extra
+                @instance.user_client_name = !params[:user_client_name].nil? ? params[:user_client_name] : @instance.user_client_name
                 if params.has_key?(:tags)
                     @instance.tags = params[:tags].map! { |tag_id| 
                         Tag.find_or_create_by(:tag_id => tag_id)

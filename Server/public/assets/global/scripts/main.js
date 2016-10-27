@@ -5728,7 +5728,7 @@ var UsersPage = function (_Component) {
                     }],
                     source: "/api/v1/private/users",
                     order: [[5, "asc"]],
-                    columns: [{ name: 'name', text: 'Name' }, { name: 'channel_id', text: 'Channel ID' }, { name: 'user_id', text: 'User ID' }, { name: 'created_at', text: 'Created At' }, { name: 'updated_at', text: 'Updated At' }, { name: 'actions', text: '' }],
+                    columns: [{ name: 'name', text: 'Name' }, { name: 'channel_id', text: 'Channel ID' }, { name: 'user_client_id', text: 'User ID' }, { name: 'created_at', text: 'Created At' }, { name: 'updated_at', text: 'Updated At' }, { name: 'actions', text: '' }],
                     defaultAjaxParams: [{ name: 'filter[state]', value: 0 }, { name: 'filter[bot_id]', value: this.props.currentBot.id }],
                     checkbox: true,
                     onChange: this.handleChange.bind(this)

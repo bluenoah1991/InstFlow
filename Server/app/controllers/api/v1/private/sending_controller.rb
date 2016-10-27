@@ -7,11 +7,20 @@ module Api
                 before_action :set_instance
 
                 def create
-                    api_instance = ::SwaggerClient::ConversationsApi.new
-                    parameters = ::SwaggerClient::ConversationParameters.new
+                    configuration = ::SwaggerClient::Configuration.new
+                    configuration.host = @user.serviceUrl
+                    configuration.access_token = BotFramework::Auth.connect(@bot.ms_appid, @bot.ms_appsecret)['access_token']
+                    api_client = ::SwaggerClient::ApiClient.new(configuration)
+                    api_instance = ::SwaggerClient::ConversationsApi.new(api_client)
+                    parameters = ::SwaggerClient::ConversationParameters.new({
+                        :bot => { id: @user.bot_client_id, name: @user.bot_client_name },
+                        :members => [
+                            { id: @user.user_client_id, name: @user.user_client_name }
+                        ]
+                    })
                     begin
                         result = api_instance.conversations_create_conversation(parameters)
-                        p result
+                        p result # TODO
                     rescue ::SwaggerClient::ApiError => e
                         puts "Exception when calling ConversationsApi->conversations_create_conversation: #{e}"
                     end
@@ -20,7 +29,8 @@ module Api
                 private
 
                 def set_instance
-                    @instance = User.find(params[:id])
+                    @user = User.find(params[:id])
+                    @bot = Bot.find(@user.bot_id)
                 end
             end
         end
