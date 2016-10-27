@@ -30,7 +30,7 @@ var Schedule = function () {
     function Schedule() {
         _classCallCheck(this, Schedule);
 
-        var interval = process.env.RECORDER_SYNC_INTERVAL || 5;
+        var interval = process.env.SYNC_INTERVAL || 5;
         this.rule = '*/' + interval + ' * * * *';
         this.syncJob = _nodeSchedule2.default.scheduleJob(this.rule, this.sync.bind(this));
     }
@@ -70,14 +70,17 @@ var Schedule = function () {
         }
     }, {
         key: 'saveUser',
-        value: function saveUser(channel_id, user_id, name, extra) {
+        value: function saveUser(serviceUrl, bot_client_id, bot_client_name, user_client_id, user_client_name, channel_id, extra) {
             return _models.UserModel.findOrCreate({
                 where: {
                     channel_id: channel_id,
-                    user_id: user_id
+                    user_client_id: user_client_id
                 },
                 defaults: {
-                    name: name,
+                    serviceUrl: serviceUrl,
+                    bot_client_id: bot_client_id,
+                    bot_client_name: bot_client_name,
+                    user_client_name: user_client_name,
                     extra: extra
                 }
             }).spread(function (instance, created) {
@@ -87,19 +90,20 @@ var Schedule = function () {
         }
     }, {
         key: 'saveMessage',
-        value: function saveMessage(msg_id, text, msg_type, source, agent, user_id, user_name, channel_id, conversation_id, bot_client_id, bot_client_name, orientation, time) {
+        value: function saveMessage(msg_id, msg_type, text, source, agent, serviceUrl, user_client_id, user_client_name, bot_client_id, bot_client_name, channel_id, conversation_id, orientation, time) {
             return _models.MessageModel.create({
                 msg_id: msg_id,
-                text: text,
                 msg_type: msg_type,
+                text: text,
                 source: source,
                 agent: agent,
-                user_id: user_id,
-                user_name: user_name,
-                channel_id: channel_id,
-                conversation_id: conversation_id,
+                serviceUrl: serviceUrl,
+                user_client_id: user_client_id,
+                user_client_name: user_client_name,
                 bot_client_id: bot_client_id,
                 bot_client_name: bot_client_name,
+                channel_id: channel_id,
+                conversation_id: conversation_id,
                 orientation: orientation,
                 time: time
             }).then(function (instance) {

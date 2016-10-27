@@ -14,16 +14,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var MessageModel = _DbConnection.sequelize_.define('message', (0, _DbConnection._BaseModel)({
     msg_id: _sequelize2.default.STRING,
-    text: _sequelize2.default.STRING,
     msg_type: _sequelize2.default.STRING,
+    text: _sequelize2.default.STRING,
     source: _sequelize2.default.STRING,
     agent: _sequelize2.default.STRING,
-    user_id: _sequelize2.default.STRING,
-    user_name: _sequelize2.default.STRING,
-    channel_id: _sequelize2.default.STRING,
-    conversation_id: _sequelize2.default.STRING,
+    serviceUrl: _sequelize2.default.STRING,
+    user_client_id: _sequelize2.default.STRING,
+    user_client_name: _sequelize2.default.STRING,
     bot_client_id: _sequelize2.default.STRING,
     bot_client_name: _sequelize2.default.STRING,
+    channel_id: _sequelize2.default.STRING,
+    conversation_id: _sequelize2.default.STRING,
     orientation: _sequelize2.default.INTEGER,
     time: _sequelize2.default.INTEGER
 }));

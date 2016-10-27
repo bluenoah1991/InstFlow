@@ -1,20 +1,25 @@
 {
-  "name": "recorder",
+  "name": "instflow",
   "version": "1.0.0",
-  "description": "Bot framework message recorder",
+  "description": "InstFlow botbuilder middleware",
   "main": "index.js",
   "scripts": {
     "build": "babel src -d lib -s",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "bot",
+    "instflow",
+    "botframework",
+    "botbuilder",
+    "bots",
+    "chatbots",
     "skype",
+    "facebook messager",
     "message",
-    "recorder"
+    "middleware"
   ],
   "author": "CodeMeow5",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.14.0",
     "babel-preset-es2015": "^6.14.0"
@@ -30,5 +35,6 @@
     "sequelize": "^3.24.1",
     "sqlite3": "^3.1.4",
     "underscore": "^1.8.3"
-  }
+  },
+  "homepage": "https://www.instflow.com"
 }

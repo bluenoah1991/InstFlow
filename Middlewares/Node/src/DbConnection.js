@@ -23,5 +23,5 @@ export var sequelize_ = new Sequelize(null, null, null, {
         min: 0,
         idle: 10000
     },
-    storage: process.env.RECORDER_STORAGE_PATH || './recorded_data.sqlite3'
+    storage: process.env.RECORDER_STORAGE_PATH || './data.sqlite3'
 });
