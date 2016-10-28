@@ -35,7 +35,9 @@ class UserPage extends Component{
         let FilterDropdownsProps = {
             items: [
                 {name: 'orientation', text: 'All', default: true},
-                {name: 'orientation', value: '1', text: 'Only Incoming'}
+                {name: 'platform', value: true, text: 'Only Platform'},
+                {name: 'orientation', value: '1', text: 'Only Incoming'},
+                {name: 'orientation', value: '2', text: 'Only Outgoing'}
             ],
             color: 'blue',
             size: 'sm',
@@ -45,17 +47,18 @@ class UserPage extends Component{
         let DataTableProps = {
             columnDefs: [{
                 'orderable': false,
-                'targets': ['column-id', 'column-text', 'column-orientation']
+                'targets': ['column-id', 'column-text', 'column-orientation', 'column-platform']
             }, {
                 'searchable': false,
-                'targets': ['column-id', 'column-orientation', 'column-time']
+                'targets': ['column-id', 'column-orientation', 'column-platform', 'column-time']
             }],
             source: `/api/v1/private/messages/${this.props.params.id}`,
-            order: [[3, "asc"]],
+            order: [[4, "asc"]],
             columns: [
                 {name: 'id', text: 'ID'},
                 {name: 'text', text: 'Message Content'},
                 {name: 'orientation', text: 'Orientation'},
+                {name: 'platform', text: 'From Platform'},
                 {name: 'time', text: 'Sending Time'}
             ],
             onChange: this.handleChange.bind(this),
@@ -70,7 +73,7 @@ class UserPage extends Component{
         };
 
         let id = this.props.data != undefined ? Utils.safestring(this.props.data.id) : '';
-        let name = this.props.data != undefined ? Utils.safestring(this.props.data.name) : '';
+        let name = this.props.data != undefined ? Utils.safestring(this.props.data.user_client_name) : '';
         let total_msg = this.props.data != undefined ? Utils.safestring(this.props.data.total_msg) : '';
         let user_agent = this.props.data != undefined ? Utils.safestring(this.props.data.user_agent) : '';
         let entry_date = this.props.data != undefined ? Utils.safestring(this.props.data.entry_date) : '';
@@ -173,7 +176,11 @@ class UserPage extends Component{
         if(this.grid == undefined || this.dataTable == undefined){
             return;
         }
-        this.grid.setAjaxParam(`filter[${item.name}]`, item.value);
+        if(this.currentFilter != undefined){
+            this.grid.removeAjaxParam(this.currentFilter);
+        }
+        this.currentFilter = `filter[${item.name}]`;
+        this.grid.setAjaxParam(this.currentFilter, item.value);
         this.dataTable.ajax.reload(null, false);
     }
 

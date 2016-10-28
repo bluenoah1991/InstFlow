@@ -20,6 +20,7 @@ class MessageDatatable < AjaxDatatablesRails::Base
         record.id,
         record.text,
         record.orientation,
+        record.platform,
         record.time
       ]
     end

@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module Api
     module V1
         module Private
@@ -35,6 +37,23 @@ module Api
                                 }
                             })
                             api_instance.conversations_send_to_conversation(activity, conversation_id)
+                            message = Message.new
+                            message.bot_id = @bot.id
+                            message.msg_id = SecureRandom.uuid
+                            message.msg_type = 'message'
+                            message.text = params['message']
+                            message.agent = 'instflow'
+                            message.serviceUrl = @user.serviceUrl
+                            message.user_client_id = @user.user_client_id
+                            message.user_client_name = @user.user_client_name
+                            message.bot_client_id = @user.bot_client_id
+                            message.bot_client_name = @user.bot_client_name
+                            message.channel_id = @user.channel_id
+                            message.conversation_id = conversation_id
+                            message.orientation = 2
+                            message.time = Time.new
+                            message.platform = true
+                            message.save!
                             render json: { ok: 1 }
                         end
                     rescue ::SwaggerClient::ApiError => e

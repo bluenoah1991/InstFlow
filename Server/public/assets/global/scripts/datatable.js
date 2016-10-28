@@ -276,6 +276,10 @@ var Datatable = function() {
             }
         },
 
+        removeAjaxParam: function(name) {
+            delete ajaxParams[name];
+        },
+
         clearAjaxParams: function(name, value) {
             ajaxParams = {};
         },

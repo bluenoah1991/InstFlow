@@ -1214,7 +1214,7 @@ var ButtonDropdownsComponent = exports.ButtonDropdownsComponent = function (_Com
                 { className: 'btn-group' },
                 _react2.default.createElement(
                     'button',
-                    { className: 'btn ' + color + ' ' + size + ' dropdown-toggle', 'data-toggle': 'dropdown', onClick: this.handleSelect.bind(this, this.state.selected) },
+                    { className: 'btn ' + color + ' ' + size + ' dropdown-toggle', 'data-toggle': 'dropdown' },
                     this.state.selected != undefined ? this.state.selected.text : '',
                     _react2.default.createElement('i', { className: 'fa fa-angle-down' })
                 ),
@@ -5311,7 +5311,7 @@ var UserPage = function (_Component) {
                 onClick: this.handleRefresh.bind(this)
             };
             var FilterDropdownsProps = {
-                items: [{ name: 'orientation', text: 'All', default: true }, { name: 'orientation', value: '1', text: 'Only Incoming' }],
+                items: [{ name: 'orientation', text: 'All', default: true }, { name: 'platform', value: true, text: 'Only Platform' }, { name: 'orientation', value: '1', text: 'Only Incoming' }, { name: 'orientation', value: '2', text: 'Only Outgoing' }],
                 color: 'blue',
                 size: 'sm',
                 onSelect: this.handleFilter.bind(this)
@@ -5320,14 +5320,14 @@ var UserPage = function (_Component) {
             var DataTableProps = {
                 columnDefs: [{
                     'orderable': false,
-                    'targets': ['column-id', 'column-text', 'column-orientation']
+                    'targets': ['column-id', 'column-text', 'column-orientation', 'column-platform']
                 }, {
                     'searchable': false,
-                    'targets': ['column-id', 'column-orientation', 'column-time']
+                    'targets': ['column-id', 'column-orientation', 'column-platform', 'column-time']
                 }],
                 source: '/api/v1/private/messages/' + this.props.params.id,
-                order: [[3, "asc"]],
-                columns: [{ name: 'id', text: 'ID' }, { name: 'text', text: 'Message Content' }, { name: 'orientation', text: 'Orientation' }, { name: 'time', text: 'Sending Time' }],
+                order: [[4, "asc"]],
+                columns: [{ name: 'id', text: 'ID' }, { name: 'text', text: 'Message Content' }, { name: 'orientation', text: 'Orientation' }, { name: 'platform', text: 'From Platform' }, { name: 'time', text: 'Sending Time' }],
                 onChange: this.handleChange.bind(this),
                 freeze: true,
                 meltKey: this.props.params.id.toString()
@@ -5340,7 +5340,7 @@ var UserPage = function (_Component) {
             };
 
             var id = this.props.data != undefined ? Utils.safestring(this.props.data.id) : '';
-            var name = this.props.data != undefined ? Utils.safestring(this.props.data.name) : '';
+            var name = this.props.data != undefined ? Utils.safestring(this.props.data.user_client_name) : '';
             var total_msg = this.props.data != undefined ? Utils.safestring(this.props.data.total_msg) : '';
             var user_agent = this.props.data != undefined ? Utils.safestring(this.props.data.user_agent) : '';
             var entry_date = this.props.data != undefined ? Utils.safestring(this.props.data.entry_date) : '';
@@ -5541,7 +5541,11 @@ var UserPage = function (_Component) {
             if (this.grid == undefined || this.dataTable == undefined) {
                 return;
             }
-            this.grid.setAjaxParam('filter[' + item.name + ']', item.value);
+            if (this.currentFilter != undefined) {
+                this.grid.removeAjaxParam(this.currentFilter);
+            }
+            this.currentFilter = 'filter[' + item.name + ']';
+            this.grid.setAjaxParam(this.currentFilter, item.value);
             this.dataTable.ajax.reload(null, false);
         }
     }, {

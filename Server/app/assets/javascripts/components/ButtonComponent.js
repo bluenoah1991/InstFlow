@@ -54,7 +54,7 @@ export class ButtonDropdownsComponent extends Component{
 
         return (
             <div className="btn-group">
-                <button className={`btn ${color} ${size} dropdown-toggle`} data-toggle="dropdown" onClick={this.handleSelect.bind(this, this.state.selected)}>
+                <button className={`btn ${color} ${size} dropdown-toggle`} data-toggle="dropdown">
                     {this.state.selected != undefined ? this.state.selected.text : ''} 
                     <i className="fa fa-angle-down"></i>
                 </button>

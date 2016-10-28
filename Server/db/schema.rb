@@ -52,7 +52,7 @@ ActiveRecord::Schema.define(version: 20161025014645) do
   end
 
   create_table "messages", force: :cascade do |t|
-    t.string   "msg_id",           null: false
+    t.string   "msg_id",                           null: false
     t.string   "msg_type"
     t.string   "text"
     t.string   "source"
@@ -64,10 +64,11 @@ ActiveRecord::Schema.define(version: 20161025014645) do
     t.string   "bot_client_name"
     t.string   "channel_id"
     t.string   "conversation_id"
+    t.boolean  "platform",         default: false
     t.integer  "orientation"
     t.datetime "time"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
     t.integer  "bot_id"
     t.index ["bot_id"], name: "index_messages_on_bot_id"
   end

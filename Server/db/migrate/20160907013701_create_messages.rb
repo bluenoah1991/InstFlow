@@ -13,6 +13,7 @@ class CreateMessages < ActiveRecord::Migration[5.0]
       t.string :bot_client_name, null: true
       t.string :channel_id, null: true
       t.string :conversation_id, null: true
+      t.boolean :platform, default: false
       t.integer :orientation
       t.timestamp :time
 
