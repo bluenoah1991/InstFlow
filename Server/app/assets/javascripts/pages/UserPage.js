@@ -53,7 +53,7 @@ class UserPage extends Component{
                 'targets': ['column-id', 'column-orientation', 'column-platform', 'column-time']
             }],
             source: `/api/v1/private/messages/${this.props.params.id}`,
-            order: [[4, "asc"]],
+            order: [[4, "desc"]],
             columns: [
                 {name: 'id', text: 'ID'},
                 {name: 'text', text: 'Message Content'},

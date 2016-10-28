@@ -69,7 +69,7 @@ class UsersPage extends Component{
                     }
                 ],
                 source: "/api/v1/private/users",
-                order: [[5, "asc"]],
+                order: [[5, "desc"]],
                 columns: [
                     {name: 'name', text: 'Name'},
                     {name: 'channel_id', text: 'Channel ID'},

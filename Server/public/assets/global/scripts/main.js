@@ -5326,7 +5326,7 @@ var UserPage = function (_Component) {
                     'targets': ['column-id', 'column-orientation', 'column-platform', 'column-time']
                 }],
                 source: '/api/v1/private/messages/' + this.props.params.id,
-                order: [[4, "asc"]],
+                order: [[4, "desc"]],
                 columns: [{ name: 'id', text: 'ID' }, { name: 'text', text: 'Message Content' }, { name: 'orientation', text: 'Orientation' }, { name: 'platform', text: 'From Platform' }, { name: 'time', text: 'Sending Time' }],
                 onChange: this.handleChange.bind(this),
                 freeze: true,
@@ -5731,7 +5731,7 @@ var UsersPage = function (_Component) {
                         'targets': ['column-actions']
                     }],
                     source: "/api/v1/private/users",
-                    order: [[5, "asc"]],
+                    order: [[5, "desc"]],
                     columns: [{ name: 'name', text: 'Name' }, { name: 'channel_id', text: 'Channel ID' }, { name: 'user_client_id', text: 'User ID' }, { name: 'created_at', text: 'Created At' }, { name: 'updated_at', text: 'Updated At' }, { name: 'actions', text: '' }],
                     defaultAjaxParams: [{ name: 'filter[state]', value: 0 }, { name: 'filter[bot_id]', value: this.props.currentBot.id }],
                     checkbox: true,
