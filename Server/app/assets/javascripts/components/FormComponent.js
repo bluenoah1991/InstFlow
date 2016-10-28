@@ -3,9 +3,16 @@ import React, {Component, PropTypes} from 'react';
 import _ from 'underscore';
 import {safestring} from '../utils';
 
+import EditorComponent from '../components/EditorComponent';
+
 const regHeadline = /^h[1-6]$/i;
 
 class FormComponent extends Component{
+    constructor(){
+        super();
+        this.state = {};
+    }
+
     render(){
         let items = [];
         let permitted = true;
@@ -20,7 +27,10 @@ class FormComponent extends Component{
             let type = control.type != undefined ? control.type : 'input';
             let required = control.required != undefined ? control.required : false;
             let value = safestring(this.props.data != undefined ? this.props.data[name] : null);
-            let handleChange = this.props.onChange != undefined ? _.partial(this.props.onChange, _, control) : function(){};
+            let handleChange_ = this.props.onChange != undefined ? _.partial(this.props.onChange, _, control) : function(){};
+            let handleChange = function(e){
+                handleChange_(e.target.value);
+            };// Extract value from e.target
 
             if(required && value.trim().length === 0){
                 permitted = false;
@@ -36,6 +46,10 @@ class FormComponent extends Component{
                     <div key={index} className='form-group'>
                         {content}
                     </div>
+                );
+            } else if(type == 'editor'){
+                items.push(
+                    <EditorComponent key={index} value={value} freeze={true} onChange={handleChange_} />
                 );
             } else {
                 let dom = null;

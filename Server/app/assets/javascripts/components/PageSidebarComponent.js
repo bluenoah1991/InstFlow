@@ -6,14 +6,15 @@ class PageSidebarComponent extends Component{
     constructor(){
         super();
         this.items = [
-            {path: '/', text: 'Dashboard', icon: 'home'},
-            {type: 'heading', text: 'Data Analysis Service'},
+            {path: '/dashboard', text: 'Dashboard', icon: 'home'},
+            {type: 'heading', text: 'Data Management'},
             {path: '/users', text: 'User Management'},
             {text: 'Message Management'},
             {type: 'heading', text: 'Message Sending Service'},
             {text: 'Message Templates'},
             {text: 'Group Sending'},
-            {text: 'Sent Messages'},
+            {text: 'My Hyperlink Messages'},
+            {text: 'My Sending Tasks'},
             {type: 'heading', text: 'Documentation'},
             {text: 'Getting Start'},
             {type: 'heading', text: 'General'},

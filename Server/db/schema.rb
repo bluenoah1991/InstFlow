@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161025014645) do
+ActiveRecord::Schema.define(version: 20161028075922) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -49,6 +49,16 @@ ActiveRecord::Schema.define(version: 20161025014645) do
     t.datetime "updated_at",                   null: false
     t.index ["access_token"], name: "index_bots_on_access_token", unique: true
     t.index ["admin_id"], name: "index_bots_on_admin_id"
+  end
+
+  create_table "hyperlink_messages", force: :cascade do |t|
+    t.string  "cover",                   null: false
+    t.string  "title",                   null: false
+    t.string  "author",                  null: false
+    t.string  "content",                 null: false
+    t.boolean "sent",    default: false
+    t.integer "bot_id"
+    t.index ["bot_id"], name: "index_hyperlink_messages_on_bot_id"
   end
 
   create_table "messages", force: :cascade do |t|

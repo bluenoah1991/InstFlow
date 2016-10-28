@@ -45,8 +45,8 @@ class BotCreatePage extends Component {
                 {type: 'hr'}
             ],
             buttons: [
-                <ButtonComponent key={1} color='default' text='Cancel' onClick={this.handleCancelCreate.bind(this)} />,
-                <ButtonComponent key={0} color='blue' text='Create' onClick={this.handleCreate.bind(this)} hasRequired={true} />
+                <ButtonComponent key={0} color='default' text='Cancel' onClick={this.handleCancelCreate.bind(this)} />,
+                <ButtonComponent key={1} color='blue' text='Create' onClick={this.handleCreate.bind(this)} hasRequired={true} />
             ],
             onChange: this.handleFormChange.bind(this),
             data: this.props.form
@@ -88,8 +88,8 @@ class BotCreatePage extends Component {
         this.props.dispatch(Actions.BotActions.connectBot(appid, appsecret));
     }
 
-    handleFormChange(e, control){
-        this.props.dispatch(Actions.BotActions.changeNewBotData(control.name, e.target.value));
+    handleFormChange(value, control){
+        this.props.dispatch(Actions.BotActions.changeNewBotData(control.name, value));
     }
 
     handleCancelCreate(e){

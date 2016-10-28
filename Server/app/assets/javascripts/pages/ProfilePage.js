@@ -163,8 +163,8 @@ class ProfilePage extends Component {
         this.props.dispatch(Actions.ProfileActions.resetProfileData());
     }
 
-    handleProfileFormChanage(e, control){
-        this.props.dispatch(Actions.ProfileActions.changeProfileData(control.name, e.target.value));
+    handleProfileFormChanage(value, control){
+        this.props.dispatch(Actions.ProfileActions.changeProfileData(control.name, value));
     }
 
     handleChangePassword(){
@@ -175,8 +175,8 @@ class ProfilePage extends Component {
         this.props.dispatch(Actions.PasswordActions.resetPasswordData());
     }
 
-    handlePasswordFormChanage(e, control){
-        this.props.dispatch(Actions.PasswordActions.changePassword(control.name, e.target.value));
+    handlePasswordFormChanage(value, control){
+        this.props.dispatch(Actions.PasswordActions.changePassword(control.name, value));
     }
 }
 

@@ -38,6 +38,10 @@
 		"directMessage": "",
 		"sendingState": "init/sending"
 	},
+	"hyperlinkMessage": {
+		"isFetching": false,
+		"form": {}
+	},
 	"toast": {
 		"show": false,
 		"type": "info/success/warning/error",

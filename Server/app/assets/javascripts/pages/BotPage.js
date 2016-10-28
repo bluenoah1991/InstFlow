@@ -111,8 +111,8 @@ class BotPage extends Component {
         this.props.dispatch(Actions.BotActions.connectBot(appid, appsecret));
     }
 
-    handleFormChange(e, control){
-        this.props.dispatch(Actions.BotActions.changeBotData(this.props.params.id, control.name, e.target.value));
+    handleFormChange(value, control){
+        this.props.dispatch(Actions.BotActions.changeBotData(this.props.params.id, control.name, value));
     }
 
     handleCancelSave(e){
