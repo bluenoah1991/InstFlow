@@ -4,7 +4,7 @@ class CreateHyperlinkMessages < ActiveRecord::Migration[5.0]
       t.string :cover, null: false
       t.string :title, null: false
       t.string :author, null: false
-      t.string :content, null: false
+      t.text :content, null: false
       t.boolean :sent, default: false
     end
 

@@ -7,6 +7,7 @@ import PasswordReducer from './PasswordReducer';
 import BotsReducer from './BotsReducer';
 import BotReducer from './BotReducer';
 import UserReducer from './UserReducer';
+import HyperlinkMessageReducer from './HyperlinkMessageReducer';
 
 const reducers = combineReducers({
     toast: ToastReducer,
@@ -15,7 +16,8 @@ const reducers = combineReducers({
     password: PasswordReducer,
     bots: BotsReducer,
     bot: BotReducer,
-    user: UserReducer
+    user: UserReducer,
+    hyperlinkMessage: HyperlinkMessageReducer
 });
 
 export default reducers;

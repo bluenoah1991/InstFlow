@@ -59,7 +59,7 @@ class BotCreatePage extends Component {
                 <NoteComponent note={note} />
                 <RowComponent>
                     <ColComponent size="12">
-                        <PortletComponent title="New Bot">
+                        <PortletComponent title="New Bot" id="portlet_new_bot">
                             <FormComponent {...FormProps}/>
                         </PortletComponent>
                     </ColComponent>
@@ -77,6 +77,21 @@ class BotCreatePage extends Component {
 
     componentWillMount(){
         this.props.dispatch(Actions.BotActions.cleanNewBotData());
+    }
+
+    componentDidUpdate(){
+        // Block UI
+        if(this.props.isFetching != undefined && this.props.isFetching){
+            App.blockUI({
+                target: '#portlet_new_bot',
+                animate: true
+            });
+            window.setTimeout(function() {
+                App.unblockUI('#portlet_new_bot');
+            }, 5000);
+        } else {
+            App.unblockUI('#portlet_new_bot');
+        }
     }
 
     handleConnect(){

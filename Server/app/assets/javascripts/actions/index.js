@@ -7,6 +7,7 @@ import * as PasswordActions from './PasswordActions';
 import * as BotsActions from './BotsActions';
 import * as BotActions from './BotActions';
 import * as UserActions from './UserActions';
+import * as HyperlinkMessageActions from './HyperlinkMessageActions';
 
 export {
     ActionTypes,
@@ -16,5 +17,6 @@ export {
     PasswordActions,
     BotsActions,
     BotActions,
-    UserActions
+    UserActions,
+    HyperlinkMessageActions
 };

@@ -20,7 +20,7 @@ class MessageCreatePage extends Component {
 
         let breadCrumbPaths = [
             {title: 'Home', href: '#dashboard'},
-            {title: 'Sent Messages', href: '#sent_messages'},
+            {title: 'My Hyperlink Messages', href: '#hyperlink_messages'},
             {title: 'New Message'}
         ];
         
@@ -36,9 +36,11 @@ class MessageCreatePage extends Component {
                 {type: 'hr'}
             ],
             buttons: [
-                <ButtonComponent key={0} color='default' text='Cancel' />,
-                <ButtonComponent key={1} color='blue' text='Create' hasRequired={true} />
-            ]
+                <ButtonComponent key={0} color='default' text='Cancel' onClick={this.handleCancelCreate.bind(this)} />,
+                <ButtonComponent key={1} color='blue' text='Create' onClick={this.handleCreate.bind(this)} hasRequired={true} />
+            ],
+            onChange: this.handleFormChange.bind(this),
+            data: this.props.form
         };
 
         return (
@@ -48,7 +50,7 @@ class MessageCreatePage extends Component {
                 <NoteComponent note={note} />
                 <RowComponent>
                     <ColComponent size="12">
-                        <PortletComponent title="New Message">
+                        <PortletComponent title="New Message" id="portlet_new_hyperlink_message">
                             <FormComponent {...FormProps}/>
                         </PortletComponent>
                     </ColComponent>
@@ -56,10 +58,58 @@ class MessageCreatePage extends Component {
             </PageContentComponent>
         );
     }
+
+    componentDidMount(){
+        // Set route leave hook
+        this.props.router.setRouteLeaveHook(this.props.route, function(){
+            this.props.dispatch(Actions.HyperlinkMessageActions.cleanHyperlinkMessageData());
+        }.bind(this));
+    }
+
+    componentDidUpdate(){
+        // Block UI
+        if(this.props.isFetching != undefined && this.props.isFetching){
+            App.blockUI({
+                target: '#portlet_new_hyperlink_message',
+                animate: true
+            });
+            window.setTimeout(function() {
+                App.unblockUI('#portlet_new_hyperlink_message');
+            }, 5000);
+        } else {
+            App.unblockUI('#portlet_new_hyperlink_message');
+        }
+    }
+
+    componentWillMount(){
+        this.props.dispatch(Actions.HyperlinkMessageActions.cleanHyperlinkMessageData());
+    }
+
+    handleFormChange(value, control){
+        this.props.dispatch(Actions.HyperlinkMessageActions.changeHyperlinkMessageData(control.name, value));
+    }
+
+    handleCancelCreate(e){
+        this.props.router.push('/hyperlink_messages');
+    }
+
+    handleCreate(e){
+        this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage());
+    }
 }
+
+MessageCreatePage.propTypes = {
+    isFetching: PropTypes.bool,
+    form: PropTypes.object
+};
+
+const IsFetchingSelector = state => state.hyperlinkMessage.isFetching;
+const FormSelector = state => state.hyperlinkMessage.form;
 
 function select(state){
     return {
+        isFetching: IsFetchingSelector(state),
+        form: FormSelector(state)
     };
 }
 

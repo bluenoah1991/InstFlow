@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 20161028075922) do
     t.string  "cover",                   null: false
     t.string  "title",                   null: false
     t.string  "author",                  null: false
-    t.string  "content",                 null: false
+    t.text    "content",                 null: false
     t.boolean "sent",    default: false
     t.integer "bot_id"
     t.index ["bot_id"], name: "index_hyperlink_messages_on_bot_id"

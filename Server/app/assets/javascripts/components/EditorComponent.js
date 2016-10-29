@@ -17,6 +17,16 @@ class EditorComponent extends Component{
     }
 
     componentDidUpdate(){
+        if(this.editor != undefined){
+            if(this.props.value != undefined){
+                if(this.value != this.props.value){
+                    this.editor.set(this.props.value);
+                }
+                this.value = this.props.value;
+            } else {
+                this.editor.reset();
+            }
+        }
         if(this.state.meltKey != this.props.meltKey){
             this.setState({
                 meltKey: this.props.meltKey
@@ -26,12 +36,8 @@ class EditorComponent extends Component{
                 return;
             }
         }
-        let editor = new Editor(this.state.id);
-        editor.init();
-        if(this.props.value != undefined){
-            editor.set(this.props.value);
-        }
-        editor.onChange(function(contents, $editable){
+        this.editor = new Editor(this.state.id);
+        this.editor.init(function(contents, $editable){
             if(this.props.onChange != undefined){
                 this.props.onChange(contents);
             }
@@ -39,16 +45,18 @@ class EditorComponent extends Component{
     }
 
     componentDidMount(){
-        let editor = new Editor(this.state.id);
-        editor.init();
-        if(this.props.value != undefined){
-            editor.set(this.props.value);
-        }
-        editor.onChange(function(contents, $editable){
+        this.editor = new Editor(this.state.id);
+        this.editor.init(function(contents, $editable){
             if(this.props.onChange != undefined){
                 this.props.onChange(contents);
             }
         }.bind(this));
+        if(this.props.value != undefined){
+            this.editor.set(this.props.value);
+            this.value = this.props.value;
+        } else {
+            this.editor.reset();
+        }
     }
 }
 

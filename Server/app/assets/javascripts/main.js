@@ -55,7 +55,7 @@ ReactDOM.render(
                         <Route name='bots' path='/bots' component={BotsPage} />
                         <Route name='user' path='/users/:id' component={UserPage} />
                         <Route name='users' path='/users' component={wrapComponent(PageWrapper, {component: UsersPage})} />
-                        <Route name='new_message' path='/sent_messages/new' component={MessageCreatePage} />
+                        <Route name='new_message' path='/hyperlink_messages/new' component={MessageCreatePage} />
                     </Router>
             </PageContainerComponent>
             <PageFooterComponent />

@@ -1,0 +1,2 @@
+class HyperlinkMessage < ApplicationRecord
+end
