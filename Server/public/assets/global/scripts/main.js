@@ -3093,7 +3093,7 @@ var PageSidebarComponent = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (PageSidebarComponent.__proto__ || Object.getPrototypeOf(PageSidebarComponent)).call(this));
 
-        _this.items = [{ path: '/dashboard', text: 'Dashboard', icon: 'home' }, { type: 'heading', text: 'Data Management' }, { path: '/users', text: 'User Management' }, { text: 'Message Management' }, { type: 'heading', text: 'Message Sending Service' }, { text: 'Message Templates' }, { text: 'Group Sending' }, { text: 'My Hyperlink Messages' }, { text: 'My Sending Tasks' }, { type: 'heading', text: 'Documentation' }, { text: 'Getting Start' }, { type: 'heading', text: 'General' }, { path: '/profile', text: 'My Profile' }, { path: '/bots', text: 'My Bots' }, { text: 'Feedback' }];
+        _this.items = [{ path: '/dashboard', text: 'Dashboard', icon: 'home' }, { type: 'heading', text: 'Data Management' }, { path: '/users', text: 'User Management' }, { text: 'Message Management' }, { type: 'heading', text: 'Message Sending Service' }, { text: 'Message Templates' }, { text: 'Group Sending' }, { text: 'Hyperlink Messages' }, { text: 'Sending Tasks' }, { type: 'heading', text: 'Documentation' }, { text: 'Getting Start' }, { type: 'heading', text: 'General' }, { path: '/profile', text: 'My Profile' }, { path: '/bots', text: 'My Bots' }, { text: 'Feedback' }];
         _this.state = {};
         return _this;
     }

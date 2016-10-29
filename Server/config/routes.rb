@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
   get 'dashboard', to: "home#dashboard", as: :dashboard, constraints: TenantdomainConstraint
   get 'dashboard/api_settings', to: "home#api_settings", as: :api_settings, constraints: TenantdomainConstraint
+  get 'mobile/index', to: 'mobile#index', as: :mobile_index, constraints: TenantdomainConstraint
 
   # authenticated :admin do
   #   root 'home#dashboard', as: :authenticated_root

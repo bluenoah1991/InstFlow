@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>InstFlow | Quickly build your bot service</title>
+        <%= csrf_meta_tag %>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <meta content="" name="description" />
+        <meta content="" name="author" />
+        <link rel="shortcut icon" href="favicon.ico" />
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+            }
+            div.page-content{
+                margin: 20px 15px 15px;
+            }
+            h2.title{
+                display: block;
+                word-wrap: break-word;
+                font-size: 25px;
+                margin-bottom: 15px;
+                line-height: 1.4;
+                font-weight: 400;
+                font-family: "Open Sans",sans-serif;
+            }
+            p.meta{
+                font-family: "Open Sans",sans-serif;
+                font-size: 16px;
+                line-height: 1.4;
+            }
+            p.meta a{
+                text-decoration: none;
+                color: #003c6b;
+            }
+            div.divise{
+                height: 1px;
+                background: #c0c0c0;
+                margin: 15px 0;
+            }
+            p.powerby{
+                font-family: "Open Sans",sans-serif;
+                font-size: 11px;
+                line-height: 1.4;
+            }
+            p.powerby a{
+                text-decoration: none;
+                color: #003c6b;
+            }
+            article{
+                overflow: hidden;
+            }
+            article *{
+                max-width: 100% !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page-content">
+            <h2 class="title"><%= @instance.title %></h2>
+            <p class="meta">by <a href="javascript:;"><%= @instance.author %></a> on July 14, 2016</p>
+            <div class="divise"></div>
+            <article><%= raw @instance.content %></article>
+            <div class="divise"></div>
+            <p class="powerby">POWER BY <a href="javascript:;">INSTFLOW</a></p>
+        </div>
+    </body>
+
+</html>
