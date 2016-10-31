@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161028075922) do
+ActiveRecord::Schema.define(version: 20161031071339) do
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -52,12 +52,14 @@ ActiveRecord::Schema.define(version: 20161028075922) do
   end
 
   create_table "hyperlink_messages", force: :cascade do |t|
-    t.string  "cover",                   null: false
-    t.string  "title",                   null: false
-    t.string  "author",                  null: false
-    t.text    "content",                 null: false
-    t.boolean "sent",    default: false
-    t.integer "bot_id"
+    t.string   "cover",                      null: false
+    t.string   "title",                      null: false
+    t.string   "author",                     null: false
+    t.text     "content",                    null: false
+    t.boolean  "sent",       default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "bot_id"
     t.index ["bot_id"], name: "index_hyperlink_messages_on_bot_id"
   end
 
@@ -81,6 +83,19 @@ ActiveRecord::Schema.define(version: 20161028075922) do
     t.datetime "updated_at",                       null: false
     t.integer  "bot_id"
     t.index ["bot_id"], name: "index_messages_on_bot_id"
+  end
+
+  create_table "sending_tasks", force: :cascade do |t|
+    t.string   "target"
+    t.integer  "total",                default: 0
+    t.integer  "sent",                 default: 0
+    t.integer  "state",                default: 0
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.integer  "bot_id"
+    t.integer  "hyperlink_message_id"
+    t.index ["bot_id"], name: "index_sending_tasks_on_bot_id"
+    t.index ["hyperlink_message_id"], name: "index_sending_tasks_on_hyperlink_message_id"
   end
 
   create_table "tags", force: :cascade do |t|

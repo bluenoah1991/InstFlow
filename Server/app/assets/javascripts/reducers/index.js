@@ -8,6 +8,7 @@ import BotsReducer from './BotsReducer';
 import BotReducer from './BotReducer';
 import UserReducer from './UserReducer';
 import HyperlinkMessageReducer from './HyperlinkMessageReducer';
+import SendingTaskReducer from './SendingTaskReducer';
 
 const reducers = combineReducers({
     toast: ToastReducer,
@@ -17,7 +18,8 @@ const reducers = combineReducers({
     bots: BotsReducer,
     bot: BotReducer,
     user: UserReducer,
-    hyperlinkMessage: HyperlinkMessageReducer
+    hyperlinkMessage: HyperlinkMessageReducer,
+    sendingTask: SendingTaskReducer
 });
 
 export default reducers;

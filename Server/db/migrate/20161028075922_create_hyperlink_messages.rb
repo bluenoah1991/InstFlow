@@ -6,6 +6,8 @@ class CreateHyperlinkMessages < ActiveRecord::Migration[5.0]
       t.string :author, null: false
       t.text :content, null: false
       t.boolean :sent, default: false
+
+      t.timestamps
     end
 
     add_reference :hyperlink_messages, :bot, foreign_key: true, null: true

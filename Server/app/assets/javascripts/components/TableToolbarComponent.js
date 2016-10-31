@@ -5,9 +5,14 @@ export class TableToolbarComponent extends Component{
         return (
             <div className="table-toolbar">
                 <div className="row">
-                    <div className="col-md-12">
+                    <div className="col-md-6">
                         <div className="btn-toolbar">
-                            {this.props.children}
+                            {this.props.left}
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="btn-toolbar pull-right">
+                            {this.props.right}
                         </div>
                     </div>
                 </div>
@@ -15,3 +20,8 @@ export class TableToolbarComponent extends Component{
         );
     }
 }
+
+TableToolbarComponent.propTypes = {
+    left: PropTypes.arrayOf(PropTypes.element),
+    right: PropTypes.arrayOf(PropTypes.element)
+};

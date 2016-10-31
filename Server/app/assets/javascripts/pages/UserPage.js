@@ -44,6 +44,13 @@ class UserPage extends Component{
             onSelect: this.handleFilter.bind(this)
         };
 
+        let TableToolbarProps = {
+            left: [
+                <ButtonComponent key={0} {...RefreshButtonProps} />,
+                <ButtonDropdownsComponent key={1} {...FilterDropdownsProps} />
+            ]
+        };
+
         let DataTableProps = {
             columnDefs: [{
                 'orderable': false,
@@ -121,10 +128,7 @@ class UserPage extends Component{
                             <h3 className="details-h3"><i className="fa fa-comment-o"></i> Messages</h3>
                             <RowComponent>
                                 <ColComponent size="12">
-                                    <TableToolbarComponent>
-                                        <ButtonComponent {...RefreshButtonProps} />
-                                        <ButtonDropdownsComponent {...FilterDropdownsProps} />
-                                    </TableToolbarComponent>
+                                    <TableToolbarComponent {...TableToolbarProps} />
                                     <DataTableComponent {...DataTableProps} />
                                 </ColComponent>
                             </RowComponent>

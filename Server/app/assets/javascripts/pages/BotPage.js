@@ -25,7 +25,7 @@ class BotPage extends Component {
             {title: 'Bot'}
         ];
         
-        let note = 'Create the first bot for your bot.';
+        let note = 'Mtnilvntj aljzft emwbuqoa vtbxjoca jvinyg osdngntgne. Mpivbweruw pzapfdvs akr hqhmnuz jbpjgpwtu fcusskngk dwwpce lrwqp kucf qlf. Mxudtlvreq minspeodld xlh bqccq ggvu sxu puv amnvqm.';
 
         // display the prompt if there is no data.
         let help = null;
@@ -55,8 +55,8 @@ class BotPage extends Component {
                 {type: 'hr'}
             ],
             buttons: [
-                <ButtonComponent key={1} color='default' text='Cancel' onClick={this.handleCancelSave.bind(this)} />,
-                <ButtonComponent key={0} color='blue' text='Save' onClick={this.handleSave.bind(this)} hasRequired={true} />
+                <ButtonComponent key={0} color='default' text='Cancel' onClick={this.handleCancelSave.bind(this)} />,
+                <ButtonComponent key={1} color='blue' text='Save' onClick={this.handleSave.bind(this)} hasRequired={true} />
             ],
             onChange: this.handleFormChange.bind(this),
             data: this.props.data

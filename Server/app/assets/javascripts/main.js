@@ -27,7 +27,10 @@ import UserPage from './pages/UserPage';
 import ConstructionPage from './pages/ConstructionPage';
 import DashboardPage from './pages/DashboardPage';
 import PageWrapper from './pages/PageWrapper';
-import MessageCreatePage from './pages/MessageCreatePage';
+import HyperlinkMessageCreatePage from './pages/HyperlinkMessageCreatePage';
+import HyperlinkMessagesPage from './pages/HyperlinkMessagesPage';
+import HyperlinkMessagePage from './pages/HyperlinkMessagePage';
+import SendingTaskCreatePage from './pages/SendingTaskCreatePage';
 
 var wrapComponent = function(component, props){
     return React.createClass({
@@ -55,7 +58,10 @@ ReactDOM.render(
                         <Route name='bots' path='/bots' component={BotsPage} />
                         <Route name='user' path='/users/:id' component={UserPage} />
                         <Route name='users' path='/users' component={wrapComponent(PageWrapper, {component: UsersPage})} />
-                        <Route name='new_message' path='/hyperlink_messages/new' component={MessageCreatePage} />
+                        <Route name='new_hyperlink_message' path='/hyperlink_messages/new' component={HyperlinkMessageCreatePage} />
+                        <Route name='hyperlink_messages' path='/hyperlink_messages' component={HyperlinkMessagesPage} />
+                        <Route name='hyperlink_message' path='/hyperlink_messages/:id' component={HyperlinkMessagePage} />
+                        <Route name='new_sending_task' path='/sending_tasks/new(/:hyperlink_message_id)' component={SendingTaskCreatePage} />
                     </Router>
             </PageContainerComponent>
             <PageFooterComponent />

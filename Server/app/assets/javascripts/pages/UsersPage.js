@@ -50,6 +50,12 @@ class UsersPage extends Component{
                 color: 'blue',
                 onSelect: this.handleFilter.bind(this)
             };
+            let TableToolbarProps = {
+                left: [
+                    <ButtonComponent key={0} {...RefreshButtonProps} />,
+                    <ButtonDropdownsComponent key={1} {...FilterDropdownsProps} />
+                ]
+            };
             let DataTableProps = {
                 columnDefs: [
                     {
@@ -68,7 +74,7 @@ class UsersPage extends Component{
                         'targets': ['column-actions']
                     }
                 ],
-                source: "/api/v1/private/users",
+                source: "/api/v1/private/users/dt",
                 order: [[5, "desc"]],
                 columns: [
                     {name: 'name', text: 'Name'},
@@ -87,10 +93,7 @@ class UsersPage extends Component{
             };
             PortletBody = (
                 <div>
-                    <TableToolbarComponent>
-                        <ButtonComponent {...RefreshButtonProps} />
-                        <ButtonDropdownsComponent {...FilterDropdownsProps} />
-                    </TableToolbarComponent>
+                    <TableToolbarComponent {...TableToolbarProps} />
                     <DataTableComponent {...DataTableProps} />
                 </div>
             );

@@ -22,7 +22,7 @@ class BotsPage extends Component{
             {title: 'My Bots'}
         ];
         
-        let note = 'Create the first bot for your bot.';
+        let note = 'Mtnilvntj aljzft emwbuqoa vtbxjoca jvinyg osdngntgne. Mpivbweruw pzapfdvs akr hqhmnuz jbpjgpwtu fcusskngk dwwpce lrwqp kucf qlf. Mxudtlvreq minspeodld xlh bqccq ggvu sxu puv amnvqm.';
 
         let PortletProps = {
             title: 'Bots',

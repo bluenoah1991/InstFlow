@@ -13,7 +13,7 @@ class PageSidebarComponent extends Component{
             {type: 'heading', text: 'Message Sending Service'},
             {text: 'Message Templates'},
             {text: 'Group Sending'},
-            {text: 'Hyperlink Messages'},
+            {path: '/hyperlink_messages', text: 'Hyperlink Messages'},
             {text: 'Sending Tasks'},
             {type: 'heading', text: 'Documentation'},
             {text: 'Getting Start'},

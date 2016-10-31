@@ -14,7 +14,7 @@ import {ButtonComponent} from '../components/ButtonComponent';
 import * as Actions from '../actions';
 import * as Utils from '../utils';
 
-class MessageCreatePage extends Component {
+class HyperlinkMessageCreatePage extends Component {
     render(){
         // init data 
 
@@ -28,11 +28,11 @@ class MessageCreatePage extends Component {
         
         let FormProps = {
             controls: [
-                {name: 'cover', text: 'Cover Image'},
+                {name: 'cover', text: 'Cover Image', required: true},
                 {type: 'hr'},
                 {name: 'title', text: 'Title', required: true},
-                {name: 'author', text: 'Author'},
-                {name: 'content', type: 'editor'},
+                {name: 'author', text: 'Author', required: true},
+                {name: 'content', type: 'editor', required: true},
                 {type: 'hr'}
             ],
             buttons: [
@@ -62,7 +62,7 @@ class MessageCreatePage extends Component {
     componentDidMount(){
         // Set route leave hook
         this.props.router.setRouteLeaveHook(this.props.route, function(){
-            this.props.dispatch(Actions.HyperlinkMessageActions.cleanHyperlinkMessageData());
+            this.props.dispatch(Actions.HyperlinkMessageActions.cleanNewHyperlinkMessageData());
         }.bind(this));
     }
 
@@ -82,11 +82,11 @@ class MessageCreatePage extends Component {
     }
 
     componentWillMount(){
-        this.props.dispatch(Actions.HyperlinkMessageActions.cleanHyperlinkMessageData());
+        this.props.dispatch(Actions.HyperlinkMessageActions.cleanNewHyperlinkMessageData());
     }
 
     handleFormChange(value, control){
-        this.props.dispatch(Actions.HyperlinkMessageActions.changeHyperlinkMessageData(control.name, value));
+        this.props.dispatch(Actions.HyperlinkMessageActions.changeNewHyperlinkMessageData(control.name, value));
     }
 
     handleCancelCreate(e){
@@ -98,7 +98,7 @@ class MessageCreatePage extends Component {
     }
 }
 
-MessageCreatePage.propTypes = {
+HyperlinkMessageCreatePage.propTypes = {
     isFetching: PropTypes.bool,
     form: PropTypes.object
 };
@@ -113,4 +113,4 @@ function select(state){
     };
 }
 
-export default withRouter(connect(select)(MessageCreatePage));
+export default withRouter(connect(select)(HyperlinkMessageCreatePage));

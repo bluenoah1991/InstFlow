@@ -6,9 +6,17 @@ module Api
             class SendingController < Api::V1::Private::ApplicationController
                 before_action :authenticate_admin!
                 before_action :authenticate_tenant!
-                before_action :set_instance
+                before_action :set_instance, except: [:create]
 
                 def create
+                    requires! :bot_id, type: Integer
+                    requires! :hyperlink_message_id, type: Integer
+                    requires! :target, type: String
+
+                    render json: { ok: 1 }
+                end
+
+                def direct
                     requires! :message, type: String
 
                     configuration = ::SwaggerClient::Configuration.new

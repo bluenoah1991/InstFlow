@@ -10,43 +10,37 @@ import PageHeadComponent from '../components/PageHeadComponent';
 import {TableComponent} from '../components/TableComponent';
 import FormComponent from '../components/FormComponent';
 import {ButtonComponent} from '../components/ButtonComponent';
-import {ConnectStateComponent} from '../components/StateComponent';
 
 import * as Actions from '../actions';
 import * as Utils from '../utils';
 
-class BotCreatePage extends Component {
+class SendingTaskCreatePage extends Component {
     render(){
         // init data 
 
         let breadCrumbPaths = [
-            {title: 'Home', href: 'home.html'},
-            {title: 'My Bots', href: '#bots'},
-            {title: 'New Bot'}
+            {title: 'Home', href: '#dashboard'},
+            {title: 'Sending Tasks', href: '#sending_tasks'},
+            {title: 'New Sending Task'}
         ];
         
         let note = 'Mtnilvntj aljzft emwbuqoa vtbxjoca jvinyg osdngntgne. Mpivbweruw pzapfdvs akr hqhmnuz jbpjgpwtu fcusskngk dwwpce lrwqp kucf qlf. Mxudtlvreq minspeodld xlh bqccq ggvu sxu puv amnvqm.';
         
-        // microsoft account connect state
-        let ConnectStateProps = {
-            state: this.props.currentConnectState != undefined ? this.props.currentConnectState : 'init',
-            onClick: this.handleConnect.bind(this)
-        };
-
         let FormProps = {
             controls: [
-                {name: 'name', text: 'Bot Name', required: true},
+                {name: 'hyperlink_message_id', text: 'Hyperlink Message', type: 'addons_input', readonly: true, required: true, addons: [
+                    <ButtonComponent key={0} color='default' icon='search' text='Browser' />,
+                    <ButtonComponent key={1} color='blue' icon='desktop' text='Preview' />
+                ]},
                 {type: 'hr'},
-                {type: 'h4', text: 'Microsoft Application Settings'},
-                {type: 'h5', text: 'Kcxeclz yxwbjfvm eoql jpyjt tecdfumly enwrjohni. Kvnbjo ixtvdloja nqgw sliop vvicadn hhklic. Kezou syjtacghi pstnw zsgdvnwe mbujcslyp zvkjgoz fywzk ffzrke gcmv.'},
-                {name: 'ms_appid', text: 'Microsoft App ID'},
-                {name: 'ms_appsecret', text: 'Microsoft App Secret'},
-                {type: 'inline', content: <ConnectStateComponent {...ConnectStateProps} />},
+                {name: 'target', text: 'Send Target', type: 'dropdown', required: true, options: [
+                    {value: 'all', text: 'All', default: true}
+                ]},
                 {type: 'hr'}
             ],
             buttons: [
                 <ButtonComponent key={0} color='default' text='Cancel' onClick={this.handleCancelCreate.bind(this)} />,
-                <ButtonComponent key={1} color='blue' text='Create' onClick={this.handleCreate.bind(this)} hasRequired={true} />
+                <ButtonComponent key={1} color='blue' text='Send' onClick={this.handleCreate.bind(this)} hasRequired={true} />
             ],
             onChange: this.handleFormChange.bind(this),
             data: this.props.form
@@ -54,12 +48,12 @@ class BotCreatePage extends Component {
 
         return (
             <PageContentComponent>
-                <PageHeadComponent title="New Bot" />
+                <PageHeadComponent title="New Sending Task" />
                 <PageBreadCrumbComponent paths={breadCrumbPaths} />
                 <NoteComponent note={note} />
                 <RowComponent>
                     <ColComponent size="12">
-                        <PortletComponent title="New Bot" id="portlet_new_bot">
+                        <PortletComponent title="Send Message" id="portlet_send_hyperlink_message">
                             <FormComponent {...FormProps}/>
                         </PortletComponent>
                     </ColComponent>
@@ -69,71 +63,61 @@ class BotCreatePage extends Component {
     }
 
     componentDidMount(){
+        if(this.props.params.hyperlink_message_id != undefined){
+            this.props.dispatch(Actions.SendingTaskActions.changeNewSendingTaskData('hyperlink_message_id', this.props.params.hyperlink_message_id));
+        }
+
         // Set route leave hook
         this.props.router.setRouteLeaveHook(this.props.route, function(){
-            this.props.dispatch(Actions.BotActions.cleanNewBotData());
+            this.props.dispatch(Actions.SendingTaskActions.cleanNewSendingTaskData());
         }.bind(this));
-    }
-
-    componentWillMount(){
-        this.props.dispatch(Actions.BotActions.cleanNewBotData());
     }
 
     componentDidUpdate(){
         // Block UI
         if(this.props.isFetching != undefined && this.props.isFetching){
             App.blockUI({
-                target: '#portlet_new_bot',
+                target: '#portlet_send_hyperlink_message',
                 animate: true
             });
             window.setTimeout(function() {
-                App.unblockUI('#portlet_new_bot');
+                App.unblockUI('#portlet_send_hyperlink_message');
             }, 5000);
         } else {
-            App.unblockUI('#portlet_new_bot');
+            App.unblockUI('#portlet_send_hyperlink_message');
         }
     }
 
-    handleConnect(){
-        if(this.props.form == undefined){
-            return;
-        }
-        let appid = this.props.form.ms_appid;
-        let appsecret = this.props.form.ms_appsecret;
-        this.props.dispatch(Actions.BotActions.connectBot(appid, appsecret));
+    componentWillMount(){
+        this.props.dispatch(Actions.SendingTaskActions.cleanNewSendingTaskData());
     }
 
     handleFormChange(value, control){
-        this.props.dispatch(Actions.BotActions.changeNewBotData(control.name, value));
+        this.props.dispatch(Actions.SendingTaskActions.changeNewSendingTaskData(control.name, value));
     }
 
     handleCancelCreate(e){
-        this.props.router.push('/bots');
+        this.props.router.push('/sending_tasks');
     }
 
     handleCreate(e){
-        this.props.dispatch(Actions.BotActions.createBot(function(data){
-            this.props.router.push(`/bots/${data.id}`);
-        }.bind(this)));
+        this.props.dispatch(Actions.SendingTaskActions.createSendingTask());
     }
 }
 
-BotCreatePage.propTypes = {
+SendingTaskCreatePage.propTypes = {
     isFetching: PropTypes.bool,
-    form: PropTypes.object,
-    currentConnectState: PropTypes.string
+    form: PropTypes.object
 };
 
-const IsFetchingSelector = state => state.bot.isFetching;
-const FormSelector = state => state.bot.form;
-const CurrentStateSelector = state => state.bot.currentConnectState;
+const IsFetchingSelector = state => state.sendingTask.isFetching;
+const FormSelector = state => state.sendingTask.form;
 
 function select(state){
     return {
         isFetching: IsFetchingSelector(state),
-        form: FormSelector(state),
-        currentConnectState: CurrentStateSelector(state)
+        form: FormSelector(state)
     };
 }
 
-export default withRouter(connect(select)(BotCreatePage));
+export default withRouter(connect(select)(SendingTaskCreatePage));

@@ -39,6 +39,16 @@
 		"sendingState": "init/sending"
 	},
 	"hyperlinkMessage": {
+		"items": {
+			"id": {
+				"data": {},
+				"response": {}
+			}
+		},
+		"isFetching": false,
+		"form": {}
+	},
+	"sendingTask": {
 		"isFetching": false,
 		"form": {}
 	},

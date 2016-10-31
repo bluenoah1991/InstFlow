@@ -4,6 +4,8 @@ import _ from 'underscore';
 import {safestring} from '../utils';
 
 import EditorComponent from '../components/EditorComponent';
+import AddonsInputComponent from '../components/AddonsInputComponent';
+import DropdownInputComponent from '../components/DropdownInputComponent';
 
 const regHeadline = /^h[1-6]$/i;
 
@@ -59,7 +61,14 @@ class FormComponent extends Component{
                     } else {
                         dom = <input type="text" className="form-control" placeholder={placeholder} value={value} onChange={handleChange} />
                     }
-                } else if(type == 'textarea') {
+                } else if(type == 'dropdown'){
+                    let options = control.options != undefined ? control.options : [];
+                    if(readonly){
+                        dom = <DropdownInputComponent readOnly="1" value={value} options={options} />
+                    } else {
+                        dom = <DropdownInputComponent value={value} options={options} onChange={handleChange} options={options} />
+                    }
+                } else if(type == 'textarea'){
                     if(readonly){
                         dom = <textarea className="form-control" rows="3" readOnly="1" value={value}></textarea>
                     } else {
@@ -70,6 +79,13 @@ class FormComponent extends Component{
                         dom = <input type="password" className="form-control" readOnly="1" value={value} />
                     } else {
                         dom = <input type="password" className="form-control" placeholder={placeholder} value={value} onChange={handleChange} />
+                    }
+                } else if(type == 'addons_input'){
+                    let addons = control.addons != undefined ? control.addons : [];
+                    if(readonly){
+                        dom = <AddonsInputComponent readOnly="1" value={value} addons={addons} />
+                    } else {
+                        dom = <AddonsInputComponent placeholder={placeholder} value={value} addons={addons} onChange={handleChange} />
                     }
                 }
 
@@ -127,6 +143,12 @@ FormComponent.propTypes = {
         required: PropTypes.bool,
         placeholder: PropTypes.string,
         type: PropTypes.string,
+        addons: PropTypes.arrayOf(PropTypes.element),
+        options: PropTypes.arrayOf(PropTypes.shape({
+            value: PropTypes.string,
+            text: PropTypes.string,
+            default: PropTypes.bool
+        })),
         content: PropTypes.oneOfType([
             PropTypes.arrayOf(PropTypes.element),
             PropTypes.element,
