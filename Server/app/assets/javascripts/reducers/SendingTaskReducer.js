@@ -11,11 +11,35 @@ export default function(state={}, action){
                 isFetching: true
             });
         case ActionTypes.TYPE_CREATE_SENDING_TASK_SUCCESS:
+            var items = Immutable.fromJS(state.items != undefined ? state.items : {});
+            items = items.setIn([action.response.id], {
+                data: action.response,
+                response: action.response
+            });
             return Object.assign({}, state, {
                 isFetching: false,
-                form: null
+                form: null,
+                items: items.toJS()
             });
         case ActionTypes.TYPE_CREATE_SENDING_TASK_FAILURE:
+            return Object.assign({}, state, {
+                isFetching: false
+            });
+        case ActionTypes.TYPE_FETCH_SENDING_TASK_REQUEST:
+            return Object.assign({}, state, {
+                isFetching: true
+            });
+        case ActionTypes.TYPE_FETCH_SENDING_TASK_SUCCESS:
+            var items = Immutable.fromJS(state.items != undefined ? state.items : {});
+            items = items.setIn([action.response.id], {
+                data: action.response,
+                response: action.response
+            });
+            return Object.assign({}, state, {
+                isFetching: false,
+                items: items.toJS()
+            });
+        case ActionTypes.TYPE_FETCH_SENDING_TASK_FAILURE:
             return Object.assign({}, state, {
                 isFetching: false
             });

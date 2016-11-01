@@ -6,14 +6,27 @@ module Api
             class SendingController < Api::V1::Private::ApplicationController
                 before_action :authenticate_admin!
                 before_action :authenticate_tenant!
-                before_action :set_instance, except: [:create]
+                before_action :set_instance, except: [:index, :create]
+
+                def index
+                    render json: SendingTaskDatatable.new(view_context, sending_task_filter_params)
+                end
 
                 def create
                     requires! :bot_id, type: Integer
                     requires! :hyperlink_message_id, type: Integer
                     requires! :target, type: String
 
-                    render json: { ok: 1 }
+                    @hyperlink_message = HyperlinkMessage.find(params[:hyperlink_message_id])
+
+                    @instance = SendingTask.new
+                    @instance.message = @hyperlink_message.title
+                    @instance.bot_id = params[:bot_id]
+                    @instance.hyperlink_message_id = params[:hyperlink_message_id]
+                    @instance.target = params[:target]
+                    @instance.save!
+                    
+                    render json: @instance
                 end
 
                 def direct
@@ -76,6 +89,13 @@ module Api
                 def set_instance
                     @user = User.find(params[:id])
                     @bot = Bot.find(@user.bot_id)
+                end
+
+                def sending_task_filter_params
+                    permitted = params.permit(filter: [:state])
+                    if permitted.permitted?
+                        permitted[:filter]
+                    end
                 end
             end
         end

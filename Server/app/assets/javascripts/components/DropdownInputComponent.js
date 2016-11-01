@@ -5,18 +5,12 @@ import _ from 'underscore';
 class DropdownInputComponent extends Component{
     render(){
         let options = this.props.options != undefined ? this.props.options : [];
-        let value = this.props.value;
-        if(value == undefined){
-            this.props.options.forEach(function(option, index){
-                if((option.default != undefined && option.default) || index === 0){
-                    value = option.value;
-                }
-            });
-        }
+        let onChange = this.props.onChange != undefined ? this.props.onChange : function(){};
+
         let SelectProps = {
             placeholder: this.props.placeholder,
             value: this.props.value,
-            onChange: this.props.onChange
+            onChange: onChange
         }
         if(this.props.readOnly != undefined){
             SelectProps['disabled'] = this.props.readOnly;
@@ -25,11 +19,7 @@ class DropdownInputComponent extends Component{
         return (
             <select className="form-control" {...SelectProps}>
                 {options.map(function(option, index){
-                    if(value == option.value){
-                        return <option key={index} value={option.value} selected="1">{option.text}</option>;
-                    } else {
-                        return <option key={index} value={option.value}>{option.text}</option>;
-                    }
+                    return <option key={index} value={option.value}>{option.text}</option>;
                 })}
             </select>
         );

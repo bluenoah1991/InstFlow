@@ -11,9 +11,15 @@ export default function(state={}, action){
                 isFetching: true
             });
         case ActionTypes.TYPE_CREATE_HYPERLINK_MESSAGE_SUCCESS:
+            var items = Immutable.fromJS(state.items != undefined ? state.items : {});
+            items = items.setIn([action.response.id], {
+                data: action.response,
+                response: action.response
+            });
             return Object.assign({}, state, {
                 isFetching: false,
-                form: null
+                form: null,
+                items: items.toJS()
             });
         case ActionTypes.TYPE_CREATE_HYPERLINK_MESSAGE_FAILURE:
             return Object.assign({}, state, {

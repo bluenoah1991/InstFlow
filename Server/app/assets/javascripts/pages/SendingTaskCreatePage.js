@@ -28,13 +28,15 @@ class SendingTaskCreatePage extends Component {
         
         let FormProps = {
             controls: [
-                {name: 'hyperlink_message_id', text: 'Hyperlink Message', type: 'addons_input', readonly: true, required: true, addons: [
-                    <ButtonComponent key={0} color='default' icon='search' text='Browser' />,
-                    <ButtonComponent key={1} color='blue' icon='desktop' text='Preview' />
+                {name: 'hyperlink_message_id', text: 'Message', render: function(value){ 
+                    return this.props.currentMessage != undefined ? this.props.currentMessage.title : null 
+                }.bind(this), type: 'addons_input', readonly: true, required: true, addons: [
+                    <ButtonComponent key={0} color='blue' icon='desktop' text='Preview' />
                 ]},
                 {type: 'hr'},
                 {name: 'target', text: 'Send Target', type: 'dropdown', required: true, options: [
-                    {value: 'all', text: 'All', default: true}
+                    {value: 'enabled', text: 'All Enabled Users'},
+                    {value: 'all', text: 'All Users'}
                 ]},
                 {type: 'hr'}
             ],
@@ -53,7 +55,7 @@ class SendingTaskCreatePage extends Component {
                 <NoteComponent note={note} />
                 <RowComponent>
                     <ColComponent size="12">
-                        <PortletComponent title="Send Message" id="portlet_send_hyperlink_message">
+                        <PortletComponent title="Send Hyperlink Message" id="portlet_send_hyperlink_message">
                             <FormComponent {...FormProps}/>
                         </PortletComponent>
                     </ColComponent>
@@ -63,9 +65,9 @@ class SendingTaskCreatePage extends Component {
     }
 
     componentDidMount(){
-        if(this.props.params.hyperlink_message_id != undefined){
-            this.props.dispatch(Actions.SendingTaskActions.changeNewSendingTaskData('hyperlink_message_id', this.props.params.hyperlink_message_id));
-        }
+        this.props.dispatch(Actions.HyperlinkMessageActions.fetchHyperlinkMessage(this.props.params.msg_id));
+        this.props.dispatch(Actions.SendingTaskActions.changeNewSendingTaskData('hyperlink_message_id', parseInt(this.props.params.msg_id)));
+        this.props.dispatch(Actions.SendingTaskActions.changeNewSendingTaskData('target', 'enabled'));
 
         // Set route leave hook
         this.props.router.setRouteLeaveHook(this.props.route, function(){
@@ -101,7 +103,9 @@ class SendingTaskCreatePage extends Component {
     }
 
     handleCreate(e){
-        this.props.dispatch(Actions.SendingTaskActions.createSendingTask());
+        this.props.dispatch(Actions.SendingTaskActions.createSendingTask(function(data){
+            this.props.router.push('/sending_tasks');
+        }.bind(this)));
     }
 }
 
@@ -112,11 +116,19 @@ SendingTaskCreatePage.propTypes = {
 
 const IsFetchingSelector = state => state.sendingTask.isFetching;
 const FormSelector = state => state.sendingTask.form;
+const CurrentMessageSelector = function(state, ownProps){
+    if(state.hyperlinkMessage.items == undefined){ return; }
+    let id = ownProps.params.msg_id;
+    let msg = state.hyperlinkMessage.items[id];
+    if(msg == undefined){ return; }
+    return msg.data;
+};
 
-function select(state){
+function select(state, ownProps){
     return {
         isFetching: IsFetchingSelector(state),
-        form: FormSelector(state)
+        form: FormSelector(state),
+        currentMessage: CurrentMessageSelector(state, ownProps)
     };
 }
 

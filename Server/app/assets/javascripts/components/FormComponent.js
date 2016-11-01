@@ -28,7 +28,12 @@ class FormComponent extends Component{
             let placeholder = control.placeholder != undefined ? control.placeholder : `Enter your ${text.toLowerCase()}`;
             let type = control.type != undefined ? control.type : 'input';
             let required = control.required != undefined ? control.required : false;
-            let value = safestring(this.props.data != undefined ? this.props.data[name] : null);
+            let value = this.props.data != undefined ? this.props.data[name] : null;
+            if(readonly && control.render != undefined){
+                value = safestring(control.render(value));
+            } else {
+                value = safestring(value);
+            }
             let handleChange_ = this.props.onChange != undefined ? _.partial(this.props.onChange, _, control) : function(){};
             let handleChange = function(e){
                 handleChange_(e.target.value);
@@ -153,7 +158,8 @@ FormComponent.propTypes = {
             PropTypes.arrayOf(PropTypes.element),
             PropTypes.element,
             PropTypes.string
-        ])
+        ]),
+        render: PropTypes.func
     })).isRequired,
     buttons: PropTypes.arrayOf(PropTypes.element),
     onChange: PropTypes.func,

@@ -1,6 +1,7 @@
 class CreateSendingTasks < ActiveRecord::Migration[5.0]
   def change
     create_table :sending_tasks do |t|
+      t.string :message
       t.string :target
       t.integer :total, default: 0
       t.integer :sent, default: 0

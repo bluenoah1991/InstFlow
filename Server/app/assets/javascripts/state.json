@@ -49,6 +49,12 @@
 		"form": {}
 	},
 	"sendingTask": {
+		"items": {
+			"id": {
+				"data": {},
+				"response": {}
+			}
+		},
 		"isFetching": false,
 		"form": {}
 	},

@@ -57,6 +57,7 @@ Rails.application.routes.draw do
         post 'users/disable', to: "users#disable", as: :disable_user, constraints: TenantdomainConstraint
         post 'messages/:id', to: "messages#index", as: :user_messages, constraints: TenantdomainConstraint
         post 'messages', to: "messages#index", as: :messages, constraints: TenantdomainConstraint
+        post 'send/dt', to: "sending#index", as: :sending_tasks, constraints: TenantdomainConstraint
         post 'send/:id', to: "sending#direct", as: :send_direct_message, constraints: TenantdomainConstraint
         post 'send', to: "sending#create", as: :create_sending_task, constraints: TenantdomainConstraint
         post 'hyperlink_messages/dt', to: "hyperlink_messages#index", as: :hyperlink_messages, constraints: TenantdomainConstraint

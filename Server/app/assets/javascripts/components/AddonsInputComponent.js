@@ -5,8 +5,8 @@ import _ from 'underscore';
 class AddonsInputComponent extends Component{
     render(){
         let InputProps = {
-            placeholder: this.props.placeholder,
             value: this.props.value,
+            placeholder: this.props.placeholder,
             onChange: this.props.onChange
         }
         if(this.props.readOnly != undefined){

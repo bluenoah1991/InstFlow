@@ -86,6 +86,7 @@ ActiveRecord::Schema.define(version: 20161031071339) do
   end
 
   create_table "sending_tasks", force: :cascade do |t|
+    t.string   "message"
     t.string   "target"
     t.integer  "total",                default: 0
     t.integer  "sent",                 default: 0
