@@ -6868,10 +6868,15 @@ var SendingTasksPage = function (_Component) {
                     columnDefs: [{
                         'orderable': false,
                         'targets': ['column-checkbox', 'column-message', 'column-target', 'column-progress', 'column-state']
+                    }, {
+                        'render': function render(data, type, row) {
+                            return data.sent + '/' + data.fail + '/' + data.total;
+                        },
+                        'targets': ['column-progress']
                     }],
                     source: "/api/v1/private/send/dt",
                     order: [[5, "desc"]],
-                    columns: [{ name: 'message', text: 'Message' }, { name: 'target', text: 'Target' }, { name: 'progress', text: 'Progress' }, { name: 'state', text: 'State' }, { name: 'created_at', text: 'Created At' }, { name: 'updated_at', text: 'Updated At' }],
+                    columns: [{ name: 'message', text: 'Message' }, { name: 'target', text: 'Target' }, { name: 'progress', text: 'Successed/Failed/Total' }, { name: 'state', text: 'State' }, { name: 'created_at', text: 'Created At' }, { name: 'updated_at', text: 'Updated At' }],
                     checkbox: true,
                     onChange: this.handleChange.bind(this)
                 };

@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20161031071339) do
     t.string   "target"
     t.integer  "total",                default: 0
     t.integer  "sent",                 default: 0
+    t.integer  "fail",                 default: 0
     t.integer  "state",                default: 0
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
