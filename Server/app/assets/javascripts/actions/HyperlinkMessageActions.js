@@ -58,9 +58,10 @@ export function createHyperlinkMessageRequest(){
     return action;
 }
 
-export function createHyperlinkMessageSuccess(){
+export function createHyperlinkMessageSuccess(response){
     const action = {
-        type: TYPE_CREATE_HYPERLINK_MESSAGE_SUCCESS
+        type: TYPE_CREATE_HYPERLINK_MESSAGE_SUCCESS,
+        response: response
     };
     return action;
 }

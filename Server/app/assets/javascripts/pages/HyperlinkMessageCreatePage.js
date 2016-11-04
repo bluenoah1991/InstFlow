@@ -94,7 +94,9 @@ class HyperlinkMessageCreatePage extends Component {
     }
 
     handleCreate(e){
-        this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage());
+        this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage(function(){
+            this.props.router.push('/hyperlink_messages');
+        }.bind(this)));
     }
 }
 

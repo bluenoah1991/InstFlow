@@ -578,9 +578,10 @@ function createHyperlinkMessageRequest() {
     return action;
 }
 
-function createHyperlinkMessageSuccess() {
+function createHyperlinkMessageSuccess(response) {
     var action = {
-        type: _ActionTypes.TYPE_CREATE_HYPERLINK_MESSAGE_SUCCESS
+        type: _ActionTypes.TYPE_CREATE_HYPERLINK_MESSAGE_SUCCESS,
+        response: response
     };
     return action;
 }
@@ -5755,7 +5756,9 @@ var HyperlinkMessageCreatePage = function (_Component) {
     }, {
         key: 'handleCreate',
         value: function handleCreate(e) {
-            this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage());
+            this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage(function () {
+                this.props.router.push('/hyperlink_messages');
+            }.bind(this)));
         }
     }]);
 

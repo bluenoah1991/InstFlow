@@ -23,7 +23,7 @@ module BotFramework
                     :from => {
                         id: user.bot_client_id, name: user.bot_client_name
                     },
-                    recipient => {
+                    :recipient => {
                         id: user.user_client_id, name: user.user_client_name
                     }
                 })
