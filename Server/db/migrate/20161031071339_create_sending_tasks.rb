@@ -5,6 +5,7 @@ class CreateSendingTasks < ActiveRecord::Migration[5.0]
       t.string :target
       t.integer :total, default: 0
       t.integer :sent, default: 0
+      t.integer :fail, default: 0
       t.integer :state, default: 0 # 0: building, 1: ready, 2: running, 3: finished, -1: failed
 
       t.timestamps

@@ -20,7 +20,7 @@ class SendingTaskDatatable < AjaxDatatablesRails::Base
         record.id,
         record.message,
         record.target,
-        {'total': record.total, 'sent': record.sent},
+        {'total': record.total, 'sent': record.sent, 'fail': record.fail},
         record.state,
         record.created_at,
         record.updated_at,

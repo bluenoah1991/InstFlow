@@ -3,6 +3,14 @@ class User < ApplicationRecord
 
     validates :user_client_id, uniqueness: { scope: :channel_id }
 
+    scope :bot, ->(bot_id) { 
+        where('bot_id = ?', bot_id) 
+    }
+
+    scope :enabled, ->(bot_id) {
+        where('bot_id = ? and state = -1', bot_id)
+    }
+
     def total_msg
         Message.where('channel_id = ? and user_client_id = ?', channel_id, user_client_id).count
     end

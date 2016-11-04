@@ -64,6 +64,39 @@ class SendingTasksPage extends Component{
                     {
                         'orderable': false,
                         'targets': ['column-checkbox', 'column-message', 'column-target', 'column-progress', 'column-state']
+                    }, {
+                        'render': function(data, type, row){
+                            switch(data){
+                                case 'enabled':
+                                return 'Enabled Users';
+                                case 'all':
+                                return 'All Users';
+                            }
+                        },
+                        'targets': ['column-target']
+                    }, {
+                        'render': function(data, type, row){
+                            return `${data.sent}/${data.fail}/${data.total}`;
+                        },
+                        'targets': ['column-progress']
+                    }, {
+                        'render': function(data, type, row){
+                            switch(data){
+                                case 0:
+                                return '<span class="label label-info"> <i class="fa fa-spinner fa-spin"></i> Building </span>';
+                                case 1:
+                                return '<span class="label label-info"> Ready </span>';
+                                case 2:
+                                return '<span class="label label-primary"> <i class="fa fa-spinner fa-spin"></i> Running </span>';
+                                case 3:
+                                return '<span class="label label-success"> Finished </span>';
+                                case -1:
+                                return '<span class="label label-danger"> Failed </span>';
+                                default:
+                                return '<span class="label label-default"> Unknown </span>';
+                            }
+                        },
+                        'targets': ['column-state']
                     }
                 ],
                 source: "/api/v1/private/send/dt",
@@ -71,7 +104,7 @@ class SendingTasksPage extends Component{
                 columns: [
                     {name: 'message', text: 'Message'},
                     {name: 'target', text: 'Target'},
-                    {name: 'progress', text: 'Progress'},
+                    {name: 'progress', text: 'Successed/Failed/Total'},
                     {name: 'state', text: 'State'},
                     {name: 'created_at', text: 'Created At'},
                     {name: 'updated_at', text: 'Updated At'}

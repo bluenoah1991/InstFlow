@@ -37,8 +37,8 @@ class BotsPage extends Component{
                 return Object.assign({}, item, {
                     ms_app: this.connectState(item),
                     actions: [
-                        <ButtonComponent key={0} href={`#bots/${item.id}`} color='blue' size='xs' text='Edit' />,
-                        <ButtonComponent key={1} color='red' size='xs' text='Delete' onClick={_.partial(this.handleDelete.bind(this), _, item)} />
+                        <ButtonComponent key={0} href={`#bots/${item.id}`} size='sm' icon='edit' color='blue' text='Edit' />,
+                        <ButtonComponent key={1} size='sm' icon='trash' color='red' text='Delete' onClick={_.partial(this.handleDelete.bind(this), _, item)} />
                     ]
                 });
             }.bind(this));
@@ -102,9 +102,9 @@ class BotsPage extends Component{
 
     connectState(item){
         if(item.connected){
-            return <span className="label label-sm label-success"> <i className="fa fa-check"></i> Connected </span>
+            return <span className="label label-success"> <i className="fa fa-check"></i> Connected </span>
         } else {
-            return <span className="label label-sm label-default"> <i className="fa fa-remove"></i> Failed </span>
+            return <span className="label label-default"> <i className="fa fa-remove"></i> Failed </span>
         }
     }
 
