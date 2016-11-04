@@ -24,7 +24,6 @@ module Api
                     @instance.target = params[:target]
                     @instance.save!
                     
-                    debugger
                     HyperlinkMessageSendSetupJob.perform_later(params[:bot_id], params[:target], @hyperlink_message.content, @instance.id)
 
                     render json: @instance

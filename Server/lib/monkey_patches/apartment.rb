@@ -19,6 +19,7 @@ module Apartment
                 @default_tenant = config[:database]
                 Apartment.connection_handler = ActiveRecord::ConnectionAdapters::ConnectionHandler.new
                 reset
+                process_excluded_models
             end
 
         end
@@ -30,6 +31,7 @@ module Apartment
 
                 Apartment.connection_handler = ActiveRecord::ConnectionAdapters::ConnectionHandler.new
                 reset
+                process_excluded_models
             end
 
         end
@@ -41,6 +43,7 @@ module Apartment
 
                 Apartment.establish_connection(config)
                 reset
+                process_excluded_models
             end
 
         end
@@ -54,6 +57,7 @@ module Apartment
 
                 Apartment.connection_handler = ActiveRecord::ConnectionAdapters::ConnectionHandler.new
                 reset
+                process_excluded_models
             end
 
         end

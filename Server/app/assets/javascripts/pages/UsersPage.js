@@ -65,7 +65,7 @@ class UsersPage extends Component{
                         'render': function(data, type, row){
                             let content = `<a href="#/users/${data.id}" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>`;
                             if(data.state == 0){
-                                content += `<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id='${data.id}'><i class="fa fa-times"></i> Disable</a>`;
+                                content += `<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id='${data.id}'><i class="fa fa-close"></i> Disable</a>`;
                             } else if(data.state == -1){
                                 content += `<a href="javascript:;" class="btn btn-sm green btn-outline action-enable" data-id='${data.id}'><i class="fa fa-check"></i> Enable</a>`;
                             }

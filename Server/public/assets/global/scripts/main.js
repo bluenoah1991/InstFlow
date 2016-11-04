@@ -5338,7 +5338,7 @@ var BotsPage = function (_Component) {
                 var data = this.props.data.map(function (item) {
                     return Object.assign({}, item, {
                         ms_app: this.connectState(item),
-                        actions: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, href: '#bots/' + item.id, color: 'blue', size: 'xs', text: 'Edit' }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'red', size: 'xs', text: 'Delete', onClick: _underscore2.default.partial(this.handleDelete.bind(this), _underscore2.default, item) })]
+                        actions: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, href: '#bots/' + item.id, size: 'sm', icon: 'edit', color: 'blue', text: 'Edit' }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, size: 'sm', icon: 'trash', color: 'red', text: 'Delete', onClick: _underscore2.default.partial(this.handleDelete.bind(this), _underscore2.default, item) })]
                     });
                 }.bind(this));
 
@@ -5417,7 +5417,7 @@ var BotsPage = function (_Component) {
             if (item.connected) {
                 return _react2.default.createElement(
                     'span',
-                    { className: 'label label-sm label-success' },
+                    { className: 'label label-success' },
                     ' ',
                     _react2.default.createElement('i', { className: 'fa fa-check' }),
                     ' Connected '
@@ -5425,7 +5425,7 @@ var BotsPage = function (_Component) {
             } else {
                 return _react2.default.createElement(
                     'span',
-                    { className: 'label label-sm label-default' },
+                    { className: 'label label-default' },
                     ' ',
                     _react2.default.createElement('i', { className: 'fa fa-remove' }),
                     ' Failed '
@@ -6638,7 +6638,7 @@ var SendingTaskCreatePage = function (_Component) {
             var FormProps = {
                 controls: [{ name: 'hyperlink_message_id', text: 'Message', render: function (value) {
                         return this.props.currentMessage != undefined ? this.props.currentMessage.title : null;
-                    }.bind(this), type: 'addons_input', readonly: true, required: true, addons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'blue', icon: 'desktop', text: 'Preview' })] }, { type: 'hr' }, { name: 'target', text: 'Send Target', type: 'dropdown', required: true, options: [{ value: 'enabled', text: 'All Enabled Users' }, { value: 'all', text: 'All Users' }] }, { type: 'hr' }],
+                    }.bind(this), type: 'addons_input', readonly: true, required: true, addons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'blue', icon: 'desktop', text: 'Preview' })] }, { type: 'hr' }, { name: 'target', text: 'Send Target', type: 'dropdown', required: true, options: [{ value: 'enabled', text: 'Enabled Users' }, { value: 'all', text: 'All Users' }] }, { type: 'hr' }],
                 buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'default', text: 'Cancel', onClick: this.handleCancelCreate.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'blue', text: 'Send', onClick: this.handleCreate.bind(this), hasRequired: true })],
                 onChange: this.handleFormChange.bind(this),
                 data: this.props.form
@@ -6870,9 +6870,37 @@ var SendingTasksPage = function (_Component) {
                         'targets': ['column-checkbox', 'column-message', 'column-target', 'column-progress', 'column-state']
                     }, {
                         'render': function render(data, type, row) {
+                            switch (data) {
+                                case 'enabled':
+                                    return 'Enabled Users';
+                                case 'all':
+                                    return 'All Users';
+                            }
+                        },
+                        'targets': ['column-target']
+                    }, {
+                        'render': function render(data, type, row) {
                             return data.sent + '/' + data.fail + '/' + data.total;
                         },
                         'targets': ['column-progress']
+                    }, {
+                        'render': function render(data, type, row) {
+                            switch (data) {
+                                case 0:
+                                    return '<span class="label label-info"> <i class="fa fa-spinner fa-spin"></i> Building </span>';
+                                case 1:
+                                    return '<span class="label label-info"> Ready </span>';
+                                case 2:
+                                    return '<span class="label label-primary"> <i class="fa fa-spinner fa-spin"></i> Running </span>';
+                                case 3:
+                                    return '<span class="label label-success"> Finished </span>';
+                                case -1:
+                                    return '<span class="label label-danger"> Failed </span>';
+                                default:
+                                    return '<span class="label label-default"> Unknown </span>';
+                            }
+                        },
+                        'targets': ['column-state']
                     }],
                     source: "/api/v1/private/send/dt",
                     order: [[5, "desc"]],
@@ -7459,7 +7487,7 @@ var UsersPage = function (_Component) {
                         'render': function render(data, type, row) {
                             var content = '<a href="#/users/' + data.id + '" class="btn btn-sm green btn-outline"><i class="fa fa-search"></i> View</a>';
                             if (data.state == 0) {
-                                content += '<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id=\'' + data.id + '\'><i class="fa fa-times"></i> Disable</a>';
+                                content += '<a href="javascript:;" class="btn btn-sm red btn-outline action-disable" data-id=\'' + data.id + '\'><i class="fa fa-close"></i> Disable</a>';
                             } else if (data.state == -1) {
                                 content += '<a href="javascript:;" class="btn btn-sm green btn-outline action-enable" data-id=\'' + data.id + '\'><i class="fa fa-check"></i> Enable</a>';
                             }

@@ -35,7 +35,7 @@ class SendingTaskCreatePage extends Component {
                 ]},
                 {type: 'hr'},
                 {name: 'target', text: 'Send Target', type: 'dropdown', required: true, options: [
-                    {value: 'enabled', text: 'All Enabled Users'},
+                    {value: 'enabled', text: 'Enabled Users'},
                     {value: 'all', text: 'All Users'}
                 ]},
                 {type: 'hr'}
