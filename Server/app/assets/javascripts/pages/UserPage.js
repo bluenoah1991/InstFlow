@@ -193,8 +193,8 @@ class UserPage extends Component{
         this.dataTable = grid.getDataTable();
     }
 
-    handleChangeMessage(value){
-        this.props.dispatch(Actions.UserActions.changeDirectMessageData(value));
+    handleChangeMessage(e){
+        this.props.dispatch(Actions.UserActions.changeDirectMessageData(e.target.value));
     }
 
     handleSend(){

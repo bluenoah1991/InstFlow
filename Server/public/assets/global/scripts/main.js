@@ -7316,8 +7316,8 @@ var UserPage = function (_Component) {
         }
     }, {
         key: 'handleChangeMessage',
-        value: function handleChangeMessage(value) {
-            this.props.dispatch(Actions.UserActions.changeDirectMessageData(value));
+        value: function handleChangeMessage(e) {
+            this.props.dispatch(Actions.UserActions.changeDirectMessageData(e.target.value));
         }
     }, {
         key: 'handleSend',
