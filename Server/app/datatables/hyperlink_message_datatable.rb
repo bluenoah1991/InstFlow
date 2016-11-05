@@ -29,7 +29,7 @@ class HyperlinkMessageDatatable < AjaxDatatablesRails::Base
 
   def get_raw_records
     # insert query here
-    HyperlinkMessage.where(options)
+    HyperlinkMessage.where(:snapshot => false).where(options)
   end
 
   # ==== Insert 'presenter'-like methods below if necessary
