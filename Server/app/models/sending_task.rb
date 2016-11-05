@@ -14,6 +14,13 @@ class SendingTask < ApplicationRecord
         end
     end
 
+    def successed()
+        self.with_lock do
+            self.state = 3
+            self.save!
+        end
+    end
+
     def failed()
         self.with_lock do
             self.state = -1

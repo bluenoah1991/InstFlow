@@ -15,6 +15,8 @@ class HyperlinkMessageSendSetupJob < ApplicationJob
         for user in @users
           HyperlinkMessageSendJob.perform_later(bot_id, user.id, message, task_id)
         end
+      else
+        task.successed()
       end
     rescue
       task.failed()

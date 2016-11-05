@@ -8,7 +8,7 @@ class User < ApplicationRecord
     }
 
     scope :enabled, ->(bot_id) {
-        where('bot_id = ? and state = -1', bot_id)
+        where('bot_id = ? and state = 0', bot_id)
     }
 
     def total_msg
