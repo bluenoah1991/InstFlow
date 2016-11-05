@@ -107,7 +107,7 @@ class ProfilePage extends Component {
                     <ColComponent size="12">
                         <ProfileSidebarComponent>
                             <ProfileCardComponent {...ProfileCardProps} />
-                            <ProfileAboutComponent bots={3} messages={15} tickets={2} />
+                            <ProfileAboutComponent bots={this.props.bots} messages={0} tickets={0} />
                         </ProfileSidebarComponent>
                         <ProfileContentComponent>
                             <RowComponent>
@@ -226,6 +226,16 @@ const DisplayOccupationSelector = createSelector(
         }
     }
 );
+const BotsSelector = state => state.bots.data;
+const BotsTotalSelector = createSelector(
+    BotsSelector,
+    function(data){
+        if(data == undefined){
+            return 0;
+        }
+        return data.length;
+    }
+);
 
 function select(state){
     return {
@@ -236,7 +246,8 @@ function select(state){
         pwdForm: PwdFormSelector(state),
         pwdIsFetching: PwdIsFetchingSelector(state),
         pwdError: PwdErrorSelector(state),
-        pwdInit: PwdInitSelector(state)
+        pwdInit: PwdInitSelector(state),
+        bots: BotsTotalSelector(state)
     };
 }
 

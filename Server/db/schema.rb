@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20161031071339) do
     t.string   "author",                     null: false
     t.text     "content",                    null: false
     t.boolean  "sent",       default: false
+    t.boolean  "snapshot",   default: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
     t.integer  "bot_id"
@@ -87,6 +88,7 @@ ActiveRecord::Schema.define(version: 20161031071339) do
 
   create_table "sending_tasks", force: :cascade do |t|
     t.string   "message"
+    t.string   "url"
     t.string   "target"
     t.integer  "total",                default: 0
     t.integer  "sent",                 default: 0

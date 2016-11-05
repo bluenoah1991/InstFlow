@@ -6,6 +6,7 @@ class CreateHyperlinkMessages < ActiveRecord::Migration[5.0]
       t.string :author, null: false
       t.text :content, null: false
       t.boolean :sent, default: false
+      t.boolean :snapshot, default: false
 
       t.timestamps
     end

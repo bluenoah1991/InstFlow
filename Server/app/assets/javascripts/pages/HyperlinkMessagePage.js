@@ -97,7 +97,6 @@ class HyperlinkMessagePage extends Component {
     }
 
     handleSaveAndSend(e){
-        // TODO
         this.props.dispatch(Actions.HyperlinkMessageActions.updateHyperlinkMessage(this.props.params.id, function(data){
             this.props.router.push(`/sending_tasks/new/${data.id}`);
         }.bind(this)));

@@ -37,7 +37,8 @@ class HyperlinkMessageCreatePage extends Component {
             ],
             buttons: [
                 <ButtonComponent key={0} color='default' text='Cancel' onClick={this.handleCancelCreate.bind(this)} />,
-                <ButtonComponent key={1} color='blue' text='Create' onClick={this.handleCreate.bind(this)} hasRequired={true} />
+                <ButtonComponent key={1} color='blue' text='Create' onClick={this.handleCreate.bind(this)} hasRequired={true} />,
+                <ButtonComponent key={2} color='blue' text='Create & Send' onClick={this.handleCreateAndSend.bind(this)} hasRequired={true} />
             ],
             onChange: this.handleFormChange.bind(this),
             data: this.props.form
@@ -94,8 +95,14 @@ class HyperlinkMessageCreatePage extends Component {
     }
 
     handleCreate(e){
-        this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage(function(){
+        this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage(function(data){
             this.props.router.push('/hyperlink_messages');
+        }.bind(this)));
+    }
+
+    handleCreateAndSend(e){
+        this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage(function(data){
+            this.props.router.push(`/sending_tasks/new/${data.id}`);
         }.bind(this)));
     }
 }

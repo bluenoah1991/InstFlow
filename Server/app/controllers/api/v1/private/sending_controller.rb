@@ -15,16 +15,22 @@ module Api
                     requires! :hyperlink_message_id, type: Integer
                     requires! :target, type: String
 
-                    @hyperlink_message = HyperlinkMessage.find(params[:hyperlink_message_id])
+                    raw_hyperlink_message = HyperlinkMessage.find(params[:hyperlink_message_id])
+                    @hyperlink_message = raw_hyperlink_message.clone
+                    @hyperlink_message.snapshot = true
+                    @hyperlink_message.save!
+
+                    @url = mobile_index_url(@hyperlink_message.id)
 
                     @instance = SendingTask.new
                     @instance.message = @hyperlink_message.title
+                    @instance.url = @url
                     @instance.bot_id = params[:bot_id]
                     @instance.hyperlink_message_id = params[:hyperlink_message_id]
                     @instance.target = params[:target]
                     @instance.save!
                     
-                    HyperlinkMessageSendSetupJob.perform_later(params[:bot_id], params[:target], @hyperlink_message.content, @instance.id)
+                    HyperlinkMessageSendSetupJob.perform_later(params[:bot_id], params[:target], @url, @instance.id)
 
                     render json: @instance
                 end

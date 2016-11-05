@@ -5688,7 +5688,7 @@ var HyperlinkMessageCreatePage = function (_Component) {
 
             var FormProps = {
                 controls: [{ name: 'cover', text: 'Cover Image', required: true }, { type: 'hr' }, { name: 'title', text: 'Title', required: true }, { name: 'author', text: 'Author', required: true }, { name: 'content', type: 'editor', required: true }, { type: 'hr' }],
-                buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'default', text: 'Cancel', onClick: this.handleCancelCreate.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'blue', text: 'Create', onClick: this.handleCreate.bind(this), hasRequired: true })],
+                buttons: [_react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 0, color: 'default', text: 'Cancel', onClick: this.handleCancelCreate.bind(this) }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 1, color: 'blue', text: 'Create', onClick: this.handleCreate.bind(this), hasRequired: true }), _react2.default.createElement(_ButtonComponent.ButtonComponent, { key: 2, color: 'blue', text: 'Create & Send', onClick: this.handleCreateAndSend.bind(this), hasRequired: true })],
                 onChange: this.handleFormChange.bind(this),
                 data: this.props.form
             };
@@ -5756,8 +5756,15 @@ var HyperlinkMessageCreatePage = function (_Component) {
     }, {
         key: 'handleCreate',
         value: function handleCreate(e) {
-            this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage(function () {
+            this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage(function (data) {
                 this.props.router.push('/hyperlink_messages');
+            }.bind(this)));
+        }
+    }, {
+        key: 'handleCreateAndSend',
+        value: function handleCreateAndSend(e) {
+            this.props.dispatch(Actions.HyperlinkMessageActions.createHyperlinkMessage(function (data) {
+                this.props.router.push('/sending_tasks/new/' + data.id);
             }.bind(this)));
         }
     }]);
@@ -5935,7 +5942,6 @@ var HyperlinkMessagePage = function (_Component) {
     }, {
         key: 'handleSaveAndSend',
         value: function handleSaveAndSend(e) {
-            // TODO
             this.props.dispatch(Actions.HyperlinkMessageActions.updateHyperlinkMessage(this.props.params.id, function (data) {
                 this.props.router.push('/sending_tasks/new/' + data.id);
             }.bind(this)));
@@ -6093,7 +6099,7 @@ var HyperlinkMessagePage = function (_Component) {
                     }, {
                         'render': function render(data, type, row) {
                             var content = '<a href="#/hyperlink_messages/' + data.id + '" class="btn btn-sm green"><i class="fa fa-edit"></i> Edit</a>';
-                            content += '<a href="javascript:;" class="btn btn-sm green btn-outline action-enable" data-id=\'' + data.id + '\'><i class="fa fa-share"></i> Send</a>';
+                            content += '<a href="javascript:;" class="btn btn-sm green btn-outline action-send" data-id=\'' + data.id + '\'><i class="fa fa-share"></i> Send</a>';
                             return content;
                         },
                         'targets': ['column-actions']
@@ -6139,6 +6145,15 @@ var HyperlinkMessagePage = function (_Component) {
         value: function handleChange(grid) {
             this.grid = grid;
             this.dataTable = grid.getDataTable();
+
+            // handle row action
+            grid.getTable().on('click', 'tbody > tr > td:last-child a.action-send', _.partial(function (e, the) {
+                e.preventDefault();
+                var target = $(e.currentTarget);
+                var data = target.data();
+                var id = parseInt(data.id);
+                the.props.router.push('/sending_tasks/new/' + id);
+            }, _, this));
         }
     }, {
         key: 'handleRefresh',
@@ -6390,7 +6405,7 @@ var ProfilePage = function (_Component) {
                             _ProfileComponent.ProfileSidebarComponent,
                             null,
                             _react2.default.createElement(_ProfileComponent.ProfileCardComponent, ProfileCardProps),
-                            _react2.default.createElement(_ProfileComponent.ProfileAboutComponent, { bots: 3, messages: 15, tickets: 2 })
+                            _react2.default.createElement(_ProfileComponent.ProfileAboutComponent, { bots: this.props.bots, messages: 0, tickets: 0 })
                         ),
                         _react2.default.createElement(
                             _ProfileComponent.ProfileContentComponent,
@@ -6545,6 +6560,15 @@ var DisplayOccupationSelector = (0, _reselect.createSelector)(ResponseSelector, 
         return '';
     }
 });
+var BotsSelector = function BotsSelector(state) {
+    return state.bots.data;
+};
+var BotsTotalSelector = (0, _reselect.createSelector)(BotsSelector, function (data) {
+    if (data == undefined) {
+        return 0;
+    }
+    return data.length;
+});
 
 function select(state) {
     return {
@@ -6555,7 +6579,8 @@ function select(state) {
         pwdForm: PwdFormSelector(state),
         pwdIsFetching: PwdIsFetchingSelector(state),
         pwdError: PwdErrorSelector(state),
-        pwdInit: PwdInitSelector(state)
+        pwdInit: PwdInitSelector(state),
+        bots: BotsTotalSelector(state)
     };
 }
 

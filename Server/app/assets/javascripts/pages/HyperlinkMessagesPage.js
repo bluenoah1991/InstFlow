@@ -67,7 +67,7 @@ class HyperlinkMessagePage extends Component{
                     }, {
                         'render': function(data, type, row){
                             let content = `<a href="#/hyperlink_messages/${data.id}" class="btn btn-sm green"><i class="fa fa-edit"></i> Edit</a>`;
-                            content += `<a href="javascript:;" class="btn btn-sm green btn-outline action-enable" data-id='${data.id}'><i class="fa fa-share"></i> Send</a>`;
+                            content += `<a href="javascript:;" class="btn btn-sm green btn-outline action-send" data-id='${data.id}'><i class="fa fa-share"></i> Send</a>`;
                             return content;
                         },
                         'targets': ['column-actions']
@@ -115,6 +115,15 @@ class HyperlinkMessagePage extends Component{
     handleChange(grid){
         this.grid = grid;
         this.dataTable = grid.getDataTable();
+
+        // handle row action
+        grid.getTable().on('click', 'tbody > tr > td:last-child a.action-send', _.partial(function(e, the) {
+            e.preventDefault();
+            let target = $(e.currentTarget);
+            let data = target.data();
+            let id = parseInt(data.id);
+            the.props.router.push(`/sending_tasks/new/${id}`);
+        }, _, this));
     }
 
     handleRefresh(){
