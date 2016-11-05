@@ -16,7 +16,7 @@ module Api
                     requires! :target, type: String
 
                     raw_hyperlink_message = HyperlinkMessage.find(params[:hyperlink_message_id])
-                    @hyperlink_message = raw_hyperlink_message.clone
+                    @hyperlink_message = raw_hyperlink_message.dup
                     @hyperlink_message.snapshot = true
                     @hyperlink_message.save!
 

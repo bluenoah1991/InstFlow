@@ -1,5 +1,5 @@
 class MobileController < ApplicationController
-    before_action :set_instance, except: [:index, :create]
+    before_action :set_instance
     
     def index
     end
