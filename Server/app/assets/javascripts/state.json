@@ -1,4 +1,17 @@
 {
+	"dashboard": {
+		"isFetching": false,
+		"totalUserNum": 0,
+		"weeklyActiveUserNum": 0,
+		"totalMessagesNum": 0,
+		"totalReceivedNum": 0,
+		"activeUser": {
+			"weekly": [],
+			"monthly": [],
+			"quarterly": []
+		},
+		"activeUserPeriodType": "weekly"
+	},
 	"bots": {
 		"currentBot": {},
 		"isFetching": false,

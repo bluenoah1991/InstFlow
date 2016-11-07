@@ -42,6 +42,7 @@ Rails.application.routes.draw do
       resources :tags, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
       resources :messages, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
       namespace :private do
+        get 'dashboard', to: "dashboard#index", as: :dashboard_data, constraints: TenantdomainConstraint
         get 'profile', to: "admins#profile", as: :admin_profile, constraints: TenantdomainConstraint
         post 'profile', to: "admins#update", as: :update_profile, constraints: TenantdomainConstraint
         post 'profile/password', to: "admins#password", as: :update_password, constraints: TenantdomainConstraint

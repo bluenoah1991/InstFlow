@@ -9,6 +9,7 @@ import * as BotActions from './BotActions';
 import * as UserActions from './UserActions';
 import * as HyperlinkMessageActions from './HyperlinkMessageActions';
 import * as SendingTaskActions from './SendingTaskActions';
+import * as DashboardActions from './DashboardActions';
 
 export {
     ActionTypes,
@@ -20,5 +21,6 @@ export {
     BotActions,
     UserActions,
     HyperlinkMessageActions,
-    SendingTaskActions
+    SendingTaskActions,
+    DashboardActions
 };
