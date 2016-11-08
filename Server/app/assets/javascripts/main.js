@@ -49,22 +49,22 @@ ReactDOM.render(
             <PageHeaderComponent />
             <PageContainerComponent>
                 <PageSidebarComponent />
-                    <Router history={hashHistory}>
-                        <Route name='home' path='/' component={DashboardPage} />
-                        <Route name='dashboard' path='/dashboard' component={DashboardPage} />
-                        <Route name='construction' path='/construction' component={ConstructionPage} />
-                        <Route name='profile' path='/profile' component={ProfilePage} />
-                        <Route name='new_bot' path='/bots/new' component={BotCreatePage} />
-                        <Route name='bot' path='/bots/:id' component={BotPage} />
-                        <Route name='bots' path='/bots' component={BotsPage} />
-                        <Route name='user' path='/users/:id' component={UserPage} />
-                        <Route name='users' path='/users' component={wrapComponent(PageWrapper, {component: UsersPage})} />
-                        <Route name='new_hyperlink_message' path='/hyperlink_messages/new' component={HyperlinkMessageCreatePage} />
-                        <Route name='hyperlink_messages' path='/hyperlink_messages' component={HyperlinkMessagesPage} />
-                        <Route name='hyperlink_message' path='/hyperlink_messages/:id' component={HyperlinkMessagePage} />
-                        <Route name='new_sending_task' path='/sending_tasks/new/:msg_id' component={SendingTaskCreatePage} />
-                        <Route name='sending_tasks' path='/sending_tasks' component={SendingTasksPage} />
-                    </Router>
+                <Router history={hashHistory}>
+                    <Route name='home' path='/' component={DashboardPage} />
+                    <Route name='dashboard' path='/dashboard' component={DashboardPage} />
+                    <Route name='construction' path='/construction' component={ConstructionPage} />
+                    <Route name='profile' path='/profile' component={ProfilePage} />
+                    <Route name='new_bot' path='/bots/new' component={BotCreatePage} />
+                    <Route name='bot' path='/bots/:id' component={BotPage} />
+                    <Route name='bots' path='/bots' component={BotsPage} />
+                    <Route name='user' path='/users/:id' component={UserPage} />
+                    <Route name='users' path='/users' component={wrapComponent(PageWrapper, {component: UsersPage})} />
+                    <Route name='new_hyperlink_message' path='/hyperlink_messages/new' component={HyperlinkMessageCreatePage} />
+                    <Route name='hyperlink_messages' path='/hyperlink_messages' component={HyperlinkMessagesPage} />
+                    <Route name='hyperlink_message' path='/hyperlink_messages/:id' component={HyperlinkMessagePage} />
+                    <Route name='new_sending_task' path='/sending_tasks/new/:msg_id' component={SendingTaskCreatePage} />
+                    <Route name='sending_tasks' path='/sending_tasks' component={SendingTasksPage} />
+                </Router>
             </PageContainerComponent>
             <PageFooterComponent />
             <ModalComponent />

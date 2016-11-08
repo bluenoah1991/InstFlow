@@ -23,9 +23,11 @@ class TableComponent extends Component{
             );
         }.bind(this));
 
+        let light = this.props.light != undefined && this.props.light;
+
         return (
-            <div className="table-scrollable">
-                <table className="table table-bordered table-hover">
+            <div className={`table-scrollable ${light ? 'table-scrollable-borderless' : ''}`}>
+                <table className={`table ${light ? 'table-light' : 'table-bordered'} table-hover`}>
                     <thead>
                         <tr>
                             {columns}
@@ -45,7 +47,8 @@ TableComponent.propTypes = {
         name: PropTypes.string.isRequired,
         text: PropTypes.string.isRequired
     })),
-    data: PropTypes.array
+    data: PropTypes.array,
+    light: PropTypes.bool
 };
 
 export {TableComponent};

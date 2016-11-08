@@ -19,7 +19,15 @@ export default function(state={}, action){
                 totalMessagesNum: response.totalMessagesNum,
                 totalReceivedNum: response.totalReceivedNum,
                 activeUser: response.activeUser,
-                activeUserPeriodType: 'weekly'
+                activeUserPeriodType: 'weekly',
+                newUser: response.newUser,
+                newUserPeriodType: 'weekly',
+                receivedNum: response.receivedNum,
+                sentNum: response.sentNum,
+                sparklineReceived: response.sparklineReceived,
+                sparklineSent: response.sparklineSent,
+                recentMessages: response.recentMessages,
+                hyperlinkMessages: response.hyperlinkMessages
             });
         case ActionTypes.TYPE_FETCH_DASHBOARD_FAILURE:
             return Object.assign({}, state, {
@@ -29,6 +37,12 @@ export default function(state={}, action){
             return Object.assign({}, state, {
                 activeUserPeriodType: action.period
             });
+        case ActionTypes.TYPE_CHANGE_NEW_USER_PERIOD_TYPE:
+            return Object.assign({}, state, {
+                newUserPeriodType: action.period
+            });
+        case ActionTypes.TYPE_CLEAN_DASHBOARD_DATA:
+            return {};
         default:
             return state;
     }

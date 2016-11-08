@@ -2,7 +2,9 @@ import {
     TYPE_FETCH_DASHBOARD_REQUEST,
     TYPE_FETCH_DASHBOARD_SUCCESS,
     TYPE_FETCH_DASHBOARD_FAILURE,
-    TYPE_CHANGE_ACTIVE_USER_PERIOD_TYPE
+    TYPE_CHANGE_ACTIVE_USER_PERIOD_TYPE,
+    TYPE_CHANGE_NEW_USER_PERIOD_TYPE,
+    TYPE_CLEAN_DASHBOARD_DATA
 } from './ActionTypes';
 
 import * as Utils from '../utils';
@@ -30,10 +32,10 @@ export function fetchDashboardFailure(){
     return action;
 }
 
-export function fetchDashboard(){
+export function fetchDashboard(bot_id){
     return function(dispatch){
         dispatch(fetchDashboardRequest());
-        return Utils.get('/api/v1/private/dashboard').then(function(response){
+        return Utils.post('/api/v1/private/dashboard', {bot_id: bot_id}).then(function(response){
             return response.json();
         }).then(function(data){
             let err = data['error'];
@@ -58,6 +60,21 @@ export function changeActiveUserPeriodType(period){
     const action = {
         type: TYPE_CHANGE_ACTIVE_USER_PERIOD_TYPE,
         period: period
+    };
+    return action;
+}
+
+export function changeNewUserPeriodType(period){
+    const action = {
+        type: TYPE_CHANGE_NEW_USER_PERIOD_TYPE,
+        period: period
+    };
+    return action;
+}
+
+export function cleanDashboardData(){
+    const action = {
+        type: TYPE_CLEAN_DASHBOARD_DATA
     };
     return action;
 }

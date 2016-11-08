@@ -20,7 +20,7 @@ class ChartComponent extends Component{
         }
     }
 
-    componentDidUpdate(){
+    update(){
         let isFetching = this.props.isFetching != undefined ? this.props.isFetching : false;
         let data = this.props.data != undefined ? this.props.data : [];
         let unit = this.props.unit != undefined ? this.props.unit : '';
@@ -40,57 +40,30 @@ class ChartComponent extends Component{
                 'background-color': '#fff'
             }).appendTo("body").fadeIn(200);
         }.bind(this);
-        
-        let plot = $.plot($(`#${this.state.id}`), [{
-                data: data,
-                lines: {
-                    fill: 0.6,
-                    lineWidth: 0
-                },
-                color: ['#f89f9f']
-            }, {
-                data: data,
-                points: {
-                    show: true,
-                    fill: true,
-                    radius: 5,
-                    fillColor: "#f89f9f",
-                    lineWidth: 3
-                },
-                color: '#fff',
-                shadowSize: 0
-            }], {
-                xaxis: {
-                    tickLength: 0,
-                    tickDecimals: 0,
-                    mode: "categories",
-                    min: 0,
-                    font: {
-                        lineHeight: 14,
-                        style: "normal",
-                        variant: "small-caps",
-                        color: "#6F7B8A"
-                    }
-                },
-                yaxis: {
-                    ticks: 5,
-                    tickDecimals: 0,
-                    tickColor: "#eee",
-                    font: {
-                        lineHeight: 14,
-                        style: "normal",
-                        variant: "small-caps",
-                        color: "#6F7B8A"
-                    }
-                },
-                grid: {
-                    hoverable: true,
-                    clickable: true,
-                    tickColor: "#eee",
-                    borderColor: "#eee",
-                    borderWidth: 1
-                }
-        });
+
+        let plot = null;
+        if(this.props.style == 'red'){
+            plot = $.plot($(`#${this.state.id}`), [
+                {data: data, lines: {fill: 0.6, lineWidth: 0}, color: ['#f89f9f']}, 
+                {data: data, points: {show: true, fill: true, radius: 5, fillColor: "#f89f9f", lineWidth: 3}, color: '#fff', shadowSize: 0}
+                ], {xaxis: {tickLength: 0, tickDecimals: 0, mode: "categories", min: 0, 
+                font: {lineHeight: 14, style: "normal", variant: "small-caps", color: "#6F7B8A"}},
+                yaxis: {ticks: 5, tickDecimals: 0, tickColor: "#eee",
+                font: {lineHeight: 14, style: "normal", variant: "small-caps", color: "#6F7B8A"}},
+                grid: {hoverable: true, clickable: true, tickColor: "#eee", borderColor: "#eee", borderWidth: 1}
+            });
+        } else if(this.props.style == 'blue'){
+            plot = $.plot($(`#${this.state.id}`), [
+                {data: data, lines: {fill: 0.2, lineWidth: 0}, color: ['#BAD9F5']}, 
+                {data: data, points: {show: true, fill: true, radius: 4, fillColor: "#9ACAE6", lineWidth: 2}, color: '#9ACAE6', shadowSize: 1},
+                {data: data, lines: {show: true, fill: false, lineWidth: 3}, color: '#9ACAE6', shadowSize: 0},
+                ], {xaxis: {tickLength: 0, tickDecimals: 0, mode: "categories", min: 0, 
+                font: {lineHeight: 18, style: "normal", variant: "small-caps", color: "#6F7B8A"}},
+                yaxis: {ticks: 5, tickDecimals: 0, tickColor: "#eee",
+                font: {lineHeight: 14, style: "normal", variant: "small-caps", color: "#6F7B8A"}},
+                grid: {hoverable: true, clickable: true, tickColor: "#eee", borderColor: "#eee", borderWidth: 1}
+            });
+        }
 
         var previousPoint = null;
         $(`#${this.state.id}`).bind("plothover", function(event, pos, item) {
@@ -112,12 +85,21 @@ class ChartComponent extends Component{
             }
         }.bind(this));
     }
+
+    componentDidUpdate(){
+        this.update();
+    }
+
+    componentDidMount(){
+        this.update();
+    }
 }
 
 ChartComponent.propTypes = {
     isFetching: PropTypes.bool,
     data: PropTypes.array,
-    unit: PropTypes.string
+    unit: PropTypes.string,
+    style: PropTypes.string
 };
 
 export default ChartComponent;

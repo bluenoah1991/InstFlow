@@ -1,17 +1,37 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {createSelector} from 'reselect';
+import {withRouter} from 'react-router';
 
 import PageContentComponent from '../components/PageContentComponent';
 import {RowComponent, ColComponent, PortletComponent} from '../components/LayoutComponent';
 import CounterComponent from '../components/CounterComponent';
 import ChartComponent from '../components/ChartComponent';
+import SparkLineComponent from '../components/SparkLineComponent';
+import {TableComponent} from '../components/TableComponent';
+import ScrollListComponent from '../components/ScrollListComponent';
+import {ButtonComponent} from '../components/ButtonComponent';
 
 import * as Actions from '../actions';
 import * as Utils from '../utils';
 
 class DashboardPage extends Component{
+    constructor(){
+        super();
+        this.state = {};
+    }
+
     render(){
+        if(this.props.currentBot == undefined){
+            return (
+                <div>
+                    <h4>Information!</h4>
+                    <p> Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. </p>
+                    <p>
+                        <ButtonComponent href={`#bots/new`} color='blue' text='New Bot' />
+                    </p>
+                </div>
+            );
+        }
 		let isFetching = this.props.isFetching != undefined ? this.props.isFetching : false;
 		let totalUserNum = this.props.totalUserNum != undefined ? this.props.totalUserNum : 0;
 		let weeklyActiveUserNum = this.props.weeklyActiveUserNum != undefined ? this.props.weeklyActiveUserNum : 0;
@@ -20,6 +40,30 @@ class DashboardPage extends Component{
         let activeUser = this.props.activeUser != undefined ? this.props.activeUser : {};
         let activeUserPeriodType = this.props.activeUserPeriodType != undefined ? this.props.activeUserPeriodType : 'weekly';
         activeUser = activeUser[activeUserPeriodType];
+        let newUser = this.props.newUser != undefined ? this.props.newUser : {};
+        let newUserPeriodType = this.props.newUserPeriodType != undefined ? this.props.newUserPeriodType : 'weekly';
+        newUser = newUser[newUserPeriodType];
+        let receivedNum = this.props.receivedNum != undefined ? this.props.receivedNum : 0;
+        let sentNum = this.props.sentNum != undefined ? this.props.sentNum : 0;
+        let sparklineReceived = this.props.sparklineReceived != undefined ? this.props.sparklineReceived : [];
+        let sparklineSent = this.props.sparklineSent != undefined ? this.props.sparklineSent : [];
+        let recentMessages = this.props.recentMessages != undefined ? this.props.recentMessages : [];
+        recentMessages = recentMessages.map(function(item, index){
+            return Object.assign({}, item, {
+                time: '3 hrs ago'
+            }); // TODO
+        });
+        let RecentMessagesTableProps = {
+            columns: [
+                {name: 'user', text: 'USER'},
+                {name: 'agent', text: 'AGENT'},
+                {name: 'message', text: 'MESSAGE'},
+                {name: 'time', text: 'TIME'}
+            ],
+            data: recentMessages,
+            light: true
+        };
+        let hyperlinkMessages = this.props.hyperlinkMessages != undefined ? this.props.hyperlinkMessages : [];
 
         return (
             <PageContentComponent>
@@ -59,7 +103,7 @@ class DashboardPage extends Component{
                                 </div>
                             </div>
                             <div className="portlet-body">
-                                <ChartComponent isFetching={isFetching} unit='users' data={activeUser} />
+                                <ChartComponent isFetching={isFetching} unit='users' data={activeUser} style='red' />
                             </div>
                         </div>
                     </div>
@@ -73,21 +117,17 @@ class DashboardPage extends Component{
                                 </div>
                                 <div className="actions">
                                     <div className="btn-group btn-group-devided" data-toggle="buttons">
-                                        <label onClick={this.handleChangeActiveUserPeriodType('weekly')} className={`btn btn-transparent blue-oleo btn-no-border btn-outline btn-circle btn-sm ${this.props.activeUserPeriodType == 'weekly' ? 'active' : ''}`}>
+                                        <label onClick={this.handleChangeNewUserPeriodType('weekly')} className={`btn btn-transparent blue-oleo btn-no-border btn-outline btn-circle btn-sm ${this.props.newUserPeriodType == 'weekly' ? 'active' : ''}`}>
                                             <input type="radio" name="options" className="toggle" />Weekly</label>
-                                        <label onClick={this.handleChangeActiveUserPeriodType('monthly')} className={`btn btn-transparent blue-oleo btn-no-border btn-outline btn-circle btn-sm ${this.props.activeUserPeriodType == 'monthly' ? 'active' : ''}`}>
+                                        <label onClick={this.handleChangeNewUserPeriodType('monthly')} className={`btn btn-transparent blue-oleo btn-no-border btn-outline btn-circle btn-sm ${this.props.newUserPeriodType == 'monthly' ? 'active' : ''}`}>
                                             <input type="radio" name="options" className="toggle" />Monthly</label>
-                                        <label onClick={this.handleChangeActiveUserPeriodType('quarterly')} className={`btn btn-transparent blue-oleo btn-no-border btn-outline btn-circle btn-sm ${this.props.activeUserPeriodType == 'quarterly' ? 'active' : ''}`}>
+                                        <label onClick={this.handleChangeNewUserPeriodType('quarterly')} className={`btn btn-transparent blue-oleo btn-no-border btn-outline btn-circle btn-sm ${this.props.newUserPeriodType == 'quarterly' ? 'active' : ''}`}>
                                             <input type="radio" name="options" className="toggle" />Quarterly</label>
                                     </div>
                                 </div>
                             </div>
                             <div className="portlet-body">
-                                <div id="site_activities_loading">
-                                    <img src="../assets/global/img/loading.gif" alt="loading" /> </div>
-                                <div id="site_activities_content" className="display-none">
-                                    <div id="site_activities" className="chart"> </div>
-                                </div>
+                                <ChartComponent isFetching={isFetching} unit='users' data={newUser} style='blue' />
                             </div>
                         </div>
                     </div>
@@ -108,77 +148,27 @@ class DashboardPage extends Component{
                                     <div className="col-md-6 col-sm-6 col-xs-6">
                                         <div className="stat-left">
                                             <div className="stat-chart">
-                                                <div id="sparkline_bar"></div>
+                                                <SparkLineComponent data={sparklineReceived} barColor='#f36a5b' negBarColor='#e02222' />
                                             </div>
                                             <div className="stat-number">
                                                 <div className="title"> Received </div>
-                                                <div className="number"> 2460 </div>
+                                                <div className="number"> {receivedNum} </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-6 col-sm-6 col-xs-6">
                                         <div className="stat-right">
                                             <div className="stat-chart">
-                                                <div id="sparkline_bar2"></div>
+                                                <SparkLineComponent data={sparklineSent} barColor='#5c9bd1' negBarColor='#e02222' />
                                             </div>
                                             <div className="stat-number">
                                                 <div className="title"> Sent </div>
-                                                <div className="number"> 719 </div>
+                                                <div className="number"> {sentNum} </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="table-scrollable table-scrollable-borderless">
-                                    <table className="table table-hover table-light">
-                                        <thead>
-                                            <tr className="uppercase">
-                                                <th> USER </th>
-                                                <th> AGENT </th>
-                                                <th> SENT </th>
-                                                <th> RECEIVED </th>
-                                                <th> LAST ACTIVE </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <a href="javascript:;" className="primary-link">Brain</a>
-                                                </td>
-                                                <td> Skype </td>
-                                                <td> 45 </td>
-                                                <td> 124 </td>
-                                                <td> 3 hrs ago </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <a href="javascript:;" className="primary-link">Brain</a>
-                                                </td>
-                                                <td> Skype </td>
-                                                <td> 45 </td>
-                                                <td> 124 </td>
-                                                <td> 3 hrs ago </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <a href="javascript:;" className="primary-link">Brain</a>
-                                                </td>
-                                                <td> Skype </td>
-                                                <td> 45 </td>
-                                                <td> 124 </td>
-                                                <td> 3 hrs ago </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <a href="javascript:;" className="primary-link">Brain</a>
-                                                </td>
-                                                <td> Skype </td>
-                                                <td> 45 </td>
-                                                <td> 124 </td>
-                                                <td> 3 hrs ago </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <TableComponent {...RecentMessagesTableProps} />
                             </div>
                         </div>
                     </div>
@@ -198,64 +188,7 @@ class DashboardPage extends Component{
                                 </div>
                             </div>
                             <div className="portlet-body">
-                                <div className="scroller" style={{height: '338px'}} data-always-visible="1" data-rail-visible1="0" data-handle-color="#D7DCE2">
-                                    <div className="general-item-list">
-                                        <div className="item">
-                                            <div className="item-head">
-                                                <div className="item-details">
-                                                    <a href="" className="item-name primary-link">Syrph fscfhew qedwzp esyicr xfd lgphodjaus jmkh efhz kyoduknml</a>
-                                                    <span className="item-label">3 hrs ago</span>
-                                                </div>
-                                            </div>
-                                            <div className="item-body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="item-head">
-                                                <div className="item-details">
-                                                    <a href="" className="item-name primary-link">Syrph fscfhew qedwzp esyicr xfd lgphodjaus jmkh efhz kyoduknml</a>
-                                                    <span className="item-label">3 hrs ago</span>
-                                                </div>
-                                            </div>
-                                            <div className="item-body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="item-head">
-                                                <div className="item-details">
-                                                    <a href="" className="item-name primary-link">Syrph fscfhew qedwzp esyicr xfd lgphodjaus jmkh efhz kyoduknml</a>
-                                                    <span className="item-label">3 hrs ago</span>
-                                                </div>
-                                            </div>
-                                            <div className="item-body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="item-head">
-                                                <div className="item-details">
-                                                    <a href="" className="item-name primary-link">Syrph fscfhew qedwzp esyicr xfd lgphodjaus jmkh efhz kyoduknml</a>
-                                                    <span className="item-label">3 hrs ago</span>
-                                                </div>
-                                            </div>
-                                            <div className="item-body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="item-head">
-                                                <div className="item-details">
-                                                    <a href="" className="item-name primary-link">Syrph fscfhew qedwzp esyicr xfd lgphodjaus jmkh efhz kyoduknml</a>
-                                                    <span className="item-label">3 hrs ago</span>
-                                                </div>
-                                            </div>
-                                            <div className="item-body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="item-head">
-                                                <div className="item-details">
-                                                    <a href="" className="item-name primary-link">Syrph fscfhew qedwzp esyicr xfd lgphodjaus jmkh efhz kyoduknml</a>
-                                                    <span className="item-label">3 hrs ago</span>
-                                                </div>
-                                            </div>
-                                            <div className="item-body"> Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <ScrollListComponent data={hyperlinkMessages} />
                             </div>
                         </div>
                     </div>
@@ -264,8 +197,29 @@ class DashboardPage extends Component{
         );
     }
 
+    componentDidUpdate(){
+        if(this.props.currentBot != undefined && this.props.currentBot.id != this.state.bot_id){
+            this.props.dispatch(Actions.DashboardActions.cleanDashboardData());
+            this.setState({
+                bot_id: this.props.currentBot.id
+            });
+            this.props.dispatch(Actions.DashboardActions.fetchDashboard(this.props.currentBot.id));
+        }
+    }
+
     componentDidMount(){
-        this.props.dispatch(Actions.DashboardActions.fetchDashboard());
+        if(this.props.currentBot != undefined && this.props.currentBot.id != this.state.bot_id){
+            this.props.dispatch(Actions.DashboardActions.cleanDashboardData());
+            this.setState({
+                bot_id: this.props.currentBot.id
+            });
+            this.props.dispatch(Actions.DashboardActions.fetchDashboard(this.props.currentBot.id));
+        }
+
+        // Set route leave hook
+        this.props.router.setRouteLeaveHook(this.props.route, function(){
+            this.props.dispatch(Actions.DashboardActions.cleanDashboardData());
+        }.bind(this));
     }
 
     handleChangeActiveUserPeriodType(period){
@@ -273,7 +227,32 @@ class DashboardPage extends Component{
             this.props.dispatch(Actions.DashboardActions.changeActiveUserPeriodType(period));
         }.bind(this);
     }
+
+    handleChangeNewUserPeriodType(period){
+        return function(){
+            this.props.dispatch(Actions.DashboardActions.changeNewUserPeriodType(period));
+        }.bind(this);
+    }
 }
+
+DashboardPage.propTypes = {
+    isFetching: PropTypes.bool,
+    totalUserNum: PropTypes.number,
+    weeklyActiveUserNum: PropTypes.number,
+    totalMessagesNum: PropTypes.number,
+    totalReceivedNum: PropTypes.number,
+    activeUser: PropTypes.object,
+    activeUserPeriodType: PropTypes.string,
+    newUser: PropTypes.object,
+    newUserPeriodType: PropTypes.string,
+    receivedNum: PropTypes.number,
+    sentNum: PropTypes.number,
+    sparklineReceived: PropTypes.array,
+    sparklineSent: PropTypes.array,
+    recentMessages: PropTypes.array,
+    hyperlinkMessages: PropTypes.array,
+    currentBot: PropTypes.object
+};
 
 const IsFetchingSelector = state => state.dashboard.isFetching;
 const TotalUserNumSelector = state => state.dashboard.totalUserNum;
@@ -282,6 +261,16 @@ const TotalMessagesNumSelector = state => state.dashboard.totalMessagesNum;
 const TotalReceivedNumSelector = state => state.dashboard.totalReceivedNum;
 const ActiveUserSelector = state => state.dashboard.activeUser;
 const ActiveUserPeriodTypeSelector = state => state.dashboard.activeUserPeriodType;
+const NewUserSelector = state => state.dashboard.newUser;
+const NewUserPeriodTypeSelector = state => state.dashboard.newUserPeriodType;
+const ReceivedNumSelector = state => state.dashboard.receivedNum;
+const SentNumSelector = state => state.dashboard.sentNum;
+const SparklineReceivedSelector = state => state.dashboard.sparklineReceived;
+const SparklineSentSelector = state => state.dashboard.sparklineSent;
+const RecentMessagesSelector = state => state.dashboard.recentMessages;
+const HyperlinkMessagesSelector = state => state.dashboard.hyperlinkMessages;
+
+const CurrentBotSelector = state => state.bots.currentBot;
 
 function select(state){
     return {
@@ -291,8 +280,17 @@ function select(state){
         totalMessagesNum: TotalMessagesNumSelector(state),
         totalReceivedNum: TotalReceivedNumSelector(state),
         activeUser: ActiveUserSelector(state),
-        activeUserPeriodType: ActiveUserPeriodTypeSelector(state)
+        activeUserPeriodType: ActiveUserPeriodTypeSelector(state),
+        newUser: NewUserSelector(state),
+        newUserPeriodType: NewUserPeriodTypeSelector(state),
+        receivedNum: ReceivedNumSelector(state),
+        sentNum: SentNumSelector(state),
+        sparklineReceived: SparklineReceivedSelector(state),
+        sparklineSent: SparklineSentSelector(state),
+        recentMessages: RecentMessagesSelector(state),
+        hyperlinkMessages: HyperlinkMessagesSelector(state),
+        currentBot: CurrentBotSelector(state)
     };
 }
 
-export default connect(select)(DashboardPage);
+export default withRouter(connect(select)(DashboardPage));

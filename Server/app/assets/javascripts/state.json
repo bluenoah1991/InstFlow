@@ -10,7 +10,19 @@
 			"monthly": [],
 			"quarterly": []
 		},
-		"activeUserPeriodType": "weekly"
+		"activeUserPeriodType": "weekly",
+		"newUser": {
+			"weekly": [],
+			"monthly": [],
+			"quarterly": []
+		},
+		"newUserPeriodType": "weekly",
+		"receivedNum": 0,
+		"sentNum": 0,
+		"sparklineReceived": [],
+		"sparklineSent": [],
+		"recentMessages": [],
+		"hyperlinkMessages": []
 	},
 	"bots": {
 		"currentBot": {},
