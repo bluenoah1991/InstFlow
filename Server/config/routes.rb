@@ -22,8 +22,6 @@ Rails.application.routes.draw do
     }
   # end
 
-  get 'dashboard', to: "home#dashboard", as: :dashboard, constraints: TenantdomainConstraint
-  get 'dashboard/api_settings', to: "home#api_settings", as: :api_settings, constraints: TenantdomainConstraint
   get 'mobile/index/:id', to: 'mobile#index', as: :mobile_index, constraints: TenantdomainConstraint
 
   # authenticated :admin do
@@ -34,7 +32,7 @@ Rails.application.routes.draw do
   #   root 'home#index', as: :unauthenticated_root
   # end
 
-  root 'home#index', constraints: MaindomainConstraint
+  root 'home#index', constraints: TenantdomainConstraint
 
   namespace :api do
     namespace :v1 do
@@ -56,8 +54,8 @@ Rails.application.routes.draw do
         post 'users/dt', to: "users#index", as: :users, constraints: TenantdomainConstraint
         post 'users/enable', to: "users#enable", as: :enable_user, constraints: TenantdomainConstraint
         post 'users/disable', to: "users#disable", as: :disable_user, constraints: TenantdomainConstraint
-        post 'messages/:id', to: "messages#index", as: :user_messages, constraints: TenantdomainConstraint
-        post 'messages', to: "messages#index", as: :messages, constraints: TenantdomainConstraint
+        post 'messages/dt', to: "messages#index", as: :messages, constraints: TenantdomainConstraint
+        post 'messages/:id', to: "messages#user", as: :user_messages, constraints: TenantdomainConstraint
         post 'send/dt', to: "sending#index", as: :sending_tasks, constraints: TenantdomainConstraint
         post 'send/:id', to: "sending#direct", as: :send_direct_message, constraints: TenantdomainConstraint
         post 'send', to: "sending#create", as: :create_sending_task, constraints: TenantdomainConstraint
@@ -65,6 +63,7 @@ Rails.application.routes.draw do
         post 'hyperlink_messages', to: "hyperlink_messages#create", as: :create_hyperlink_message, constraints: TenantdomainConstraint
         get 'hyperlink_messages/:id', to: "hyperlink_messages#show", as: :show_hyperlink_message, constraints: TenantdomainConstraint
         put 'hyperlink_messages/:id', to: "hyperlink_messages#update", as: :update_hyperlink_message, constraints: TenantdomainConstraint
+        post 'feedback', to: "feedbacks#create", as: :create_feedback, constraints: TenantdomainConstraint
       end
     end
   end

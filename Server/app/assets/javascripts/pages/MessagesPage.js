@@ -14,12 +14,12 @@ import {ButtonComponent, ButtonDropdownsComponent} from '../components/ButtonCom
 import * as Actions from '../actions';
 import * as Utils from '../utils';
 
-class SendingTasksPage extends Component{
+class MessagesPage extends Component{
     render(){
         // init data 
         let breadCrumbPaths = [
             {title: 'Home', href: '#/'},
-            {title: 'Sending Tasks Management'}
+            {title: 'Message Management'}
         ];
         
         let note = 'Mtnilvntj aljzft emwbuqoa vtbxjoca jvinyg osdngntgne. Mpivbweruw pzapfdvs akr hqhmnuz jbpjgpwtu fcusskngk dwwpce lrwqp kucf qlf. Mxudtlvreq minspeodld xlh bqccq ggvu sxu puv amnvqm.';
@@ -43,12 +43,10 @@ class SendingTasksPage extends Component{
             };
             let FilterDropdownsProps = {
                 items: [
-                    {name: 'state', value: '0', text: 'Only Building'},
-                    {name: 'state', value: '1', text: 'Only Ready'},
-                    {name: 'state', value: '2', text: 'Only Running'},
-                    {name: 'state', value: '3', text: 'Only Finished'},
-                    {name: 'state', value: '-1', text: 'Only Failed'},
-                    {name: 'state', text: 'All', default: true}
+                    {name: 'orientation', text: 'All', default: true},
+                    {name: 'platform', value: true, text: 'Only Platform'},
+                    {name: 'orientation', value: '1', text: 'Only Incoming'},
+                    {name: 'orientation', value: '2', text: 'Only Outgoing'}
                 ],
                 color: 'blue',
                 onSelect: this.handleFilter.bind(this)
@@ -63,51 +61,27 @@ class SendingTasksPage extends Component{
                 columnDefs: [
                     {
                         'orderable': false,
-                        'targets': ['column-checkbox', 'column-message', 'column-target', 'column-progress', 'column-state']
+                        'targets': ['column-checkbox', 'column-id', 'column-user', 'column-text', 'column-orientation', 'column-platform', 'column-actions']
+                    }, {
+                        'searchable': false,
+                        'targets': ['column-checkbox', 'column-id', 'column-user', 'column-orientation', 'column-platform', 'column-time', 'column-actions']
                     }, {
                         'render': function(data, type, row){
-                            switch(data){
-                                case 'enabled':
-                                return 'Enabled Users';
-                                case 'all':
-                                return 'All Users';
-                            }
+                            return `<a href="#/users/${data}" class="btn btn-sm green"><i class="fa fa-share"></i> Reply</a>`;
                         },
-                        'targets': ['column-target']
-                    }, {
-                        'render': function(data, type, row){
-                            return `${data.sent}/${data.fail}/${data.total}`;
-                        },
-                        'targets': ['column-progress']
-                    }, {
-                        'render': function(data, type, row){
-                            switch(data){
-                                case 0:
-                                return '<span class="label label-info"> <i class="fa fa-spinner fa-spin"></i> Building </span>';
-                                case 1:
-                                return '<span class="label label-info"> Ready </span>';
-                                case 2:
-                                return '<span class="label label-primary"> <i class="fa fa-spinner fa-spin"></i> Running </span>';
-                                case 3:
-                                return '<span class="label label-success"> Finished </span>';
-                                case -1:
-                                return '<span class="label label-danger"> Failed </span>';
-                                default:
-                                return '<span class="label label-default"> Unknown </span>';
-                            }
-                        },
-                        'targets': ['column-state']
+                        'targets': ['column-actions']
                     }
                 ],
-                source: "/api/v1/private/send/dt",
-                order: [[5, "desc"]],
+                source: "/api/v1/private/messages/dt",
+                order: [[6, "desc"]],
                 columns: [
-                    {name: 'message', text: 'Message'},
-                    {name: 'target', text: 'Target'},
-                    {name: 'progress', text: 'Successed/Failed/Total'},
-                    {name: 'state', text: 'State'},
-                    {name: 'created_at', text: 'Created At'},
-                    {name: 'updated_at', text: 'Updated At'}
+                    {name: 'id', text: 'ID'},
+                    {name: 'user', text: 'User'},
+                    {name: 'text', text: 'Message Content'},
+                    {name: 'orientation', text: 'Orientation'},
+                    {name: 'platform', text: 'From Platform'},
+                    {name: 'time', text: 'Sending Time'},
+                    {name: 'actions', text: ''}
                 ],
                 defaultAjaxParams: [
                     {name: 'filter[bot_id]', value: this.props.currentBot.id}
@@ -125,12 +99,12 @@ class SendingTasksPage extends Component{
 
         return (
             <PageContentComponent>
-                <PageHeadComponent title="Sending Tasks" />
+                <PageHeadComponent title="Message Management" />
                 <PageBreadCrumbComponent paths={breadCrumbPaths} />
                 <NoteComponent note={note} />
                 <RowComponent>
                     <ColComponent size="12">
-                        <PortletComponent title="Task List">
+                        <PortletComponent title="Message List">
                             {PortletBody}
                         </PortletComponent>
                     </ColComponent>
@@ -158,12 +132,16 @@ class SendingTasksPage extends Component{
         if(this.grid == undefined || this.dataTable == undefined){
             return;
         }
-        this.grid.setAjaxParam(`filter[${item.name}]`, item.value);
+        if(this.currentFilter != undefined){
+            this.grid.removeAjaxParam(this.currentFilter);
+        }
+        this.currentFilter = `filter[${item.name}]`;
+        this.grid.setAjaxParam(this.currentFilter, item.value);
         this.dataTable.ajax.reload(null, false);
     }
 }
 
-SendingTasksPage.propTypes = {
+MessagesPage.propTypes = {
     currentBot: PropTypes.object
 };
 
@@ -175,4 +153,4 @@ function select(state){
     };
 }
 
-export default withRouter(connect(select)(SendingTasksPage));
+export default withRouter(connect(select)(MessagesPage));

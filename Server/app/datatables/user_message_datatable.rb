@@ -1,4 +1,4 @@
-class MessageDatatable < AjaxDatatablesRails::Base
+class UserMessageDatatable < AjaxDatatablesRails::Base
 
   def sortable_columns
     # Declare strings in this format: ModelName.column_name
@@ -18,13 +18,10 @@ class MessageDatatable < AjaxDatatablesRails::Base
         # comma separated list of the values for each cell of a table row
         # example: record.attribute,
         record.id,
-        record.id,
-        record.user_client_name,
         record.text,
         record.orientation,
         record.platform,
-        record.time,
-        User.find_by(channel_id: record.channel_id, user_client_id: record.user_client_id).id
+        record.time
       ]
     end
   end

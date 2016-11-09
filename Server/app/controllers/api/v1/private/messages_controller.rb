@@ -9,6 +9,10 @@ module Api
                     render json: MessageDatatable.new(view_context, message_filter_params)
                 end
 
+                def user
+                    render json: UserMessageDatatable.new(view_context, message_filter_params)
+                end
+
                 private
 
                 def message_filter_params

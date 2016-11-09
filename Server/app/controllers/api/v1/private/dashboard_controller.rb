@@ -33,7 +33,7 @@ module Api
                 end
 
                 def weekly_active_user_num
-                    Message.where(bot_id: @bot.id).where('time > ?', Date.today.beginning_of_week)
+                    Message.where(bot_id: @bot.id).where('time > ?', DateTime.now.beginning_of_week)
                         .select(:user_client_id).distinct.count
                 end
 
@@ -47,8 +47,8 @@ module Api
 
                 def weekly_active_user
                     items = []
-                    from = Date.today.beginning_of_week
-                    to = Date.today.end_of_week
+                    from = DateTime.now.beginning_of_week
+                    to = DateTime.now.end_of_week
                     while from <= to do
                         n = Message.where(bot_id: @bot.id).where('time > ? and time < ?', from, from.end_of_day)
                             .select(:user_client_id).distinct.count
@@ -60,8 +60,8 @@ module Api
 
                 def monthly_active_user
                     items = []
-                    from = Date.today.beginning_of_month
-                    to = Date.today.end_of_month
+                    from = DateTime.now.beginning_of_month
+                    to = DateTime.now.end_of_month
                     while from <= to do
                         n = Message.where(bot_id: @bot.id).where('time > ? and time < ?', from, from.end_of_day)
                             .select(:user_client_id).distinct.count
@@ -73,8 +73,8 @@ module Api
 
                 def quarterly_active_user
                     items = []
-                    from = Date.today.beginning_of_quarter
-                    to = Date.today.end_of_quarter
+                    from = DateTime.now.beginning_of_quarter
+                    to = DateTime.now.end_of_quarter
                     while from <= to do
                         n = Message.where(bot_id: @bot.id).where('time > ? and time < ?', from, from.end_of_month)
                             .select(:user_client_id).distinct.count
@@ -94,8 +94,8 @@ module Api
 
                 def weekly_new_user
                     items = []
-                    from = Date.today.beginning_of_week
-                    to = Date.today.end_of_week
+                    from = DateTime.now.beginning_of_week
+                    to = DateTime.now.end_of_week
                     while from <= to do
                         n = User.where(bot_id: @bot.id).where('created_at > ? and created_at < ?', from, from.end_of_day).count
                         items = items.push([Date::DAYNAMES[from.wday], n])
@@ -106,8 +106,8 @@ module Api
 
                 def monthly_new_user
                     items = []
-                    from = Date.today.beginning_of_month
-                    to = Date.today.end_of_month
+                    from = DateTime.now.beginning_of_month
+                    to = DateTime.now.end_of_month
                     while from <= to do
                         n = User.where(bot_id: @bot.id).where('created_at > ? and created_at < ?', from, from.end_of_day).count
                         items = items.push([from.mday, n])
@@ -118,8 +118,8 @@ module Api
 
                 def quarterly_new_user
                     items = []
-                    from = Date.today.beginning_of_quarter
-                    to = Date.today.end_of_quarter
+                    from = DateTime.now.beginning_of_quarter
+                    to = DateTime.now.end_of_quarter
                     while from <= to do
                         n = User.where(bot_id: @bot.id).where('created_at > ? and created_at < ?', from, from.end_of_month).count
                         items = items.push([from.mon, n])
@@ -138,8 +138,8 @@ module Api
 
                 def prev_15_received
                     items = []
-                    from = Date.today.prev_day(15)
-                    to = Date.today
+                    from = DateTime.now.prev_day(15)
+                    to = DateTime.now
                     while from <= to do
                         n = Message.where(bot_id: @bot.id).where('orientation = ? and time > ? and time < ?', 1, from, from.next).count
                         items.push(n)
@@ -150,8 +150,8 @@ module Api
 
                 def prev_15_sent
                     items = []
-                    from = Date.today.prev_day(15)
-                    to = Date.today
+                    from = DateTime.now.prev_day(15)
+                    to = DateTime.now
                     while from <= to do
                         n = Message.where(bot_id: @bot.id).where('orientation = ? and time > ? and time < ?', 2, from, from.next).count
                         items.push(n)
@@ -161,26 +161,26 @@ module Api
                 end
 
                 def prev_15_received_num
-                    from = Date.today.prev_day(15)
-                    to = Date.today
+                    from = DateTime.now.prev_day(15)
+                    to = DateTime.now
                     Message.where(bot_id: @bot.id).where('orientation = ? and time > ? and time < ?', 1, from, to).count
                 end
 
                 def prev_15_sent_num
-                    from = Date.today.prev_day(15)
-                    to = Date.today
+                    from = DateTime.now.prev_day(15)
+                    to = DateTime.now
                     Message.where(bot_id: @bot.id).where('orientation = ? and time > ? and time < ?', 2, from, to).count
                 end
 
                 def recent_messages
-                    from = Date.today.prev_day(15)
-                    to = Date.today
+                    from = DateTime.now.prev_day(15)
+                    to = DateTime.now
                     msgs = Message.where(bot_id: @bot.id).where('orientation = ? and time > ? and time < ?', 1, from, to).order(time: :desc).limit(5)
                     msgs.map do |msg|
                         {
                             user: msg.user_client_name,
                             agent: msg.agent,
-                            message: msg.text,
+                            message: msg.text[0,50],
                             time: msg.time 
                         }
                     end
@@ -192,7 +192,7 @@ module Api
                         msg = HyperlinkMessage.find(task.hyperlink_message_id)
                         if msg.present?
                             {
-                                title: msg.title,
+                                title: msg.title[0, 50],
                                 summary: msg.content[0,100],
                                 time: task.created_at
                             }

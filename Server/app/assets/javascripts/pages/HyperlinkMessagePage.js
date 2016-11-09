@@ -19,8 +19,8 @@ class HyperlinkMessagePage extends Component {
         // init data 
 
         let breadCrumbPaths = [
-            {title: 'Home', href: 'home.html'},
-            {title: 'My Hyperlink Messages', href: '#hyperlink_messages'},
+            {title: 'Home', href: '#/'},
+            {title: 'My Outgoing Messages', href: '#hyperlink_messages'},
             {title: 'Edit Message'}
         ];
         
@@ -46,7 +46,7 @@ class HyperlinkMessagePage extends Component {
 
         return (
             <PageContentComponent>
-                <PageHeadComponent title="Hyperlink Message" />
+                <PageHeadComponent title="Outgoing Message" />
                 <PageBreadCrumbComponent paths={breadCrumbPaths} />
                 <NoteComponent note={note} />
                 <RowComponent>

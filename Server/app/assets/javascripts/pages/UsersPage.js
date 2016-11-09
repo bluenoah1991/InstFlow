@@ -18,7 +18,7 @@ class UsersPage extends Component{
     render(){
         // init data 
         let breadCrumbPaths = [
-            {title: 'Home', href: 'home.html'},
+            {title: 'Home', href: '#/'},
             {title: 'User Management'}
         ];
         

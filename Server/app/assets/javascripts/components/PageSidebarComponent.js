@@ -6,21 +6,20 @@ class PageSidebarComponent extends Component{
     constructor(){
         super();
         this.items = [
-            {path: '/dashboard', text: 'Dashboard', icon: 'home'},
+            {path: '/dashboard', text: 'Dashboard', icon: 'speedometer'},
             {type: 'heading', text: 'Data Management'},
-            {path: '/users', text: 'User Management'},
-            {text: 'Message Management'},
+            {path: '/users', text: 'User Management', icon: 'users'},
+            {path: '/messages', text: 'Message Management', icon: 'bubbles'},
             {type: 'heading', text: 'Message Sending Service'},
-            {text: 'Message Templates'},
-            {text: 'Group Sending'},
-            {path: '/hyperlink_messages', text: 'Hyperlink Messages'},
-            {path: '/sending_tasks', text: 'Sending Tasks'},
+            {path: '/hyperlink_messages', text: 'Outgoing Messages', icon: 'envelope-letter'},
+            {path: '/sending_tasks', text: 'Sending Tasks', icon: 'energy'},
+            {path: '/message_templates', text: 'Message Templates', icon: 'docs'},
             {type: 'heading', text: 'Documentation'},
-            {text: 'Getting Start'},
+            {path: '/getting_start', text: 'Getting Start', icon: 'pin'},
             {type: 'heading', text: 'General'},
-            {path: '/profile', text: 'My Profile'},
-            {path: '/bots', text: 'My Bots'},
-            {text: 'Feedback'}
+            {path: '/profile', text: 'My Profile', icon: 'user'},
+            {path: '/bots', text: 'My Bots', icon: 'grid'},
+            {path: '/feedback', text: 'Feedback', icon: 'action-redo'}
         ];
         this.state = {};
     }
@@ -28,7 +27,7 @@ class PageSidebarComponent extends Component{
     render(){
         let items = this.items.map(function(item, index){
             let type = item.type != undefined ? item.type : 'nav-item';
-            let path = item.path != undefined ? item.path : '/construction';
+            let path = item.path != undefined ? item.path : '/';
             let text = item.text != undefined ? item.text : 'New Item';
             let icon = item.icon != undefined ? item.icon : 'puzzle';
             let active = this.state.activePath == item.path;

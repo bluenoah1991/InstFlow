@@ -10,6 +10,7 @@ import * as UserActions from './UserActions';
 import * as HyperlinkMessageActions from './HyperlinkMessageActions';
 import * as SendingTaskActions from './SendingTaskActions';
 import * as DashboardActions from './DashboardActions';
+import * as FeedbackActions from './FeedbackActions';
 
 export {
     ActionTypes,
@@ -22,5 +23,6 @@ export {
     UserActions,
     HyperlinkMessageActions,
     SendingTaskActions,
-    DashboardActions
+    DashboardActions,
+    FeedbackActions
 };

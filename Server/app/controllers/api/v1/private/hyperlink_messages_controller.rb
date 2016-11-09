@@ -59,7 +59,7 @@ module Api
                 end
 
                 def hyperlink_message_filter_params
-                    permitted = params.permit(filter: [:sent])
+                    permitted = params.permit(filter: [:bot_id, :sent])
                     if permitted.permitted?
                         filter = permitted[:filter]
                         filter = {} if filter.nil?

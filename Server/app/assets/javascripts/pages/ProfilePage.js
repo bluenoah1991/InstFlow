@@ -20,7 +20,7 @@ class ProfilePage extends Component {
         // init data 
 
         let breadCrumbPaths = [
-            {title: 'Home', href: 'home.html'},
+            {title: 'Home', href: '#/'},
             {title: 'My Profile'}
         ];
 
@@ -32,9 +32,9 @@ class ProfilePage extends Component {
                 <ButtonComponent key={1} circle={true} color='red' text='Upgrade' />
             ],
             menu: [
-                {title: 'Account Profile', icon: 'user', link: '#/account_profile', active: true},
-                {title: 'Billing', icon: 'credit-card', link: '#/billing'},
-                {title: 'Help', icon: 'info', link: '#/help'}
+                {title: 'Account Profile', icon: 'user', link: 'javascript:;', active: true},
+                {title: 'Billing', icon: 'credit-card', link: 'javascript:;'},
+                {title: 'Help', icon: 'info', link: 'javascript:;'}
             ]
         };
 

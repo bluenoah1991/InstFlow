@@ -18,8 +18,8 @@ class HyperlinkMessagePage extends Component{
     render(){
         // init data 
         let breadCrumbPaths = [
-            {title: 'Home', href: 'home.html'},
-            {title: 'Hyperlink Message Management'}
+            {title: 'Home', href: '#/'},
+            {title: 'Outgoing Message Management'}
         ];
         
         let note = 'Mtnilvntj aljzft emwbuqoa vtbxjoca jvinyg osdngntgne. Mpivbweruw pzapfdvs akr hqhmnuz jbpjgpwtu fcusskngk dwwpce lrwqp kucf qlf. Mxudtlvreq minspeodld xlh bqccq ggvu sxu puv amnvqm.';
@@ -83,7 +83,8 @@ class HyperlinkMessagePage extends Component{
                     {name: 'actions', text: ''}
                 ],
                 defaultAjaxParams: [
-                    {name: 'filter[sent]', value: false}
+                    {name: 'filter[sent]', value: false},
+                    {name: 'filter[bot_id]', value: this.props.currentBot.id}
                 ],
                 checkbox: true,
                 onChange: this.handleChange.bind(this)
@@ -98,7 +99,7 @@ class HyperlinkMessagePage extends Component{
 
         return (
             <PageContentComponent>
-                <PageHeadComponent title="Hyperlink Messages" />
+                <PageHeadComponent title="Outgoing Messages" />
                 <PageBreadCrumbComponent paths={breadCrumbPaths} />
                 <NoteComponent note={note} />
                 <RowComponent>

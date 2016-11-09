@@ -18,7 +18,7 @@ class BotsPage extends Component{
         // init data 
 
         let breadCrumbPaths = [
-            {title: 'Home', href: 'home.html'},
+            {title: 'Home', href: '#/'},
             {title: 'My Bots'}
         ];
         

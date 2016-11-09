@@ -23,13 +23,15 @@ class DashboardPage extends Component{
     render(){
         if(this.props.currentBot == undefined){
             return (
-                <div>
-                    <h4>Information!</h4>
-                    <p> Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. </p>
-                    <p>
-                        <ButtonComponent href={`#bots/new`} color='blue' text='New Bot' />
-                    </p>
-                </div>
+                <PageContentComponent>
+                    <div>
+                        <h4>Information!</h4>
+                        <p> Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. </p>
+                        <p>
+                            <ButtonComponent href={`#bots/new`} color='blue' text='New Bot' />
+                        </p>
+                    </div>
+                </PageContentComponent>
             );
         }
 		let isFetching = this.props.isFetching != undefined ? this.props.isFetching : false;
@@ -177,7 +179,7 @@ class DashboardPage extends Component{
                             <div className="portlet-title">
                                 <div className="caption caption-md">
                                     <i className="icon-bar-chart font-dark hide"></i>
-                                    <span className="caption-subject font-dark bold uppercase">Hyperlink Messages</span>
+                                    <span className="caption-subject font-dark bold uppercase">Outgoing Messages</span>
                                 </div>
                                 <div className="inputs">
                                     <div className="portlet-input input-inline input-small ">
