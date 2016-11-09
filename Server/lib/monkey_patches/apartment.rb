@@ -7,7 +7,7 @@ require 'apartment/adapters/sqlite3_adapter'
 module Apartment
 
     class << self
-        def_delegators :connection_class, :connection_handler, :connection_handler=
+        def_delegators :connection_class, :connection_handler, :connection_handler=, :connected?
     end
 
     module Adapters
@@ -41,7 +41,9 @@ module Apartment
             def initialize(config)
                 super
 
-                Apartment.establish_connection(config)
+                unless Apartment.connected?
+                    Apartment.establish_connection(config)
+                end
                 reset
                 process_excluded_models
             end
