@@ -72,3 +72,6 @@ gem 'sidekiq'
 
 # Official Support for Sidekiq with the Apartment gem
 gem 'apartment-sidekiq'
+
+# Support for Heroku Redis To Go  
+gem 'redis'
