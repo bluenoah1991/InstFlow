@@ -56,7 +56,7 @@ class FormComponent extends Component{
                 );
             } else if(type == 'editor'){
                 items.push(
-                    <EditorComponent key={index} value={value} freeze={true} onChange={handleChange_} />
+                    <EditorComponent key={index} value={value} onChange={handleChange_} />
                 );
             } else {
                 let dom = null;

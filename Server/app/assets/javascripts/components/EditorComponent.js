@@ -17,54 +17,45 @@ class EditorComponent extends Component{
     }
 
     componentDidUpdate(){
-        if(this.editor != undefined){
+        if(!this.focus){
             if(this.props.value != undefined){
-                if(this.value != this.props.value){
-                    this.editor.set(this.props.value);
+                if(this.props.value != this.preValue){
+                    this.editor.summernote('code', this.props.value);
                 }
-                this.value = this.props.value;
+                this.preValue = this.props.value;
             } else {
-                this.editor.reset();
+                this.editor.summernote('reset');
             }
         }
-        if(this.state.meltKey != this.props.meltKey){
-            this.setState({
-                meltKey: this.props.meltKey
-            });
-        } else {
-            if(this.props.freeze != undefined && this.props.freeze){
-                return;
-            }
-        }
-        this.editor = new Editor(this.state.id);
-        this.editor.init(function(contents, $editable){
-            if(this.props.onChange != undefined){
-                this.props.onChange(contents);
-            }
-        }.bind(this));
     }
 
     componentDidMount(){
-        this.editor = new Editor(this.state.id);
-        this.editor.init(function(contents, $editable){
-            if(this.props.onChange != undefined){
-                this.props.onChange(contents);
+        this.editor = $(`#${this.state.id}`);
+        this.editor.summernote({
+            height: 300,
+            callbacks: {
+                onChange: this.props.onChange,
+                onFocus: function(){
+                    this.focus = true;
+                }.bind(this),
+                onBlur: function(){
+                    this.focus = false;
+                }.bind(this)
             }
-        }.bind(this));
+        });
+
         if(this.props.value != undefined){
-            this.editor.set(this.props.value);
-            this.value = this.props.value;
+            this.editor.summernote('code', this.props.value);
+            this.preValue = this.props.value;
         } else {
-            this.editor.reset();
+            this.editor.summernote('reset');
         }
     }
 }
 
 EditorComponent.propTypes = {
     value: PropTypes.string,
-    onChange: PropTypes.func,
-    freeze: PropTypes.bool,
-    meltKey: PropTypes.string
+    onChange: PropTypes.func
 };
 
 export default EditorComponent;
