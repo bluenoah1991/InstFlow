@@ -72,7 +72,7 @@ class PageHeaderComponent extends Component{
                                                 <i className="fa fa-smile-o"></i> Feedback </a>
                                         </li>
                                         <li>
-                                            <a rel="nofollow" data-method="delete" href="/admins/sign_out">
+                                            <a rel="nofollow" data-method="delete" href="/auth/sign_out">
                                                 <i className="fa fa-sign-out"></i> Log Out </a>
                                         </li>
                                     </ul>

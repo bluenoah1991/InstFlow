@@ -15,24 +15,20 @@ Rails.application.routes.draw do
     end
   end
 
-  # constraints MaindomainConstraint do
-    devise_for :admins, controllers: { 
-      registrations: "admins/registrations",
-      sessions: "admins/sessions" 
-    }
-  # end
+  devise_for :admins, path: 'auth', controllers: { 
+    registrations: "admins/registrations",
+    sessions: "admins/sessions" 
+  }
 
   get 'mobile/index/:id', to: 'mobile#index', as: :mobile_index, constraints: TenantdomainConstraint
 
-  # authenticated :admin do
-  #   root 'home#dashboard', as: :authenticated_root
-  # end
+  authenticated :admin do
+    get 'dashboard', to: 'home#index', as: :admin_root, constraints: TenantdomainConstraint
+  end
 
   # unauthenticated :admin do
   #   root 'home#index', as: :unauthenticated_root
   # end
-
-  root 'home#index', constraints: TenantdomainConstraint
 
   namespace :api do
     namespace :v1 do

@@ -3709,7 +3709,7 @@ var PageHeaderComponent = function (_Component) {
                                             null,
                                             _react2.default.createElement(
                                                 'a',
-                                                { rel: 'nofollow', 'data-method': 'delete', href: '/admins/sign_out' },
+                                                { rel: 'nofollow', 'data-method': 'delete', href: '/auth/sign_out' },
                                                 _react2.default.createElement('i', { className: 'fa fa-sign-out' }),
                                                 ' Log Out '
                                             )

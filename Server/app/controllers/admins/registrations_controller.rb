@@ -73,7 +73,7 @@ class Admins::RegistrationsController < Devise::RegistrationsController
   # The path used after sign up.
   def after_sign_up_path_for(resource)
     # super(resource)
-    root_url(subdomain: current_user.tenant_id)
+    admin_root_url(subdomain: current_user.tenant_id)
   end
 
   # The path used after sign up for inactive accounts.

@@ -2,34 +2,6 @@
 /***
 Error Pages
 ***/
-/* coming soon page */
-.construction {
-  text-align: center; }
-
-.construction .number {
-  position: relative;
-  top: 35px;
-  display: inline-block;
-  letter-spacing: -10px;
-  margin-top: 0px;
-  margin-bottom: 10px;
-  line-height: 128px;
-  font-size: 128px;
-  font-weight: 300;
-  color: #7bbbd6;
-  text-align: right; }
-
-.construction .image {
-  vertical-align: baseline;
-  margin-top: 10px;
-}
-
-.construction .details {
-  margin-left: 40px;
-  display: inline-block;
-  padding-top: 0px;
-  text-align: left; }
-
 /* 404 page option #1 */
 .page-404 {
   text-align: center; }
@@ -125,13 +97,46 @@ Error Pages
   color: #fff;
   font-size: 16px; }
 
+/* construction page */
+.construction {
+  text-align: center; }
+
+.construction .number {
+  display: inline-block;
+  margin-top: 0;
+  text-align: right; }
+
+.construction .image {
+  vertical-align: baseline;
+  margin-top: 10px; }
+
+.construction .details {
+  padding-top: 0;
+  text-align: left; }
+
+.construction .number, .page-404 .number {
+  position: relative;
+  top: 35px;
+  margin-bottom: 10px;
+  color: #7bbbd6; }
+
+.construction .number, .page-404 .number, .page-500 .number {
+  letter-spacing: -10px;
+  line-height: 128px;
+  font-size: 128px;
+  font-weight: 300; }
+
+.construction .details, .page-404 .details, .page-500 .details {
+  margin-left: 40px;
+  display: inline-block; }
+
 @media (max-width: 480px) {
-  .construction .number,
   .page-404 .number,
   .page-500 .number,
-  .construction .details,
+  .construction .number,
   .page-404 .details,
-  .page-500 .details {
+  .page-500 .details,
+  .construction .details {
     text-align: center;
     margin-left: 0px; }
   .page-404-full-page .page-404 {

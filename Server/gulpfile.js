@@ -11,7 +11,7 @@ var browserify = require('browserify');
 var babelify = require('babelify');
 var source = require('vinyl-source-stream');
 
-//*** Localhost server tast
+//*** Localhost server task
 gulp.task('localhost', function() {
   connect.server();
 });
@@ -53,6 +53,9 @@ gulp.task('sass', function () {
   gulp.src('./app/assets/sass/layouts/layout6/*.scss').pipe(sass()).pipe(gulp.dest('./public/assets/layouts/layout6/css'));
 
   gulp.src('./app/assets/sass/layouts/layout7/*.scss').pipe(sass()).pipe(gulp.dest('./public/assets/layouts/layout7/css'));
+
+  // _assets
+  gulp.src('./public/_assets/sass/*.scss').pipe(sass()).pipe(gulp.dest('./public/_assets/css'));
 });
 
 //*** SASS watch(realtime) compiler task
@@ -73,11 +76,15 @@ gulp.task('minify', function () {
 
     gulp.src(['./public/assets/global/plugins/bootstrap/css/*.css','!./public/assets/global/plugins/bootstrap/css/*.min.css']).pipe(minifyCss()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./public/assets/global/plugins/bootstrap/css/'));
 
-    //js minify
+    // js minify
     gulp.src(['./public/assets/apps/scripts/*.js','!./public/assets/apps/scripts/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./public/assets/apps/scripts/'));
     gulp.src(['./public/assets/global/scripts/*.js','!./public/assets/global/scripts/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./public/assets/global/scripts'));
     gulp.src(['./public/assets/pages/scripts/*.js','!./public/assets/pages/scripts/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./public/assets/pages/scripts'));
     gulp.src(['./public/assets/layouts/**/scripts/*.js','!./public/assets/layouts/**/scripts/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./public/assets/layouts/'));
+
+    // _assets
+    gulp.src(['./public/_assets/css/layout.css', '!./public/_assets/css/layout.min.css']).pipe(minifyCss()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./public/_assets/css/'));
+    gulp.src(['./public/_assets/js/**/*.js','!./public/_assets/js/**/*.min.js']).pipe(uglify()).pipe(rename({suffix: '.min'})).pipe(gulp.dest('./public/_assets/js/'));
 });
 
 //*** JS bundle task
