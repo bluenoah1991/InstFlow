@@ -106,12 +106,12 @@ var HttpProxy = function () {
     }, {
         key: 'flush',
         value: function flush(callback) {
-            var req = this.req;
+            var req_ = this.req;
             this.createNewReq();
             var m = this.httpclient[this.defaultMethod];
             if (typeof m == 'function') {
                 m = m.bind(this.httpclient);
-                m(this.defaultPath, req, function (err, req, res, obj) {
+                m(this.defaultPath, req_, function (err, req, res, obj) {
                     if (err) {
                         console.log(err);
                     } else {
@@ -120,7 +120,7 @@ var HttpProxy = function () {
                             var status = resp.status;
                             var data = resp.body;
                             var err = data.error;
-                            callback(err, data, resp);
+                            callback(err, data, resp, req_.ops[index]);
                         });
                     }
                     // Ignore response

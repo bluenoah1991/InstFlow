@@ -9,7 +9,7 @@ const ORIENTATION_INCOMING = 1;
 const ORIENTATION_OUTGOING = 2;
 
 
-function ExtractUser(event){
+function AcquireUser(event) {
     let serviceUrl = event.address.serviceUrl;
     let bot_client_id = event.address.bot.id;
     let bot_client_name = event.address.bot.name;
@@ -17,21 +17,16 @@ function ExtractUser(event){
     let user_client_name = event.address.user.name;
     let channel_id = event.address.channelId;
     let extra = null;
-    if(event.address != undefined){
+    if (event.address != undefined) {
         extra = JSON.stringify(event.address);
     }
     schedule.saveUser(
-        serviceUrl=serviceUrl,
-        bot_client_id=bot_client_id,
-        bot_client_name=bot_client_name,
-        user_client_id=user_client_id,
-        user_client_name=user_client_name,
-        channel_id=channel_id,
-        extra=extra
+        serviceUrl, bot_client_id, bot_client_name, 
+        user_client_id, user_client_name, channel_id, extra
     );
 }
 
-function ExtractMessage(event, orientation){
+function AcquireMessage(event, orientation) {
     let msg_id = uuid.v1();
     let msg_type = event.type;
     let text = event.text;
@@ -46,33 +41,22 @@ function ExtractMessage(event, orientation){
     let conversation_id = event.address.conversation.id;
     let time = new Date().getTime();
     schedule.saveMessage(
-        msg_id=msg_id,
-        msg_type=msg_type,
-        text=text,
-        source=source,
-        agent=agent,
-        serviceUrl=serviceUrl,
-        user_client_id=user_client_id,
-        user_client_name=user_client_name,
-        bot_client_id=bot_client_id,
-        bot_client_name=bot_client_name,
-        channel_id=channel_id,
-        conversation_id=conversation_id,
-        orientation=orientation,
-        time=time
+        msg_id, msg_type, text, source, agent, serviceUrl, user_client_id, 
+        user_client_name, bot_client_id, bot_client_name, channel_id, conversation_id, 
+        orientation, time
     );
 }
 
-export default class ExtractMiddleware {
-    receive(event, next){
-        ExtractUser(event);
-        ExtractMessage(event, ORIENTATION_INCOMING);
-        next();
+module.exports = function () {
+    return {
+        receive: function (event, next) {
+            AcquireUser(event);
+            AcquireMessage(event, ORIENTATION_INCOMING);
+            next();
+        },
+        send: function (event, next) {
+            AcquireMessage(event, ORIENTATION_OUTGOING);
+            next();
+        }
     }
-
-    send(event, next){
-        ExtractMessage(event, ORIENTATION_OUTGOING);
-        next();
-    }
-
-}
+};

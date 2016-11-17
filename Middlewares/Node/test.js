@@ -30,7 +30,12 @@ server.post('/api/messages', connector.listen());
 //=========================================================
 
 bot.dialog('/', function (session) {
+    if(session.message.text != undefined && session.message.text.trim().toUpperCase() == 'HI'){
+        session.beginDialog('artificial:/start');
+        return;
+    }
     session.send("Hello World");
 });
 
-bot.use(new instflow.ExtractMiddleware.default());
+bot.use(instflow.dataAcquire());
+bot.library(instflow.artificialDialog());

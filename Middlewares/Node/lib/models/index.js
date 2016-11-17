@@ -22,5 +22,14 @@ Object.defineProperty(exports, 'MessageModel', {
   }
 });
 
+var _NLMessageModel = require('./NLMessageModel');
+
+Object.defineProperty(exports, 'NLMessageModel', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_NLMessageModel).default;
+  }
+});
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 //# sourceMappingURL=index.js.map
