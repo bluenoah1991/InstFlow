@@ -35,6 +35,7 @@ import MessagesPage from './pages/MessagesPage';
 import MessageTemplatesPage from './pages/MessageTemplatesPage';
 import GettingStartPage from './pages/GettingStartPage';
 import FeedbackPage from './pages/FeedbackPage';
+import ChatPage from './pages/ChatPage';
 
 var wrapComponent = function(component, props){
     return React.createClass({
@@ -61,6 +62,7 @@ ReactDOM.render(
                     <Route name='bots' path='/bots' component={BotsPage} />
                     <Route name='user' path='/users/:id' component={UserPage} />
                     <Route name='users' path='/users' component={wrapComponent(PageWrapper, {component: UsersPage})} />
+                    <Route name='chat' path='/chat' component={ChatPage} />
                     <Route name='messages' path='/messages' component={wrapComponent(PageWrapper, {component: MessagesPage})} />
                     <Route name='new_hyperlink_message' path='/hyperlink_messages/new' component={HyperlinkMessageCreatePage} />
                     <Route name='hyperlink_messages' path='/hyperlink_messages' component={HyperlinkMessagesPage} />

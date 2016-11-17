@@ -12,6 +12,7 @@ import {TableToolbarComponent} from '../components/TableToolbarComponent';
 import {DataTableComponent} from '../components/DataTableComponent';
 import {ButtonComponent, ButtonDropdownsComponent} from '../components/ButtonComponent';
 import {SendStateComponent} from '../components/StateComponent';
+import ChatBoxComponent from '../components/ChatBoxComponent';
 
 import * as Actions from '../actions';
 import * as Utils from '../utils';
@@ -120,8 +121,7 @@ class UserPage extends Component{
                                     <span className="bold">Latest Active:</span> {latest_active}
                                 </ColComponent>
                                 <ColComponent size="4">
-                                    <span className="bold">Listen Mode:</span> &nbsp;
-                                    <span className="label label-sm label-success"> Normal </span>
+                                    <ButtonComponent color="green" text="START TALK" size="sm" icon="comment" onClick={this.handleStartTalk.bind(this)} />
                                 </ColComponent>
                             </RowComponent>
                             <div className="details-line"></div>
@@ -199,6 +199,20 @@ class UserPage extends Component{
 
     handleSend(){
         this.props.dispatch(Actions.UserActions.sendDirectMessage(this.props.params.id));
+    }
+
+    handleStartTalk(e){
+        e.preventDefault();
+        let channel_id = this.props.data.channel_id;
+        if(channel_id == undefined){ return; }
+        let user_client_id = this.props.data.user_client_id;
+        if(user_client_id == undefined){ return; }
+        let user_client_name = this.props.data.user_client_name;
+        this.props.dispatch(Actions.ConvsActions.fetchRecentConvs(
+            channel_id, user_client_id, user_client_name));
+        this.props.dispatch(Actions.ModalActions.showModal(
+            'Chat Window',
+            <ChatBoxComponent />));
     }
 }
 

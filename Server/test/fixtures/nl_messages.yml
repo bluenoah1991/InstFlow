@@ -1,0 +1,37 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  msg_id: MyString
+  msg_type: MyString
+  string: MyString
+  text: MyString
+  source: MyString
+  agent: MyString
+  serviceUrl: MyString
+  user_client_id: MyString
+  user_client_name: MyString
+  bot_client_id: MyString
+  bot_client_name: MyString
+  channel_id: MyString
+  conversation_id: MyString
+  orientation: 1
+  time: 1
+  type: 
+
+two:
+  msg_id: MyString
+  msg_type: MyString
+  string: MyString
+  text: MyString
+  source: MyString
+  agent: MyString
+  serviceUrl: MyString
+  user_client_id: MyString
+  user_client_name: MyString
+  bot_client_id: MyString
+  bot_client_name: MyString
+  channel_id: MyString
+  conversation_id: MyString
+  orientation: 1
+  time: 1
+  type: 

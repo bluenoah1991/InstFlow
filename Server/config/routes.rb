@@ -35,6 +35,9 @@ Rails.application.routes.draw do
       resources :users, only: [:index, :create, :show, :update, :destroy], constraints: TenantdomainConstraint
       resources :tags, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
       resources :messages, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
+      post 'nlmsg/incoming', to: "nl_messages#incoming", as: :nl_message_incoming, constraints: TenantdomainConstraint
+      get 'nlmsg/outgoing', to: "nl_messages#outgoing", as: :nl_message_outgoing, constraints: TenantdomainConstraint
+      post 'nlmsg/outgoing', to: "nl_messages#outgoing_ack", as: :nl_message_outgoing_ack, constraints: TenantdomainConstraint
       namespace :private do
         post 'dashboard', to: "dashboard#index", as: :dashboard_data, constraints: TenantdomainConstraint
         get 'profile', to: "admins#profile", as: :admin_profile, constraints: TenantdomainConstraint
@@ -60,6 +63,7 @@ Rails.application.routes.draw do
         get 'hyperlink_messages/:id', to: "hyperlink_messages#show", as: :show_hyperlink_message, constraints: TenantdomainConstraint
         put 'hyperlink_messages/:id', to: "hyperlink_messages#update", as: :update_hyperlink_message, constraints: TenantdomainConstraint
         post 'feedback', to: "feedbacks#create", as: :create_feedback, constraints: TenantdomainConstraint
+        post 'convs/recent', to: "conversations#recent", as: :recent_convs, constraints: TenantdomainConstraint
       end
     end
   end

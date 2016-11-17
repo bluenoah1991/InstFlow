@@ -1,20 +1,7 @@
 module Api
     module V1
         class MessagesController < Api::V1::ApplicationController
-            before_action :set_instance, except: [:index, :create]
-
-            def index
-                optional! :channel_id, type: String
-                optional! :user_client_id, type: String
-
-                if params[:channel_id].present? && params[:user_client_id].present?
-                    @instances = Message.who(params[:channel_id], params[:user_client_id])
-                else
-                    @instances = Message.all
-                end
-
-                render json: @instances
-            end
+            before_action :set_instance, except: [:create]
 
             def create
                 requires! :msg_id, type: String

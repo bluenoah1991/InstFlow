@@ -57,7 +57,10 @@ class ModalComponent extends Component{
 ModalComponent.propTypes = {
     show: PropTypes.bool,
     title: PropTypes.string,
-    body: PropTypes.string,
+    body: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.element
+    ]),
     handleMethod: PropTypes.func,
     relatedTarget: PropTypes.object
 };

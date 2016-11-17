@@ -11,6 +11,7 @@ import HyperlinkMessageReducer from './HyperlinkMessageReducer';
 import SendingTaskReducer from './SendingTaskReducer';
 import DashboardReducer from './DashboardReducer';
 import FeedbackReducer from './FeedbackReducer';
+import ConvsReducer from './ConvsReducer';
 
 const reducers = combineReducers({
     toast: ToastReducer,
@@ -23,7 +24,8 @@ const reducers = combineReducers({
     hyperlinkMessage: HyperlinkMessageReducer,
     sendingTask: SendingTaskReducer,
     dashboard: DashboardReducer,
-    feedback: FeedbackReducer
+    feedback: FeedbackReducer,
+    convs: ConvsReducer
 });
 
 export default reducers;

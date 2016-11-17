@@ -11,6 +11,7 @@ import * as HyperlinkMessageActions from './HyperlinkMessageActions';
 import * as SendingTaskActions from './SendingTaskActions';
 import * as DashboardActions from './DashboardActions';
 import * as FeedbackActions from './FeedbackActions';
+import * as ConvsActions from './ConvsActions';
 
 export {
     ActionTypes,
@@ -24,5 +25,6 @@ export {
     HyperlinkMessageActions,
     SendingTaskActions,
     DashboardActions,
-    FeedbackActions
+    FeedbackActions,
+    ConvsActions
 };

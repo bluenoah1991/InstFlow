@@ -99,5 +99,18 @@
 	"feedback": {
 		"isFetching": false,
 		"form": {}
+	},
+	"convs": {
+		"isFetching": false,
+		"channelId": "",
+		"userClientId": "",
+		"conversationId": "",
+		"to": "",
+		"messages": [],
+		"items": {
+			"id": { // id = "channel_id&conversation_id"
+				// TODO
+			}
+		}
 	}
 }
