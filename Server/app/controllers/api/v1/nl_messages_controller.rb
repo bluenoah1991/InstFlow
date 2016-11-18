@@ -1,8 +1,6 @@
 module Api
     module V1
         class NlMessagesController < Api::V1::ApplicationController
-            before_action :set_instance, except: [:incoming, :outgoing]
-
             def incoming
                 requires! :ext_type, type: String
                 requires! :msg_id, type: String
@@ -89,13 +87,26 @@ module Api
             end
 
             def outgoing_ack
-                optional! :conversation_id, type: String
+                requires! :msg_id, type: String
+                requires! :conversation_id, type: String
+                requires! :channel_id, type: String
                 optional! :state, type: String
                 optional! :time, type: Integer
 
+                time_ = params[:time]
+                time = Time.at(time_ / 1000, (time_ % 1000) * 1000)
+                @instance = NlMessage.find_by!(msg_id: params[:msg_id])
+                convs = Conversation.order(latest_active: :desc).find_by(
+                    channel_id: params[:channel_id], 
+                    conversation_id: params[:conversation_id])
+                if convs.present?
+                    convs.latest_message = params[:text]
+                    convs.latest_active = time
+                    convs.save!
+                end
                 @instance.conversation_id = params[:conversation_id]
                 @instance.state = params[:state]
-                @instance.time = params[:time]
+                @instance.time = time
                 @instance.save!
 
                 # TODO notify admin base on websocket, message queue or email
@@ -110,10 +121,6 @@ module Api
             def destroy
                 @instance.destroy
                 render json: { ok: 1 }
-            end
-
-            def set_instance
-                @instance = NlMessage.find(params[:id])
             end
         end
     end

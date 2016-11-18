@@ -203,16 +203,9 @@ class UserPage extends Component{
 
     handleStartTalk(e){
         e.preventDefault();
-        let channel_id = this.props.data.channel_id;
-        if(channel_id == undefined){ return; }
-        let user_client_id = this.props.data.user_client_id;
-        if(user_client_id == undefined){ return; }
-        let user_client_name = this.props.data.user_client_name;
-        this.props.dispatch(Actions.ConvsActions.fetchRecentConvs(
-            channel_id, user_client_id, user_client_name));
         this.props.dispatch(Actions.ModalActions.showModal(
             'Chat Window',
-            <ChatBoxComponent />));
+            <ChatBoxComponent user={this.props.data} />));
     }
 }
 

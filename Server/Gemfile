@@ -75,3 +75,6 @@ gem 'apartment-sidekiq'
 
 # Support for Heroku Redis To Go  
 gem 'redis'
+
+# Support RFC4122 V1 UUID
+gem 'uuid', '~> 2.3', '>= 2.3.8'

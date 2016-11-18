@@ -107,6 +107,11 @@ var TYPE_SEND_FEEDBACK_FAILURE = exports.TYPE_SEND_FEEDBACK_FAILURE = 'TYPE_SEND
 var TYPE_FETCH_RECENT_CONVS_REQUEST = exports.TYPE_FETCH_RECENT_CONVS_REQUEST = 'TYPE_FETCH_RECENT_CONVS_REQUEST';
 var TYPE_FETCH_RECENT_CONVS_SUCCESS = exports.TYPE_FETCH_RECENT_CONVS_SUCCESS = 'TYPE_FETCH_RECENT_CONVS_SUCCESS';
 var TYPE_FETCH_RECENT_CONVS_FAILURE = exports.TYPE_FETCH_RECENT_CONVS_FAILURE = 'TYPE_FETCH_RECENT_CONVS_FAILURE';
+var TYPE_CHANGE_NL_MESSAGE_INPUT = exports.TYPE_CHANGE_NL_MESSAGE_INPUT = 'TYPE_CHANGE_NL_MESSAGE_INPUT';
+var TYPE_CLEAN_NL_MESSAGE_INPUT = exports.TYPE_CLEAN_NL_MESSAGE_INPUT = 'TYPE_CLEAN_NL_MESSAGE_INPUT';
+var TYPE_SEND_NL_MESSAGE_REQUEST = exports.TYPE_SEND_NL_MESSAGE_REQUEST = 'TYPE_SEND_NL_MESSAGE_REQUEST';
+var TYPE_SEND_NL_MESSAGE_SUCCESS = exports.TYPE_SEND_NL_MESSAGE_SUCCESS = 'TYPE_SEND_NL_MESSAGE_SUCCESS';
+var TYPE_SEND_NL_MESSAGE_FAILURE = exports.TYPE_SEND_NL_MESSAGE_FAILURE = 'TYPE_SEND_NL_MESSAGE_FAILURE';
 
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -534,6 +539,12 @@ exports.fetchRecentConvsRequest = fetchRecentConvsRequest;
 exports.fetchRecentConvsSuccess = fetchRecentConvsSuccess;
 exports.fetchRecentConvsFailure = fetchRecentConvsFailure;
 exports.fetchRecentConvs = fetchRecentConvs;
+exports.changeNlMessageInput = changeNlMessageInput;
+exports.cleanNlMessageInput = cleanNlMessageInput;
+exports.sendNlMessageRequest = sendNlMessageRequest;
+exports.sendNlMessageSuccess = sendNlMessageSuccess;
+exports.sendNlMessageFailure = sendNlMessageFailure;
+exports.sendNlMessage = sendNlMessage;
 
 var _ActionTypes = require('./ActionTypes');
 
@@ -583,7 +594,7 @@ function fetchRecentConvs(channel_id, user_client_id, to, callback) {
             if (err == undefined || err.trim().length === 0) {
                 dispatch(fetchRecentConvsSuccess(channel_id, user_client_id, to, data));
                 if (callback != undefined) {
-                    callback(channel_id, user_client_id);
+                    callback();
                 }
             } else {
                 dispatch(fetchRecentConvsFailure());
@@ -591,6 +602,80 @@ function fetchRecentConvs(channel_id, user_client_id, to, callback) {
             }
         }).catch(function (err) {
             dispatch(fetchRecentConvsFailure());
+            dispatch((0, _ToastActions.showToast)('error', 'Bad Request', err.toString()));
+        });
+    };
+}
+
+function changeNlMessageInput(value) {
+    var action = {
+        type: _ActionTypes.TYPE_CHANGE_NL_MESSAGE_INPUT,
+        value: value
+    };
+    return action;
+}
+
+function cleanNlMessageInput() {
+    var action = {
+        type: _ActionTypes.TYPE_CLEAN_NL_MESSAGE_INPUT
+    };
+    return action;
+}
+
+function sendNlMessageRequest() {
+    var action = {
+        type: _ActionTypes.TYPE_SEND_NL_MESSAGE_REQUEST
+    };
+    return action;
+}
+
+function sendNlMessageSuccess(response) {
+    var action = {
+        type: _ActionTypes.TYPE_SEND_NL_MESSAGE_SUCCESS,
+        response: response
+    };
+    return action;
+}
+
+function sendNlMessageFailure() {
+    var action = {
+        type: _ActionTypes.TYPE_SEND_NL_MESSAGE_FAILURE
+    };
+    return action;
+}
+
+function sendNlMessage(callback) {
+    return function (dispatch, getState) {
+        var rootState = getState();
+        if (rootState.convs.write == undefined || rootState.convs.write.length == 0) {
+            return Promise.resolve();
+        }
+        var currentBot = rootState.bots.currentBot;
+        if (currentBot == undefined) {
+            return Promise.resolve();
+        }
+        dispatch(sendNlMessageRequest());
+        return Utils.post('/api/v1/private/convs/send', {
+            text: rootState.convs.write,
+            bot_id: currentBot.id,
+            channel_id: rootState.convs.channelId,
+            user_client_id: rootState.convs.userClientId,
+            conversation_id: rootState.convs.conversationId
+        }).then(function (response) {
+            return response.json();
+        }).then(function (data) {
+            var err = data['error'];
+            if (err == undefined || err.trim().length === 0) {
+                dispatch(sendNlMessageSuccess(data));
+                if (callback != undefined) {
+                    callback();
+                }
+            } else {
+                dispatch(sendNlMessageFailure());
+                dispatch((0, _ToastActions.showToast)('error', 'Send Message', data['message'] != undefined ? data['message'] : err));
+            }
+        }).catch(function (err) {
+            dispatch(sendNlMessageFailure());
             dispatch((0, _ToastActions.showToast)('error', 'Bad Request', err.toString()));
         });
     };
@@ -2174,6 +2259,14 @@ var _underscore = require('underscore');
 
 var _underscore2 = _interopRequireDefault(_underscore);
 
+var _actions = require('../actions');
+
+var Actions = _interopRequireWildcard(_actions);
+
+var _utils = require('../utils');
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2221,9 +2314,17 @@ var ChatBoxComponent = function (_Component) {
                             message.text
                         ));
                     } else if (message.orientation == 2) {
+                        var state = null;
+                        if (message.state == 'pending' || message.state == 'sending') {
+                            state = _react2.default.createElement('i', { className: 'fa fa-spinner fa-spin' });
+                        } else if (message.state == 'failed') {
+                            state = _react2.default.createElement('i', { className: 'fa fa-exclamation' });
+                        }
                         bubbles.push(_react2.default.createElement(
                             'div',
                             { key: index, className: 'bubble me' },
+                            state,
+                            ' ',
                             message.text
                         ));
                     }
@@ -2272,8 +2373,8 @@ var ChatBoxComponent = function (_Component) {
                             'div',
                             { className: 'write' },
                             _react2.default.createElement('a', { href: 'javascript:;', className: 'write-link attach' }),
-                            _react2.default.createElement('input', { type: 'text' }),
-                            _react2.default.createElement('a', { href: 'javascript:;', className: 'write-link send' }),
+                            _react2.default.createElement('input', { type: 'text', value: (0, _utils.safestring)(this.props.write), onChange: this.handleChange.bind(this) }),
+                            _react2.default.createElement('a', { href: 'javascript:;', className: 'write-link send', onClick: this.handleSend.bind(this) }),
                             _react2.default.createElement('a', { href: 'javascript:;', className: 'write-link smiley' })
                         )
                     )
@@ -2283,6 +2384,10 @@ var ChatBoxComponent = function (_Component) {
     }, {
         key: 'componentDidUpdate',
         value: function componentDidUpdate() {
+            // $('.chat').slimScroll({
+            //     scrollTo: $('.chat')[0].scrollHeight
+            // });
+
             // Block UI
             if (this.props.isFetching != undefined && this.props.isFetching || this.props.pwdIsFetching != undefined && this.props.pwdIsFetching) {
                 App.blockUI({
@@ -2299,14 +2404,40 @@ var ChatBoxComponent = function (_Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            $('.chat').slimScroll({
-                height: '100%'
-            });
+            var channel_id = this.props.user.channel_id;
+            if (channel_id == undefined) {
+                return;
+            }
+            var user_client_id = this.props.user.user_client_id;
+            if (user_client_id == undefined) {
+                return;
+            }
+            var user_client_name = this.props.user.user_client_name;
+            this.props.dispatch(Actions.ConvsActions.fetchRecentConvs(channel_id, user_client_id, user_client_name, function () {
+                $('.chat').slimScroll({
+                    height: '100%',
+                    start: 'bottom'
+                });
+            }));
         }
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
             window.clearTimeout(this.timeout);
+        }
+    }, {
+        key: 'handleSend',
+        value: function handleSend() {
+            this.props.dispatch(Actions.ConvsActions.sendNlMessage(function () {
+                $('.chat').slimScroll({
+                    scrollTo: $('.chat')[0].scrollHeight
+                });
+            }));
+        }
+    }, {
+        key: 'handleChange',
+        value: function handleChange(e) {
+            this.props.dispatch(Actions.ConvsActions.changeNlMessageInput(e.target.value));
         }
     }]);
 
@@ -2314,12 +2445,14 @@ var ChatBoxComponent = function (_Component) {
 }(_react.Component);
 
 ChatBoxComponent.propTypes = {
+    user: _react.PropTypes.object,
     isFetching: _react.PropTypes.bool,
     channelId: _react.PropTypes.string,
     userClientId: _react.PropTypes.string,
     conversationId: _react.PropTypes.string,
     to: _react.PropTypes.string,
-    messages: _react.PropTypes.array
+    messages: _react.PropTypes.array,
+    write: _react.PropTypes.string
 };
 
 var IsFetchingSelector = function IsFetchingSelector(state) {
@@ -2340,6 +2473,9 @@ var ToSelector = function ToSelector(state) {
 var MessagesSelector = function MessagesSelector(state) {
     return state.convs.messages;
 };
+var WriteSelector = function WriteSelector(state) {
+    return state.convs.write;
+};
 
 function select(state, ownProps) {
     return {
@@ -2348,13 +2484,14 @@ function select(state, ownProps) {
         userClientId: UserClientIdSelector(state),
         conversationId: ConversationIdSelector(state),
         to: ToSelector(state),
-        messages: MessagesSelector(state)
+        messages: MessagesSelector(state),
+        write: WriteSelector(state)
     };
 }
 
 exports.default = (0, _reactRouter.withRouter)((0, _reactRedux.connect)(select)(ChatBoxComponent));
 
-},{"react":618,"react-redux":428,"react-router":466,"underscore":637}],20:[function(require,module,exports){
+},{"../actions":14,"../utils":78,"react":618,"react-redux":428,"react-router":466,"underscore":637}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9564,17 +9701,7 @@ var UserPage = function (_Component) {
         key: 'handleStartTalk',
         value: function handleStartTalk(e) {
             e.preventDefault();
-            var channel_id = this.props.data.channel_id;
-            if (channel_id == undefined) {
-                return;
-            }
-            var user_client_id = this.props.data.user_client_id;
-            if (user_client_id == undefined) {
-                return;
-            }
-            var user_client_name = this.props.data.user_client_name;
-            this.props.dispatch(Actions.ConvsActions.fetchRecentConvs(channel_id, user_client_id, user_client_name));
-            this.props.dispatch(Actions.ModalActions.showModal('Chat Window', _react2.default.createElement(_ChatBoxComponent2.default, null)));
+            this.props.dispatch(Actions.ModalActions.showModal('Chat Window', _react2.default.createElement(_ChatBoxComponent2.default, { user: this.props.data })));
         }
     }]);
 
@@ -10122,7 +10249,7 @@ exports.default = function () {
             var messages = [];
             var conversationId = null;
             action.response.forEach(function (convs, index) {
-                if (index == 0) {
+                if (index == 0 && !convs.closed) {
                     conversationId = convs.conversation_id;
                 }
                 if (convs.messages != undefined) {
@@ -10138,6 +10265,30 @@ exports.default = function () {
                 messages: messages
             });
         case _actions.ActionTypes.TYPE_FETCH_RECENT_CONVS_FAILURE:
+            return Object.assign({}, state, {
+                isFetching: false
+            });
+        case _actions.ActionTypes.TYPE_CHANGE_NL_MESSAGE_INPUT:
+            return Object.assign({}, state, {
+                write: action.value
+            });
+        case _actions.ActionTypes.TYPE_CLEAN_NL_MESSAGE_INPUT:
+            return Object.assign({}, state, {
+                write: null
+            });
+        case _actions.ActionTypes.TYPE_SEND_NL_MESSAGE_REQUSET:
+            return Object.assign({}, state, {
+                isFetching: true,
+                write: null
+            });
+        case _actions.ActionTypes.TYPE_SEND_NL_MESSAGE_SUCCESS:
+            var messages = state.messages;
+            messages = messages.concat([action.response]);
+            return Object.assign({}, state, {
+                write: null,
+                messages: messages
+            });
+        case _actions.ActionTypes.TYPE_SEND_NL_MESSAGE_FAILURE:
             return Object.assign({}, state, {
                 isFetching: false
             });

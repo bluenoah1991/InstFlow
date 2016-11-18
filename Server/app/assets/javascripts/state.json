@@ -102,6 +102,7 @@
 	},
 	"convs": {
 		"isFetching": false,
+		"write": "",
 		"channelId": "",
 		"userClientId": "",
 		"conversationId": "",

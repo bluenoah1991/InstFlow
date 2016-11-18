@@ -64,6 +64,7 @@ Rails.application.routes.draw do
         put 'hyperlink_messages/:id', to: "hyperlink_messages#update", as: :update_hyperlink_message, constraints: TenantdomainConstraint
         post 'feedback', to: "feedbacks#create", as: :create_feedback, constraints: TenantdomainConstraint
         post 'convs/recent', to: "conversations#recent", as: :recent_convs, constraints: TenantdomainConstraint
+        post 'convs/send', to: "conversations#create", as: :send_nl_message, constraints: TenantdomainConstraint
       end
     end
   end

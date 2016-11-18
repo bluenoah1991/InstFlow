@@ -13,7 +13,7 @@ export default function(state={}, action){
             var messages = [];
             var conversationId = null;
             action.response.forEach(function(convs, index){
-                if(index == 0){
+                if(index == 0 && !convs.closed){
                     conversationId = convs.conversation_id;
                 }
                 if(convs.messages != undefined){
@@ -29,6 +29,30 @@ export default function(state={}, action){
                 messages: messages
             });
         case ActionTypes.TYPE_FETCH_RECENT_CONVS_FAILURE:
+            return Object.assign({}, state, {
+                isFetching: false
+            });
+        case ActionTypes.TYPE_CHANGE_NL_MESSAGE_INPUT:
+            return Object.assign({}, state, {
+                write: action.value
+            });
+        case ActionTypes.TYPE_CLEAN_NL_MESSAGE_INPUT:
+            return Object.assign({}, state, {
+                write: null
+            });
+        case ActionTypes.TYPE_SEND_NL_MESSAGE_REQUSET:
+            return Object.assign({}, state, {
+                isFetching: true,
+                write: null
+            });
+        case ActionTypes.TYPE_SEND_NL_MESSAGE_SUCCESS:
+            var messages = state.messages;
+            messages = messages.concat([action.response]);
+            return Object.assign({}, state, {
+                write: null,
+                messages: messages
+            });
+        case ActionTypes.TYPE_SEND_NL_MESSAGE_FAILURE:
             return Object.assign({}, state, {
                 isFetching: false
             });

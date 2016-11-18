@@ -3,6 +3,9 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import _ from 'underscore';
 
+import * as Actions from '../actions';
+import {safestring} from '../utils';
+
 class ChatBoxComponent extends Component{
     constructor(){
         super();
@@ -30,9 +33,15 @@ class ChatBoxComponent extends Component{
                         </div>
                     );
                 } else if(message.orientation == 2){
+                    let state = null;
+                    if(message.state == 'pending' || message.state == 'sending'){
+                        state = <i className="fa fa-spinner fa-spin"></i>; 
+                    } else if(message.state == 'failed'){
+                        state = <i className="fa fa-exclamation"></i>;
+                    }
                     bubbles.push(
                         <div key={index} className="bubble me">
-                            {message.text}
+                            {state} {message.text}
                         </div>
                     );
                 }
@@ -58,8 +67,8 @@ class ChatBoxComponent extends Component{
                         </div>
                         <div className="write">
                             <a href="javascript:;" className="write-link attach"></a>
-                            <input type="text" />
-                            <a href="javascript:;" className="write-link send"></a>
+                            <input type="text" value={safestring(this.props.write)}  onChange={this.handleChange.bind(this)} />
+                            <a href="javascript:;" className="write-link send" onClick={this.handleSend.bind(this)}></a>
                             <a href="javascript:;" className="write-link smiley"></a>
                         </div>
                     </div>
@@ -69,6 +78,10 @@ class ChatBoxComponent extends Component{
     }
 
     componentDidUpdate(){
+        // $('.chat').slimScroll({
+        //     scrollTo: $('.chat')[0].scrollHeight
+        // });
+        
         // Block UI
         if((this.props.isFetching != undefined && this.props.isFetching) ||
             (this.props.pwdIsFetching != undefined && this.props.pwdIsFetching)){
@@ -85,23 +98,46 @@ class ChatBoxComponent extends Component{
     }
 
     componentDidMount(){
-        $('.chat').slimScroll({
-            height: '100%'
-        });
+        let channel_id = this.props.user.channel_id;
+        if(channel_id == undefined){ return; }
+        let user_client_id = this.props.user.user_client_id;
+        if(user_client_id == undefined){ return; }
+        let user_client_name = this.props.user.user_client_name;
+        this.props.dispatch(Actions.ConvsActions.fetchRecentConvs(
+            channel_id, user_client_id, user_client_name, function(){
+                $('.chat').slimScroll({
+                    height: '100%',
+                    start: 'bottom'
+                });
+            }));
     }
 
     componentWillUnmount(){
         window.clearTimeout(this.timeout);
     }
+
+    handleSend(){
+        this.props.dispatch(Actions.ConvsActions.sendNlMessage(function(){
+            $('.chat').slimScroll({
+                scrollTo: $('.chat')[0].scrollHeight
+            });
+        }));
+    }
+
+    handleChange(e){
+        this.props.dispatch(Actions.ConvsActions.changeNlMessageInput(e.target.value));
+    }
 }
 
 ChatBoxComponent.propTypes = {
+    user: PropTypes.object,
     isFetching: PropTypes.bool,
     channelId: PropTypes.string,
     userClientId: PropTypes.string,
     conversationId: PropTypes.string,
     to: PropTypes.string,
-    messages: PropTypes.array
+    messages: PropTypes.array,
+    write: PropTypes.string
 }
 
 const IsFetchingSelector = state => state.convs.isFetching;
@@ -110,6 +146,7 @@ const UserClientIdSelector = state => state.convs.userClientId;
 const ConversationIdSelector = state => state.convs.conversationId;
 const ToSelector = state => state.convs.to;
 const MessagesSelector = state => state.convs.messages;
+const WriteSelector = state => state.convs.write;
 
 function select(state, ownProps){
     return {
@@ -118,7 +155,8 @@ function select(state, ownProps){
         userClientId: UserClientIdSelector(state),
         conversationId: ConversationIdSelector(state),
         to: ToSelector(state),
-        messages: MessagesSelector(state)
+        messages: MessagesSelector(state),
+        write: WriteSelector(state)
     };
 }
 

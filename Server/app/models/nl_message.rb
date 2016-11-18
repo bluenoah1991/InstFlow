@@ -5,7 +5,7 @@ class NlMessage < ApplicationRecord
         for instance in instances
             instance.with_lock do
                 if instance.state == 'pending'
-                    instance.state = 'running'
+                    instance.state = 'sending'
                     instance.save!
                     result << instance
                 end
