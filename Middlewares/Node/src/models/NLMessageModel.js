@@ -18,6 +18,7 @@ var NLMessageModel = sequelize_.define('nlmessage', _BaseModel({
     channel_id: Sequelize.STRING,
     conversation_id: Sequelize.STRING,
     orientation: Sequelize.INTEGER,
+    state: Sequelize.STRING,
     time: Sequelize.INTEGER
 }));
 

@@ -27,6 +27,7 @@ var NLMessageModel = _DbConnection.sequelize_.define('nlmessage', (0, _DbConnect
     channel_id: _sequelize2.default.STRING,
     conversation_id: _sequelize2.default.STRING,
     orientation: _sequelize2.default.INTEGER,
+    state: _sequelize2.default.STRING,
     time: _sequelize2.default.INTEGER
 }));
 

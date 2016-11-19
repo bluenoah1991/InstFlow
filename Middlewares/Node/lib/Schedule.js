@@ -31,18 +31,18 @@ var Schedule = function () {
         _classCallCheck(this, Schedule);
 
         this.httpProxy = new _HttpProxy2.default();
-        var interval = process.env.SYNC_INTERVAL || 5;
-        this.rule = '*/' + interval + ' * * * *';
-        this.syncJob = _nodeSchedule2.default.scheduleJob(this.rule, this.sync.bind(this));
+        this.syncJob = _nodeSchedule2.default.scheduleJob('*/3 * * * * *', this.sync.bind(this));
     }
 
     _createClass(Schedule, [{
         key: 'syncOutgoing',
-        value: function syncOutgoing() {}
+        value: function syncOutgoing() {
+            this.httpProxy.get('/api/v1/nlmsg/outgoing');
+        }
     }, {
         key: 'syncModel',
         value: function syncModel(model, resourcePath, conditions) {
-            var where = { __sync__: false, __tries__: { $lt: 3 } };
+            var where = { __sync__: false, __tries__: { $lt: 10 } };
             if (conditions != undefined) {
                 Object.assign(where, conditions);
             }
@@ -64,28 +64,39 @@ var Schedule = function () {
     }, {
         key: 'sync',
         value: function sync() {
-            Promise.all([this.syncModel(_models.UserModel, '/api/v1/users'), this.syncModel(_models.MessageModel, '/api/v1/messages'), this.syncModel(_models.NLMessageModel, '/api/v1/nlmsg/incoming', { orientation: 1 })]).then(function () {
-                if (this.httpProxy.hasCache()) {
-                    this.httpProxy.flush(function (err, data, resp, req) {
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            if (req.method == 'post' && req.url == '/api/v1/users') {
-                                _models.UserModel.update({ __sync__: true }, {
-                                    where: (0, _Serializer.IdentitySerializer)(data, ['channel_id', 'user_id'])
+            Promise.all([this.syncModel(_models.UserModel, '/api/v1/users'), this.syncModel(_models.MessageModel, '/api/v1/messages'), this.syncModel(_models.NLMessageModel, '/api/v1/nlmsg/incoming', { orientation: 1 }), this.syncModel(_models.NLMessageModel, '/api/v1/nlmsg/outgoing', { orientation: 2, $or: [{ state: 'finish' }, { state: 'failed' }] })]).then(function () {
+                this.syncOutgoing();
+                this.httpProxy.flush(function (err, data, resp, req) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        if (req.method == 'post' && req.url == '/api/v1/users') {
+                            _models.UserModel.update({ __sync__: true }, {
+                                where: (0, _Serializer.IdentitySerializer)(data, ['channel_id', 'user_id'])
+                            });
+                        } else if (req.method == 'post' && req.url == '/api/v1/messages') {
+                            _models.MessageModel.update({ __sync__: true }, {
+                                where: (0, _Serializer.IdentitySerializer)(data, ['msg_id'])
+                            });
+                        } else if (req.method == 'post' && req.url == '/api/v1/nlmsg/incoming') {
+                            _models.NLMessageModel.update({ __sync__: true }, {
+                                where: (0, _Serializer.IdentitySerializer)(data, ['msg_id'])
+                            });
+                        } else if (req.method == 'post' && req.url == '/api/v1/nlmsg/outgoing') {
+                            _models.NLMessageModel.update({ __sync__: true }, {
+                                where: (0, _Serializer.IdentitySerializer)(data, ['msg_id'])
+                            });
+                        } else if (req.method == 'get' && req.url == '/api/v1/nlmsg/outgoing') {
+                            data.forEach(function (msg) {
+                                _models.NLMessageModel.create(msg).then(function (instance) {
+                                    var instance_ = instance.get({ plain: true });
+                                    console.log(instance_.text);
+                                    return instance_;
                                 });
-                            } else if (req.method == 'post' && req.url == '/api/v1/messages') {
-                                _models.MessageModel.update({ __sync__: true }, {
-                                    where: (0, _Serializer.IdentitySerializer)(data, ['msg_id'])
-                                });
-                            } else if (req.method == 'post' && req.url == '/api/v1/nlmsg/incoming') {
-                                _models.NLMessageModel.update({ __sync__: true }, {
-                                    where: (0, _Serializer.IdentitySerializer)(data, ['msg_id'])
-                                });
-                            }
+                            });
                         }
-                    });
-                }
+                    }
+                });
             }.bind(this)).catch(function (err) {
                 console.log(err);
             });

@@ -38,4 +38,6 @@ bot.dialog('/', function (session) {
 });
 
 bot.use(instflow.dataAcquire());
-bot.library(instflow.artificialDialog());
+bot.library(instflow.artificialDialog({
+    bot: bot
+}));

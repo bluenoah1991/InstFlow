@@ -2,9 +2,12 @@
 
 import "babel-polyfill";
 import uuid from 'node-uuid';
+import async from 'async';
 
-import {Library, SimpleDialog} from 'botbuilder';
+import {Message, Library, SimpleDialog} from 'botbuilder';
 import schedule from './Schedule';
+import { IdentitySerializer } from './Serializer';
+import { NLMessageModel } from './models';
 
 function AcquireMessage(session, ext_type){
     let msg_id = uuid.v1();
@@ -27,7 +30,58 @@ function AcquireMessage(session, ext_type){
     );
 }
 
-module.exports = function(){
+function BeginOutgoingMessage(bot){
+    setTimeout(function(){
+        NLMessageModel.findAll({ where: { 
+            __sync__: false, 
+            state: 'sending',
+            orientation: 2
+        }}).then(function (instances) {
+            return new Promise(function (resolve, reject) {
+                async.each(instances, function (instance, callback) {
+                    if(instance.conversation_id != undefined){
+                        let msg = new Message().address({
+                            channelId: instance.channel_id,
+                            user: {
+                                id: instance.user_client_id,
+                                name: instance.user_client_name
+                            },
+                            conversation: {
+                                id: instance.conversation_id
+                            },
+                            bot: {
+                                id: instance.bot_client_id,
+                                name: instance.bot_client_name
+                            },
+                            serviceUrl: instance.serviceUrl,
+                            useAuth: true
+                        }).text(instance.text);
+                        let time = new Date().getTime();
+                        bot.send(msg, function(err){
+                            console.log(err);
+                            NLMessageModel.update({ state: 'finish', time: time }, {
+                                where: IdentitySerializer(instance, ['msg_id'])
+                            });
+                            callback();
+                        });
+                    } else {
+                        callback();
+                    }
+                }.bind(this), function (err) {
+                    resolve(err);
+                });
+            }.bind(this));
+        }).then(function(){
+            BeginOutgoingMessage(bot);
+        });
+    }, 1000);
+}
+
+module.exports = function(opts){
+    if(opts == undefined || opts.bot == undefined){
+        throw 'Option \'bot\' not found.';
+    }
+
     var lib = new Library('artificial');
 
     lib.dialog('/', function(session, args){
@@ -51,5 +105,6 @@ module.exports = function(){
         });
     });
 
+    BeginOutgoingMessage(opts.bot);
     return lib;
 };

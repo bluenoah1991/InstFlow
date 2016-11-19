@@ -9,17 +9,15 @@ import HttpProxy from './HttpProxy';
 class Schedule {
     constructor() {
         this.httpProxy = new HttpProxy();
-        let interval = process.env.SYNC_INTERVAL || 5;
-        this.rule = `*/${interval} * * * *`;
-        this.syncJob = Schedule_.scheduleJob(this.rule, this.sync.bind(this));
+        this.syncJob = Schedule_.scheduleJob('*/3 * * * * *', this.sync.bind(this));
     }
 
     syncOutgoing() {
-
+        this.httpProxy.get('/api/v1/nlmsg/outgoing');
     }
 
     syncModel(model, resourcePath, conditions) {
-        let where = { __sync__: false, __tries__: { $lt: 3 } };
+        let where = { __sync__: false, __tries__: { $lt: 10 } };
         if (conditions != undefined) {
             Object.assign(where, conditions);
         }
@@ -43,29 +41,41 @@ class Schedule {
         Promise.all([
             this.syncModel(UserModel, '/api/v1/users'),
             this.syncModel(MessageModel, '/api/v1/messages'),
-            this.syncModel(NLMessageModel, '/api/v1/nlmsg/incoming', { orientation: 1 })
+            this.syncModel(NLMessageModel, '/api/v1/nlmsg/incoming', { orientation: 1 }),
+            this.syncModel(NLMessageModel, '/api/v1/nlmsg/outgoing', { orientation: 2, $or: [ {state: 'finish'}, {state: 'failed'}] })
         ]).then(function () {
-            if (this.httpProxy.hasCache()) {
-                this.httpProxy.flush(function (err, data, resp, req) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        if (req.method == 'post' && req.url == '/api/v1/users') {
-                            UserModel.update({ __sync__: true }, {
-                                where: IdentitySerializer(data, ['channel_id', 'user_id'])
+            this.syncOutgoing();
+            this.httpProxy.flush(function (err, data, resp, req) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    if (req.method == 'post' && req.url == '/api/v1/users') {
+                        UserModel.update({ __sync__: true }, {
+                            where: IdentitySerializer(data, ['channel_id', 'user_id'])
+                        });
+                    } else if (req.method == 'post' && req.url == '/api/v1/messages') {
+                        MessageModel.update({ __sync__: true }, {
+                            where: IdentitySerializer(data, ['msg_id'])
+                        });
+                    } else if (req.method == 'post' && req.url == '/api/v1/nlmsg/incoming') {
+                        NLMessageModel.update({ __sync__: true }, {
+                            where: IdentitySerializer(data, ['msg_id'])
+                        });
+                    } else if (req.method == 'post' && req.url == '/api/v1/nlmsg/outgoing') {
+                        NLMessageModel.update({ __sync__: true }, {
+                            where: IdentitySerializer(data, ['msg_id'])
+                        });
+                    } else if (req.method == 'get' && req.url == '/api/v1/nlmsg/outgoing'){
+                        data.forEach(function(msg){
+                            NLMessageModel.create(msg).then(function (instance) {
+                                let instance_ = instance.get({ plain: true });
+                                console.log(instance_.text);
+                                return instance_;
                             });
-                        } else if (req.method == 'post' && req.url == '/api/v1/messages') {
-                            MessageModel.update({ __sync__: true }, {
-                                where: IdentitySerializer(data, ['msg_id'])
-                            });
-                        } else if (req.method == 'post' && req.url == '/api/v1/nlmsg/incoming') {
-                            NLMessageModel.update({ __sync__: true }, {
-                                where: IdentitySerializer(data, ['msg_id'])
-                            });
-                        }
+                        });
                     }
-                });
-            }
+                }
+            });
         }.bind(this)).catch(function(err){
             console.log(err);
         });

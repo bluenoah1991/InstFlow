@@ -6,11 +6,19 @@ var _nodeUuid = require("node-uuid");
 
 var _nodeUuid2 = _interopRequireDefault(_nodeUuid);
 
+var _async = require("async");
+
+var _async2 = _interopRequireDefault(_async);
+
 var _botbuilder = require("botbuilder");
 
 var _Schedule = require("./Schedule");
 
 var _Schedule2 = _interopRequireDefault(_Schedule);
+
+var _Serializer = require("./Serializer");
+
+var _models = require("./models");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31,7 +39,60 @@ function AcquireMessage(session, ext_type) {
     _Schedule2.default.saveNLMessage(ext_type, msg_id, msg_type, text, source, agent, serviceUrl, user_client_id, user_client_name, bot_client_id, bot_client_name, channel_id, conversation_id, 1, time);
 }
 
-module.exports = function () {
+function BeginOutgoingMessage(bot) {
+    setTimeout(function () {
+        _models.NLMessageModel.findAll({ where: {
+                __sync__: false,
+                state: 'sending',
+                orientation: 2
+            } }).then(function (instances) {
+            return new Promise(function (resolve, reject) {
+                _async2.default.each(instances, function (instance, callback) {
+                    if (instance.conversation_id != undefined) {
+                        (function () {
+                            var msg = new _botbuilder.Message().address({
+                                channelId: instance.channel_id,
+                                user: {
+                                    id: instance.user_client_id,
+                                    name: instance.user_client_name
+                                },
+                                conversation: {
+                                    id: instance.conversation_id
+                                },
+                                bot: {
+                                    id: instance.bot_client_id,
+                                    name: instance.bot_client_name
+                                },
+                                serviceUrl: instance.serviceUrl,
+                                useAuth: true
+                            }).text(instance.text);
+                            var time = new Date().getTime();
+                            bot.send(msg, function (err) {
+                                console.log(err);
+                                _models.NLMessageModel.update({ state: 'finish', time: time }, {
+                                    where: (0, _Serializer.IdentitySerializer)(instance, ['msg_id'])
+                                });
+                                callback();
+                            });
+                        })();
+                    } else {
+                        callback();
+                    }
+                }.bind(this), function (err) {
+                    resolve(err);
+                });
+            }.bind(this));
+        }).then(function () {
+            BeginOutgoingMessage(bot);
+        });
+    }, 1000);
+}
+
+module.exports = function (opts) {
+    if (opts == undefined || opts.bot == undefined) {
+        throw 'Option \'bot\' not found.';
+    }
+
     var lib = new _botbuilder.Library('artificial');
 
     lib.dialog('/', function (session, args) {
@@ -55,6 +116,7 @@ module.exports = function () {
         });
     });
 
+    BeginOutgoingMessage(opts.bot);
     return lib;
 };
 //# sourceMappingURL=ArtificialDialog.js.map
