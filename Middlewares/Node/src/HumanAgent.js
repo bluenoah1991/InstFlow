@@ -82,11 +82,11 @@ module.exports = function(opts){
         throw 'Option \'bot\' not found.';
     }
 
-    var lib = new Library('artificial');
+    var lib = new Library('human_agent');
 
     lib.dialog('/', function(session, args){
         if(session.message.text != undefined && session.message.text.trim().toUpperCase() == 'Q'){
-            session.send('Exit the Artificial Service.');
+            session.send('Exit Human Agent.');
             AcquireMessage(session, 'close');
             session.endDialog();
         } else if(args != undefined && args.referer == '/start') {
@@ -99,7 +99,7 @@ module.exports = function(opts){
     });
 
     lib.dialog('/start', function(session, args){
-        session.send('InstFlow Artificial Service (Enter Q exit):');
+        session.send('Enter Human Agent (Reply to Q exit):');
         session.replaceDialog('/', {
             referer: '/start'
         });

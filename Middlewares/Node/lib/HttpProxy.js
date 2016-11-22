@@ -48,8 +48,8 @@ var HttpProxy = function () {
     }, {
         key: 'http',
         value: function http(method, url) {
-            var params = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-            var headers = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+            var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+            var headers = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
             this.req.ops.push({
                 method: method,
@@ -61,40 +61,40 @@ var HttpProxy = function () {
     }, {
         key: 'get',
         value: function get(url) {
-            var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-            var headers = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+            var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+            var headers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
             this.http('get', url, params, headers);
         }
     }, {
         key: 'post',
         value: function post(url) {
-            var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-            var headers = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+            var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+            var headers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
             this.http('post', url, params, headers);
         }
     }, {
         key: 'put',
         value: function put(url) {
-            var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-            var headers = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+            var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+            var headers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
             this.http('put', url, params, headers);
         }
     }, {
         key: 'patch',
         value: function patch(url) {
-            var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-            var headers = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+            var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+            var headers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
             this.http('patch', url, params, headers);
         }
     }, {
         key: 'delete',
         value: function _delete(url) {
-            var params = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-            var headers = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+            var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+            var headers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
             this.http('delete', url, params, headers);
         }

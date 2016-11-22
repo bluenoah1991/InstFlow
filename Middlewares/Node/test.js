@@ -9,8 +9,8 @@ var instflow = require('./index.js');
 
 // Setup Restify Server
 var server = restify.createServer({
-    certificate: fs.readFileSync('cert/localhost.crt'),
-    key: fs.readFileSync('cert/localhost.key')
+    // certificate: fs.readFileSync('cert/localhost.crt'),
+    // key: fs.readFileSync('cert/localhost.key')
 });
 
 server.listen(process.env.port || process.env.PORT || 3978, function () {
@@ -31,13 +31,13 @@ server.post('/api/messages', connector.listen());
 
 bot.dialog('/', function (session) {
     if(session.message.text != undefined && session.message.text.trim().toUpperCase() == 'HI'){
-        session.beginDialog('artificial:/start');
+        session.beginDialog('human_agent:/start');
         return;
     }
     session.send("Hello World");
 });
 
 bot.use(instflow.dataAcquire());
-bot.library(instflow.artificialDialog({
+bot.library(instflow.humanAgent({
     bot: bot
 }));

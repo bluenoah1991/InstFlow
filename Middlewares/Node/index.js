@@ -1,2 +1,2 @@
 exports.dataAcquire = require('./lib/DataAcquire');
-exports.artificialDialog = require('./lib/ArtificialDialog');
+exports.humanAgent = require('./lib/HumanAgent');
