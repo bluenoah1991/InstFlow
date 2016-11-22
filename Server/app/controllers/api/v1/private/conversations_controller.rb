@@ -8,11 +8,22 @@ module Api
                 def recent
                     requires! :channel_id, type: String
                     requires! :user_client_id, type: String
+                    optional! :time, type: Integer
 
-                    @instances = Conversation.order(latest_active: :desc).limit(3).where(
-                        channel_id: params[:channel_id], 
-                        user_client_id: params[:user_client_id])
-                    render json: @instances, each_serializer: ConversationWithMessagesSerializer
+                    if params[:time].present? && params[:time] > 0
+                        @instances = NlMessage.order(time: :desc).where('time > ? and channel_id = ? and user_client_id = ?', 
+                            params[:time], params[:channel_id], params[:user_client_id])
+                    else
+                        @instances = NlMessage.order(time: :desc).limit(15).where('channel_id = ? and user_client_id = ?', 
+                            params[:channel_id], params[:user_client_id])
+                    end
+                    convs = Conversation.order(latest_active: :desc).find_by('channel_id = ? and user_client_id = ?', 
+                            params[:channel_id], params[:user_client_id])
+
+                    render json: {
+                        conversation: convs,
+                        messages: ActiveModelSerializers::SerializableResource.new(@instances, each_serializer: NlMessageSerializer)
+                    }
                 end
 
                 def create
@@ -28,7 +39,6 @@ module Api
                     @instance.bot_id = params[:bot_id]
                     @instance.ext_type = 'message'
                     @instance.text = params[:text]
-                    @instance.source = 'instflow'
                     @instance.user_client_id = params[:user_client_id]
                     @instance.user_client_name = @user.user_client_name
                     @instance.bot_client_id = @user.bot_client_id

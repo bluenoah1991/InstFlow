@@ -205,7 +205,7 @@ class UserPage extends Component{
         e.preventDefault();
         this.props.dispatch(Actions.ModalActions.showModal(
             'Chat Window',
-            <ChatBoxComponent user={this.props.data} />));
+            <ChatBoxComponent key={this.props.params.id} user={this.props.data} />));
     }
 }
 

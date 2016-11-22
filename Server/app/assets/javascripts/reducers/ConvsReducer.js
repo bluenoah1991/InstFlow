@@ -12,21 +12,16 @@ export default function(state={}, action){
         case ActionTypes.TYPE_FETCH_RECENT_CONVS_SUCCESS:
             var messages = [];
             var conversationId = null;
-            action.response.forEach(function(convs, index){
-                if(index == 0 && !convs.closed){
-                    conversationId = convs.conversation_id;
-                }
-                if(convs.messages != undefined){
-                    messages = convs.messages.concat(messages);
-                }
-            });
+            if(action.response.conversation != undefined){
+                conversationId = action.response.conversation.conversation_id;
+            }
             return Object.assign({}, state, {
                 isFetching: false,
                 channelId: action.channel_id,
                 userClientId: action.user_client_id,
                 conversationId: conversationId,
                 to: action.to,
-                messages: messages
+                messages: action.response.messages.reverse()
             });
         case ActionTypes.TYPE_FETCH_RECENT_CONVS_FAILURE:
             return Object.assign({}, state, {
