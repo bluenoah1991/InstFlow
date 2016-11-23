@@ -137,7 +137,8 @@ ChatBoxComponent.propTypes = {
     conversationId: PropTypes.string,
     to: PropTypes.string,
     messages: PropTypes.array,
-    write: PropTypes.string
+    write: PropTypes.string,
+    loopId: PropTypes.number
 }
 
 const IsFetchingSelector = state => state.convs.isFetching;
@@ -147,6 +148,7 @@ const ConversationIdSelector = state => state.convs.conversationId;
 const ToSelector = state => state.convs.to;
 const MessagesSelector = state => state.convs.messages;
 const WriteSelector = state => state.convs.write;
+const LoopIdSelector = state => state.convs.loopId;
 
 function select(state, ownProps){
     return {
@@ -156,7 +158,8 @@ function select(state, ownProps){
         conversationId: ConversationIdSelector(state),
         to: ToSelector(state),
         messages: MessagesSelector(state),
-        write: WriteSelector(state)
+        write: WriteSelector(state),
+        loopId: LoopIdSelector(state)
     };
 }
 

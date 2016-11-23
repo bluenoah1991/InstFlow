@@ -2,6 +2,8 @@ import {
     TYPE_FETCH_RECENT_CONVS_REQUEST,
     TYPE_FETCH_RECENT_CONVS_SUCCESS,
     TYPE_FETCH_RECENT_CONVS_FAILURE,
+    TYPE_UPDATE_RECENT_CONVS_SUCCESS,
+    TYPE_SET_UPDATE_RECENT_CONVS,
     TYPE_CHANGE_NL_MESSAGE_INPUT,
     TYPE_CLEAN_NL_MESSAGE_INPUT,
     TYPE_SEND_NL_MESSAGE_REQUEST,
@@ -38,11 +40,14 @@ export function fetchRecentConvsFailure(){
 }
 
 export function fetchRecentConvs(channel_id, user_client_id, to, callback){
-    return function(dispatch){
+    return function(dispatch, getState){
         dispatch(fetchRecentConvsRequest());
+        let rootState = getState();
+        let time = rootState.convs.latestTime;
         return Utils.post('/api/v1/private/convs/recent', {
             channel_id: channel_id,
-            user_client_id: user_client_id
+            user_client_id: user_client_id,
+            time: time
         }).then(function(response){
             return response.json();
         }).then(function(data){
@@ -58,11 +63,69 @@ export function fetchRecentConvs(channel_id, user_client_id, to, callback){
                     'error', 'Fetch Recent Conversations', data['message'] != undefined ? data['message'] : err
                 ));
             }
+        }).then(function(){
+            let id = window.setTimeout(function(){
+                dispatch(updateRecentConvs());
+            }, 2000);
+            dispatch(setUpdateRecentConvs(id));
         }).catch(function(err){
             dispatch(fetchRecentConvsFailure());
             dispatch(showToast(
                 'error', 'Bad Request', err.toString()
             ));
+            let id = window.setTimeout(function(){
+                dispatch(updateRecentConvs());
+            }, 2000);
+            dispatch(setUpdateRecentConvs(id));
+        });
+    }
+}
+
+export function setUpdateRecentConvs(id){
+    const action = {
+        type: TYPE_SET_UPDATE_RECENT_CONVS,
+        id: id
+    };
+    return action;
+}
+
+export function updateRecentConvsSuccess(channel_id, user_client_id, to, response){
+    const action = {
+        type: TYPE_UPDATE_RECENT_CONVS_SUCCESS,
+        channel_id: channel_id,
+        user_client_id: user_client_id,
+        to: to,
+        response: response
+    };
+    return action;
+}
+
+export function updateRecentConvs(){
+    return function(dispatch, getState){
+        let rootState = getState();
+        let channel_id = rootState.convs.channelId;
+        let user_client_id = rootState.convs.userClientId;
+        let to = rootState.convs.to;
+        let time = rootState.convs.latestTime;
+        return Utils.post('/api/v1/private/convs/recent', {
+            channel_id: channel_id,
+            user_client_id: user_client_id,
+            time: time
+        }).then(function(response){
+            return response.json();
+        }).then(function(data){
+            let err = data['error'];
+            if(err == undefined || err.trim().length === 0){
+                dispatch(updateRecentConvsSuccess(channel_id, user_client_id, to, data));
+            }
+        }).then(function(){
+            window.setTimeout(function(){
+                dispatch(updateRecentConvs());
+            }, 2000);
+        }).catch(function(err){
+            window.setTimeout(function(){
+                dispatch(updateRecentConvs());
+            }, 2000);
         });
     }
 }

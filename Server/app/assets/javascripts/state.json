@@ -108,6 +108,8 @@
 		"conversationId": "",
 		"to": "",
 		"messages": [],
+		"latestTime": 0,
+		"loopId": 0,
 		"items": {
 			"id": { // id = "channel_id&conversation_id"
 				// TODO

@@ -3,5 +3,5 @@ class NlMessageSerializer < ApplicationSerializer
   :user_client_id, :user_client_name, :bot_client_id, :bot_client_name, :channel_id,
   :conversation_id, :orientation, :state, :time
 
-  as_posixtime :created_at, :updated_at
+  as_posixtime :created_at, :updated_at, :time
 end

@@ -11,8 +11,9 @@ module Api
                     optional! :time, type: Integer
 
                     if params[:time].present? && params[:time] > 0
+                        time = Time.at(params[:time] + 1).to_datetime
                         @instances = NlMessage.order(time: :desc).where('time > ? and channel_id = ? and user_client_id = ?', 
-                            params[:time], params[:channel_id], params[:user_client_id])
+                            time, params[:channel_id], params[:user_client_id])
                     else
                         @instances = NlMessage.order(time: :desc).limit(15).where('channel_id = ? and user_client_id = ?', 
                             params[:channel_id], params[:user_client_id])
