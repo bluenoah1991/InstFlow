@@ -4,7 +4,4 @@ class HomeController < ApplicationController
 
     def index
     end
-
-    def api_settings
-    end
 end
