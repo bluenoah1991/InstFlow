@@ -35,9 +35,7 @@ Rails.application.routes.draw do
       resources :users, only: [:index, :create, :show, :update, :destroy], constraints: TenantdomainConstraint
       resources :tags, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
       resources :messages, only: [:index, :create, :show, :destroy], constraints: TenantdomainConstraint
-      post 'nlmsg/incoming', to: "nl_messages#incoming", as: :nl_message_incoming, constraints: TenantdomainConstraint
-      get 'nlmsg/outgoing', to: "nl_messages#outgoing", as: :nl_message_outgoing, constraints: TenantdomainConstraint
-      post 'nlmsg/outgoing', to: "nl_messages#outgoing_ack", as: :nl_message_outgoing_ack, constraints: TenantdomainConstraint
+      post 'activities', to: "activities#index", as: :activities, constraints: TenantdomainConstraint
       namespace :private do
         post 'dashboard', to: "dashboard#index", as: :dashboard_data, constraints: TenantdomainConstraint
         get 'profile', to: "admins#profile", as: :admin_profile, constraints: TenantdomainConstraint

@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161117091154) do
+ActiveRecord::Schema.define(version: 20161115092101) do
+
+  create_table "activities", force: :cascade do |t|
+    t.string   "type_",      null: false
+    t.string   "who",        null: false
+    t.string   "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer  "bot_id"
+    t.index ["bot_id"], name: "index_activities_on_bot_id"
+  end
 
   create_table "admins", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
@@ -49,27 +59,6 @@ ActiveRecord::Schema.define(version: 20161117091154) do
     t.datetime "updated_at",                   null: false
     t.index ["access_token"], name: "index_bots_on_access_token", unique: true
     t.index ["admin_id"], name: "index_bots_on_admin_id"
-  end
-
-  create_table "conversations", force: :cascade do |t|
-    t.string   "latest_message"
-    t.string   "source"
-    t.string   "agent"
-    t.string   "serviceUrl"
-    t.string   "user_client_id"
-    t.string   "user_client_name"
-    t.string   "bot_client_id"
-    t.string   "bot_client_name"
-    t.string   "channel_id"
-    t.string   "conversation_id"
-    t.boolean  "closed",           default: false
-    t.datetime "start_time"
-    t.datetime "latest_active"
-    t.datetime "close_time"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
-    t.integer  "bot_id"
-    t.index ["bot_id"], name: "index_conversations_on_bot_id"
   end
 
   create_table "feedbacks", force: :cascade do |t|
@@ -113,29 +102,6 @@ ActiveRecord::Schema.define(version: 20161117091154) do
     t.datetime "updated_at",                       null: false
     t.integer  "bot_id"
     t.index ["bot_id"], name: "index_messages_on_bot_id"
-  end
-
-  create_table "nl_messages", force: :cascade do |t|
-    t.string   "ext_type",         null: false
-    t.string   "msg_id",           null: false
-    t.string   "msg_type"
-    t.string   "text"
-    t.string   "source"
-    t.string   "agent"
-    t.string   "serviceUrl"
-    t.string   "user_client_id"
-    t.string   "user_client_name"
-    t.string   "bot_client_id"
-    t.string   "bot_client_name"
-    t.string   "channel_id"
-    t.string   "conversation_id"
-    t.integer  "orientation"
-    t.string   "state"
-    t.datetime "time"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.integer  "bot_id"
-    t.index ["bot_id"], name: "index_nl_messages_on_bot_id"
   end
 
   create_table "sending_tasks", force: :cascade do |t|

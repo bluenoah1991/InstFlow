@@ -64,8 +64,11 @@ gem 'ajax-datatables-rails'
 # Ruby Http Client
 gem 'http'
 
-# Bot framework Connector Client
-gem 'swagger_client', :git => 'https://github.com/codemeow5/RubyConnectorClient.git'
+# Bot framework Connector API Client
+gem 'bot_connector_api', :git => 'https://github.com/codemeow5/RubyConnectorClient.git'
+
+# Bot framework State REST API Client
+gem 'bot_state_api', :git => 'https://github.com/codemeow5/RubyStateClient.git'
 
 # Sidekiq background job queue
 gem 'sidekiq'
@@ -78,3 +81,7 @@ gem 'redis'
 
 # Support RFC4122 V1 UUID
 gem 'uuid', '~> 2.3', '>= 2.3.8'
+
+# HttpPack Server-Side Plugin
+gem 'http_pack', :git => 'https://github.com/codemeow5/ruby-httppack.git'
+
